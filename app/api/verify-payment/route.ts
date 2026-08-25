@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,
       registeredAt: new Date().toISOString(),
+      status: "new",
     };
 
     // --- File-based storage (stand-in for a database) -------------------
