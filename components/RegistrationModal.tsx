@@ -189,21 +189,6 @@ export default function RegistrationModal({
           name: form.name,
           contact: form.phone,
         },
-        // Restrict the checkout to only show the UPI block, so the user is
-        // taken straight to UPI (intent on mobile / collect-request or QR on
-        // desktop) instead of seeing cards/netbanking/wallets first.
-        config: {
-          display: {
-            blocks: {
-              upiBlock: {
-               name: "Pay via UPI",
-                instruments: [{ method: "upi" }],
-              },
-            },
-            sequence: ["block.upiBlock"],
-            preferences: { show_default_blocks: false },
-          },
-        },
         theme: { color: "#641c1c" },
         handler: async (response: unknown) => {
           const paymentResponse = response as {
