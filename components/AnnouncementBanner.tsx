@@ -5,7 +5,9 @@ import { Megaphone, X } from "lucide-react";
 
 // The <marquee> tag isn't in React's built-in JSX types (it's a legacy,
 // non-standard HTML element), so we declare it ourselves to use it in TSX.
-declare global {
+// React 19 moved the JSX namespace into the "react" module itself, so we
+// augment that module rather than the old global JSX namespace.
+declare module "react" {
   namespace JSX {
     interface IntrinsicElements {
       marquee: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
