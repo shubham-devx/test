@@ -21,14 +21,17 @@ export async function POST(req: NextRequest) {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      registrant,
+      courseId,
+      durationLabel,
+      responses,
     } = body ?? {};
 
     if (
       !razorpay_order_id ||
       !razorpay_payment_id ||
       !razorpay_signature ||
-      !registrant
+      !courseId ||
+      !durationLabel
     ) {
       return NextResponse.json(
         { error: "Incomplete payment verification data." },
@@ -59,8 +62,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const course = findCourse(registrant.courseId);
-    const duration = findDuration(registrant.courseId, registrant.durationLabel);
+    const course = await findCourse(courseId);
+    const duration = await findDuration(courseId, durationLabel);
 
     if (!course || !duration) {
       return NextResponse.json(
@@ -71,14 +74,20 @@ export async function POST(req: NextRequest) {
 
     const registrationId = generateRegistrationId(course.id);
 
+    // Every answer from the (fully dynamic) registration form, keyed by
+    // field id. Whatever fields exist at submission time end up here —
+    // course/duration/captcha are excluded since they're tracked separately.
+    const cleanResponses: Record<string, string> = {};
+    if (responses && typeof responses === "object") {
+      for (const [key, value] of Object.entries(responses)) {
+        if (["course", "duration", "captcha"].includes(key)) continue;
+        cleanResponses[key] = String(value ?? "").trim().slice(0, 500);
+      }
+    }
+
     const record = {
       registrationId,
-      name: String(registrant.name ?? "").trim(),
-      phone: String(registrant.phone ?? "").trim(),
-      designation: String(registrant.designation ?? "").trim(),
-      location: String(registrant.location ?? "").trim(),
-      institution: String(registrant.institution ?? "").trim(),
-      dob: String(registrant.dob ?? "").trim(),
+      responses: cleanResponses,
       course: course.name,
       duration: duration.label,
       amount: duration.fee,
@@ -90,9 +99,9 @@ export async function POST(req: NextRequest) {
 
     // --- File-based storage (stand-in for a database) -------------------
     // NOTE: this only persists on a normal always-on Node server (VPS,
-    // Railway, Render, a `next start` box, etc). On serverless platforms
-    // (e.g. Vercel) the filesystem is read-only/ephemeral in production and
-    // this file will NOT persist between requests. See README-PAYMENT-SETUP.md.
+    // Railway, Render, `next start`, etc). On serverless platforms (e.g.
+    // Vercel) the filesystem is read-only/ephemeral at runtime, and this
+    // file will NOT persist between requests.
     await fs.mkdir(DATA_DIR, { recursive: true });
 
     let existing: unknown[] = [];

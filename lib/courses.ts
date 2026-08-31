@@ -1,16 +1,10 @@
-/**
- * Single source of truth for courses, durations and fees.
- *
- * IMPORTANT: The server (app/api/create-order, app/api/verify-payment) reads
- * the fee from THIS file, never from anything the browser sends. That is
- * what stops someone from editing the page in devtools and "paying" ₹1 for
- * a ₹9,999 course.
- */
+import { promises as fs } from "fs";
+import path from "path";
 
 export type CourseDuration = {
   label: string;
   weeks: number;
-  fee: number; // in rupees (INR)
+  fee: number; // INR
 };
 
 export type Course = {
@@ -19,7 +13,9 @@ export type Course = {
   durations: CourseDuration[];
 };
 
-export const COURSES: Course[] = [
+const DATA_FILE = path.join(process.cwd(), "data", "courses.json");
+
+const DEFAULT_COURSES: Course[] = [
   {
     id: "industrial-robotics",
     name: "Industrial Robotics",
@@ -64,21 +60,30 @@ export const COURSES: Course[] = [
   },
 ];
 
-export function findCourse(courseId: string): Course | undefined {
-  return COURSES.find((c) => c.id === courseId);
+export async function getCourses(): Promise<Course[]> {
+  try {
+    const raw = await fs.readFile(DATA_FILE, "utf-8");
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_COURSES;
+  } catch {
+    return DEFAULT_COURSES;
+  }
 }
 
-export function findDuration(
+export async function saveCourses(courses: Course[]): Promise<void> {
+  await fs.mkdir(path.dirname(DATA_FILE), { recursive: true });
+  await fs.writeFile(DATA_FILE, JSON.stringify(courses, null, 2), "utf-8");
+}
+
+export async function findCourse(courseId: string): Promise<Course | undefined> {
+  const courses = await getCourses();
+  return courses.find((c) => c.id === courseId);
+}
+
+export async function findDuration(
   courseId: string,
   durationLabel: string
-): CourseDuration | undefined {
-  return findCourse(courseId)?.durations.find((d) => d.label === durationLabel);
-}
-
-/** Used by the page to pre-select a course when the user clicks a specific
- * "Register" button (e.g. from the training-programme cards). Falls back to
- * the first course (General Enquiry) if there's no exact name match. */
-export function matchCourseByName(name?: string): Course {
-  if (!name) return COURSES[0];
-  return COURSES.find((c) => c.name.toLowerCase() === name.toLowerCase()) ?? COURSES[0];
+): Promise<CourseDuration | undefined> {
+  const course = await findCourse(courseId);
+  return course?.durations.find((d) => d.label === durationLabel);
 }

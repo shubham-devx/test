@@ -6,12 +6,7 @@ const DATA_FILE = path.join(process.cwd(), "data", "registrations.json");
 
 type Registration = {
   registrationId: string;
-  name: string;
-  phone: string;
-  designation: string;
-  location: string;
-  institution: string;
-  dob: string;
+  responses: Record<string, string>;
   course: string;
   duration: string;
   amount: number;
@@ -38,7 +33,7 @@ async function writeRegistrations(records: Registration[]): Promise<void> {
   await fs.writeFile(DATA_FILE, JSON.stringify(records, null, 2), "utf-8");
 }
 
-// Note: this route is already protected by middleware.ts (any request
+// Note: this route is already protected by proxy.ts (any request
 // without a valid admin session cookie is rejected before it gets here).
 export async function GET() {
   const records = await readRegistrations();

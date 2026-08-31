@@ -20,12 +20,13 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import RegistrationModal from "@/components/RegistrationModal";
+import RegistrationModal from "../components/RegistrationModal";
+import AnnouncementBanner from "../components/AnnouncementBanner";
 
 /* =====================================================
    WHATSAPP
    ===================================================== */
-const ADMIN_WHATSAPP = "917518681245";
+const ADMIN_WHATSAPP = "918743879879";
 
 /* =====================================================
    SOCIAL LINKS
@@ -640,6 +641,8 @@ export default function Home() {
 
         </div>
       </header>
+
+      <AnnouncementBanner />
 
       {/* =================================================
           MAIN

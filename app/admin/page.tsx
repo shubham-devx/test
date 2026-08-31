@@ -2,15 +2,11 @@
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Registration = {
   registrationId: string;
-  name: string;
-  phone: string;
-  designation: string;
-  location: string;
-  institution: string;
-  dob: string;
+  responses: Record<string, string>;
   course: string;
   duration: string;
   amount: number;
@@ -35,6 +31,13 @@ const STATUS_COLORS: Record<string, string> = {
   enrolled: "#2f8f4e",
   "not-interested": "#999999",
 };
+
+function flattenResponses(responses: Record<string, string>): string {
+  return Object.entries(responses)
+    .filter(([, v]) => v?.trim())
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(" · ");
+}
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -106,13 +109,12 @@ export default function AdminDashboardPage() {
       const matchesStatus = statusFilter === "all" || (r.status || "new") === statusFilter;
 
       const q = search.trim().toLowerCase();
+      const responsesText = flattenResponses(r.responses || {}).toLowerCase();
       const matchesSearch =
         !q ||
-        r.name.toLowerCase().includes(q) ||
-        r.phone.toLowerCase().includes(q) ||
+        responsesText.includes(q) ||
         r.registrationId.toLowerCase().includes(q) ||
-        r.course.toLowerCase().includes(q) ||
-        r.institution.toLowerCase().includes(q);
+        r.course.toLowerCase().includes(q);
 
       return matchesStatus && matchesSearch;
     });
@@ -134,6 +136,19 @@ export default function AdminDashboardPage() {
           Log Out
         </button>
       </header>
+
+      <nav style={styles.nav}>
+        <span style={styles.navActive}>Registrations</span>
+        <Link href="/admin/courses" style={styles.navLink}>
+          Courses & Pricing
+        </Link>
+        <Link href="/admin/form-fields" style={styles.navLink}>
+          Form Builder
+        </Link>
+        <Link href="/admin/announcement" style={styles.navLink}>
+          Announcement
+        </Link>
+      </nav>
 
       <div style={styles.toolbar}>
         <input
@@ -187,11 +202,9 @@ export default function AdminDashboardPage() {
             <thead>
               <tr>
                 <th style={styles.th}>Reg. ID</th>
-                <th style={styles.th}>Name</th>
-                <th style={styles.th}>Phone</th>
+                <th style={{ ...styles.th, whiteSpace: "normal", minWidth: 260 }}>Details</th>
                 <th style={styles.th}>Course</th>
                 <th style={styles.th}>Duration</th>
-                <th style={styles.th}>Institution</th>
                 <th style={styles.th}>Amount</th>
                 <th style={styles.th}>Registered</th>
                 <th style={styles.th}>Status</th>
@@ -201,11 +214,11 @@ export default function AdminDashboardPage() {
               {filtered.map((r) => (
                 <tr key={r.registrationId}>
                   <td style={styles.tdMono}>{r.registrationId}</td>
-                  <td style={styles.td}>{r.name}</td>
-                  <td style={styles.td}>{r.phone}</td>
+                  <td style={{ ...styles.td, whiteSpace: "normal" }}>
+                    {flattenResponses(r.responses || {}) || "—"}
+                  </td>
                   <td style={styles.td}>{r.course}</td>
                   <td style={styles.td}>{r.duration}</td>
-                  <td style={styles.td}>{r.institution}</td>
                   <td style={styles.td}>₹{r.amount.toLocaleString("en-IN")}</td>
                   <td style={styles.td}>
                     {new Date(r.registeredAt).toLocaleString("en-IN", {
@@ -252,7 +265,7 @@ const styles: Record<string, CSSProperties> = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 24,
+    marginBottom: 18,
     flexWrap: "wrap",
     gap: 12,
   },
@@ -267,6 +280,28 @@ const styles: Record<string, CSSProperties> = {
     fontSize: 13,
     fontWeight: 700,
     cursor: "pointer",
+  },
+  nav: {
+    display: "flex",
+    gap: 4,
+    marginBottom: 24,
+    borderBottom: "1px solid #ded9d2",
+    flexWrap: "wrap",
+  },
+  navLink: {
+    padding: "10px 16px",
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#777",
+    textDecoration: "none",
+    borderBottom: "2px solid transparent",
+  },
+  navActive: {
+    padding: "10px 16px",
+    fontSize: 13,
+    fontWeight: 700,
+    color: "#7b1e2b",
+    borderBottom: "2px solid #7b1e2b",
   },
   toolbar: { display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" },
   search: {

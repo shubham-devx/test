@@ -1,0 +1,11 @@
+[
+  { "id": "name", "type": "text", "label": "Full Name", "placeholder": "Enter your full name", "required": true, "locked": false, "options": [] },
+  { "id": "phone", "type": "tel", "label": "Phone Number", "placeholder": "10-digit mobile number", "required": true, "locked": false, "options": [] },
+  { "id": "designation", "type": "text", "label": "Designation", "placeholder": "e.g. Student, Engineer, Faculty", "required": true, "locked": false, "options": [] },
+  { "id": "location", "type": "text", "label": "Location", "placeholder": "City / State", "required": true, "locked": false, "options": [] },
+  { "id": "institution", "type": "text", "label": "Institution", "placeholder": "College / Company name", "required": true, "locked": false, "options": [] },
+  { "id": "dob", "type": "date", "label": "Date of Birth", "placeholder": "", "required": true, "locked": false, "options": [] },
+  { "id": "course", "type": "course", "label": "Course", "placeholder": "", "required": true, "locked": true, "options": [] },
+  { "id": "duration", "type": "duration", "label": "Course Duration", "placeholder": "", "required": true, "locked": true, "options": [] },
+  { "id": "captcha", "type": "captcha", "label": "Security Check", "placeholder": "", "required": true, "locked": false, "options": [] }
+]

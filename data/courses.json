@@ -1,0 +1,44 @@
+[
+  {
+    "id": "industrial-robotics",
+    "name": "Industrial Robotics",
+    "durations": [
+      { "label": "2 Weeks - Basic", "weeks": 2, "fee": 2999 },
+      { "label": "4 Weeks - Advance", "weeks": 4, "fee": 5999 },
+      { "label": "8 Weeks - Expert", "weeks": 8, "fee": 9999 }
+    ]
+  },
+  {
+    "id": "automation-control",
+    "name": "Automation & Control",
+    "durations": [
+      { "label": "2 Weeks - Basic", "weeks": 2, "fee": 2999 },
+      { "label": "4 Weeks - Advance", "weeks": 4, "fee": 5999 },
+      { "label": "8 Weeks - Expert", "weeks": 8, "fee": 9999 }
+    ]
+  },
+  {
+    "id": "advanced-manufacturing",
+    "name": "Advanced Manufacturing",
+    "durations": [
+      { "label": "2 Weeks - Basic", "weeks": 2, "fee": 3499 },
+      { "label": "4 Weeks - Advance", "weeks": 4, "fee": 6499 }
+    ]
+  },
+  {
+    "id": "welding-metrology-drone",
+    "name": "Welding, Metrology & Drone",
+    "durations": [
+      { "label": "2 Weeks - Basic", "weeks": 2, "fee": 3999 },
+      { "label": "4 Weeks - Advance", "weeks": 4, "fee": 7499 }
+    ]
+  },
+  {
+    "id": "general",
+    "name": "General Enquiry / Other Programme",
+    "durations": [
+      { "label": "2 Weeks", "weeks": 2, "fee": 2499 },
+      { "label": "4 Weeks", "weeks": 4, "fee": 4999 }
+    ]
+  }
+]

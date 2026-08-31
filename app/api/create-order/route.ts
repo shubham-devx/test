@@ -6,18 +6,18 @@ import { findDuration } from "@/lib/courses";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { courseId, durationLabel, name, phone } = body ?? {};
+    const { courseId, durationLabel, responses } = body ?? {};
 
-    if (!courseId || !durationLabel || !name || !phone) {
+    if (!courseId || !durationLabel) {
       return NextResponse.json(
-        { error: "Missing required fields." },
+        { error: "Missing course or duration selection." },
         { status: 400 }
       );
     }
 
-    // Amount is looked up on the server from lib/courses.ts, NOT taken from
-    // the request body. This is what makes the fee tamper-proof.
-    const duration = findDuration(courseId, durationLabel);
+    // Amount is looked up on the server from data/courses.json, NOT taken
+    // from the request body. This is what makes the fee tamper-proof.
+    const duration = await findDuration(courseId, durationLabel);
     if (!duration) {
       return NextResponse.json(
         { error: "Invalid course or duration selected." },
@@ -40,6 +40,12 @@ export async function POST(req: NextRequest) {
 
     const amountInPaise = duration.fee * 100;
     const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
+
+    // Pull a couple of human-readable fields for Razorpay's notes/receipt,
+    // if the current form happens to have them. Purely cosmetic — doesn't
+    // affect pricing or verification.
+    const name = typeof responses?.name === "string" ? responses.name.slice(0, 120) : "";
+    const phone = typeof responses?.phone === "string" ? responses.phone.slice(0, 20) : "";
 
     const razorpayRes = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
