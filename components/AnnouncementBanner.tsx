@@ -35,7 +35,7 @@ export default function AnnouncementBanner() {
   const marqueeRef = useRef<HTMLElement & { start?: () => void; stop?: () => void }>(null);
 
   useEffect(() => {
-    fetch("/api/announcement")
+    fetch("/api/announcement", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => setAnnouncement(data))
       .catch(() => setAnnouncement(null));

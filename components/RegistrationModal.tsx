@@ -90,8 +90,8 @@ export default function RegistrationModal({
     setConfigLoading(true);
 
     Promise.all([
-      fetch("/api/form-fields").then((r) => r.json()),
-      fetch("/api/courses").then((r) => r.json()),
+      fetch("/api/form-fields", { cache: "no-store" }).then((r) => r.json()),
+      fetch("/api/courses", { cache: "no-store" }).then((r) => r.json()),
     ])
       .then(([fieldsData, coursesData]) => {
         const loadedFields: FormField[] = fieldsData.fields ?? [];
