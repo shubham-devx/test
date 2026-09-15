@@ -1120,6 +1120,51 @@ section {
   border: 0;
 }
 
+.view-more-button {
+  min-height: 44px;
+
+  margin-top: 22px;
+  padding: 0 15px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  border: 1px solid var(--maroon);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--maroon);
+
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.view-more-button:hover {
+  background: var(--maroon);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.mou-list .view-more-button,
+.centres-list .view-more-button {
+  margin-top: 14px;
+}
+
+.industry-content .view-more-button {
+  margin-top: -14px;
+  margin-bottom: 26px;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.industry-content .view-more-button:hover {
+  background: #fff;
+  color: var(--maroon);
+}
+
 .training-card {
   min-height: 325px;
 

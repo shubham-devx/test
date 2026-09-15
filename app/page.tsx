@@ -65,6 +65,19 @@ const navItems = [
   ["Facilities", "#facilities"],
 ];
 
+const industryFocusAreas = [
+  "Industrial Robotics",
+  "Product Design",
+  "Testing, Calibration & Metrology",
+  "Integrated Automation",
+  "Instrumentation & Automation",
+  "Welding, Thermal Cutting & NDT",
+  "Digital Manufacturing",
+  "Advanced Manufacturing",
+  "Factory Automation",
+  "Drone Technology",
+];
+
 /* =====================================================
    TRAINING PROGRAMMES
    ===================================================== */
@@ -488,10 +501,15 @@ export default function Home() {
   const [selectedProudMoment, setSelectedProudMoment] = useState<(typeof proudMoments)[number] | null>(null);
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [registrationCourse, setRegistrationCourse] = useState<string | undefined>(undefined);
+	const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   function openRegistration(courseName?: string) {
     setRegistrationCourse(courseName);
     setRegistrationOpen(true);
+  }
+
+  function toggleSection(section: string) {
+    setExpandedSections((previous) => ({ ...previous, [section]: !previous[section] }));
   }
 
   /* ===================================================
@@ -883,7 +901,7 @@ export default function Home() {
 
             <div className="training-grid">
 
-              {trainingPrograms.map((item) => {
+              {trainingPrograms.slice(0, expandedSections.training ? undefined : 3).map((item) => {
 
                 const Icon = item.icon;
 
@@ -925,6 +943,13 @@ export default function Home() {
               })}
 
             </div>
+
+            {trainingPrograms.length > 3 && (
+              <button type="button" className="view-more-button" onClick={() => toggleSection("training")}>
+                {expandedSections.training ? "Show less" : "View more training"}
+                <ArrowUpRight size={17} />
+              </button>
+            )}
 
           </div>
 
@@ -985,7 +1010,7 @@ export default function Home() {
 
               <div className="centres-list">
 
-                {centres.map((centre, index) => (
+                {centres.slice(0, expandedSections.centres ? undefined : 3).map((centre, index) => (
                   <button
                     type="button"
                     className="centre-select"
@@ -999,6 +1024,13 @@ export default function Home() {
                     <ChevronRight size={21} />
                   </button>
                 ))}
+
+                {centres.length > 3 && (
+                  <button type="button" className="view-more-button" onClick={() => toggleSection("centres")}>
+                    {expandedSections.centres ? "Show less" : "View more centres"}
+                    <ArrowUpRight size={17} />
+                  </button>
+                )}
 
               </div>
 
@@ -1050,18 +1082,18 @@ export default function Home() {
 
             <div className="industry-list">
 
-              <span>Industrial Robotics</span>
-              <span>Product Design</span>
-              <span>Testing, Calibration & Metrology</span>
-              <span>Integrated Automation</span>
-              <span>Instrumentation & Automation</span>
-              <span>Welding, Thermal Cutting & NDT</span>
-              <span>Digital Manufacturing</span>
-              <span>Advanced Manufacturing</span>
-              <span>Factory Automation</span>
-              <span>Drone Technology</span>
+                {industryFocusAreas.slice(0, expandedSections.industry ? undefined : 3).map((area) => (
+                  <span key={area}>{area}</span>
+                ))}
 
             </div>
+
+            {industryFocusAreas.length > 3 && (
+              <button type="button" className="view-more-button" onClick={() => toggleSection("industry")}>
+                {expandedSections.industry ? "Show less" : "View more focus areas"}
+                <ArrowUpRight size={17} />
+              </button>
+            )}
 
             <a
               href={adminUrl}
@@ -1103,7 +1135,7 @@ export default function Home() {
                   </div>
 
                   <div className="mou-list">
-                    {group.items.map((item, index) => (
+                    {group.items.slice(0, expandedSections[`mou-${group.category}`] ? undefined : 3).map((item, index) => (
                       <button
                         type="button"
                         className="mou-item"
@@ -1115,6 +1147,17 @@ export default function Home() {
                         <ChevronRight size={21} />
                       </button>
                     ))}
+
+                    {group.items.length > 3 && (
+                      <button
+                        type="button"
+                        className="view-more-button"
+                        onClick={() => toggleSection(`mou-${group.category}`)}
+                      >
+                        {expandedSections[`mou-${group.category}`] ? "Show less" : "View more partnerships"}
+                        <ArrowUpRight size={17} />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1138,7 +1181,7 @@ export default function Home() {
             </div>
 
             <div className="proud-grid">
-              {proudMoments.map((moment) => (
+              {proudMoments.slice(0, expandedSections.proud ? undefined : 3).map((moment) => (
                 <button
                   type="button"
                   className="proud-card"
@@ -1155,6 +1198,13 @@ export default function Home() {
                 </button>
               ))}
             </div>
+
+            {proudMoments.length > 3 && (
+              <button type="button" className="view-more-button" onClick={() => toggleSection("proud")}>
+                {expandedSections.proud ? "Show less" : "View more milestones"}
+                <ArrowUpRight size={17} />
+              </button>
+            )}
           </div>
         </section>
 
