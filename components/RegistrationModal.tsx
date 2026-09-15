@@ -1,18 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, Loader2, RefreshCw, X } from "lucide-react";
 
-declare global {
-  interface Window {
-    Razorpay?: new (options: Record<string, unknown>) => {
-      open: () => void;
-      on: (event: string, handler: (response: unknown) => void) => void;
-    };
-  }
-}
-
-type Step = "details" | "payment" | "success";
+type Step = "details" | "success";
 
 type FieldType =
   | "text" | "tel" | "email" | "textarea" | "date" | "select"
@@ -35,18 +26,6 @@ function randomCaptcha() {
   const a = Math.floor(Math.random() * 8) + 2;
   const b = Math.floor(Math.random() * 8) + 1;
   return { a, b };
-}
-
-function loadRazorpayScript(): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (typeof window === "undefined") return resolve(false);
-    if (window.Razorpay) return resolve(true);
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
 }
 
 export default function RegistrationModal({
@@ -169,22 +148,15 @@ export default function RegistrationModal({
       return;
     }
     setError("");
-    setStep("payment");
+    handleRegister();
   }
 
-  async function handlePay() {
+  async function handleRegister() {
     if (!selectedCourse || !selectedDuration) return;
     setError("");
     setLoading(true);
     try {
-      const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded || !window.Razorpay) {
-        setError("Could not load the payment gateway. Check your internet connection.");
-        setLoading(false);
-        return;
-      }
-
-      const orderRes = await fetch("/api/create-order", {
+      const registerRes = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -193,10 +165,10 @@ export default function RegistrationModal({
           responses,
         }),
       });
-      const orderData = await orderRes.json();
+      const registerData = await registerRes.json();
 
-      if (!orderRes.ok) {
-        setError(orderData.error || "Could not start payment. Please try again.");
+      if (!registerRes.ok) {
+        setError(registerData.error || "Could not submit your registration. Please try again.");
         setLoading(false);
         return;
       }
@@ -204,71 +176,18 @@ export default function RegistrationModal({
       const displayName =
         responses["name"] || Object.values(responses).find((v) => v?.trim()) || "there";
 
-      const razorpay = new window.Razorpay({
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        order_id: orderData.orderId,
-        name: "AKGEC Skills Foundation",
-        description: `${selectedCourse.name} - ${selectedDuration.label}`,
-        prefill: {
-          name: responses["name"] || "",
-          contact: responses["phone"] || "",
-        },
-        theme: { color: "#641c1c" },
-        handler: async (response: unknown) => {
-          const paymentResponse = response as {
-            razorpay_order_id: string;
-            razorpay_payment_id: string;
-            razorpay_signature: string;
-          };
-          try {
-            const verifyRes = await fetch("/api/verify-payment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...paymentResponse,
-                courseId: selectedCourse.id,
-                durationLabel: selectedDuration.label,
-                responses,
-              }),
-            });
-            const verifyData = await verifyRes.json();
-
-            if (!verifyRes.ok) {
-              setError(verifyData.error || "Payment could not be verified.");
-              setLoading(false);
-              return;
-            }
-
-            setSuccessRecord({
-              registrationId: verifyData.registrationId,
-              course: selectedCourse.name,
-              duration: selectedDuration.label,
-              amount: selectedDuration.fee,
-              displayName,
-            });
-            setStep("success");
-          } catch {
-            setError(
-              "Payment succeeded but verification failed. Contact admin with your payment ID."
-            );
-          } finally {
-            setLoading(false);
-          }
-        },
-        modal: { ondismiss: () => setLoading(false) },
+      setSuccessRecord({
+        registrationId: registerData.registrationId,
+        course: selectedCourse.name,
+        duration: selectedDuration.label,
+        amount: selectedDuration.fee,
+        displayName,
       });
-
-      razorpay.on("payment.failed", () => {
-        setError("Payment failed or was cancelled. Please try again.");
-        setLoading(false);
-      });
-
-      razorpay.open();
+      setStep("success");
     } catch (err) {
       console.error(err);
-      setError("Something went wrong. Please try again.");
+      setError("Something went wrong while submitting your registration. Please try again.");
+    } finally {
       setLoading(false);
     }
   }
@@ -433,14 +352,13 @@ export default function RegistrationModal({
           Course <em>Registration</em>
         </h2>
         <p className="registration-intro">
-          Fill in your details, review the fee for your selected course, and complete payment
-          securely to confirm your seat.
+          Fill in your details to register for a course. After registration, visit the ASF office
+          to pay the course fee and continue your learning.
         </p>
 
         <div className="registration-progress">
           <div className={step === "details" ? "active" : ""}>1. Details</div>
-          <div className={step === "payment" ? "active" : ""}>2. Payment</div>
-          <div className={step === "success" ? "active" : ""}>3. Confirmation</div>
+          <div className={step === "success" ? "active" : ""}>2. Confirmation</div>
         </div>
 
         {configLoading && <p style={{ padding: "20px 0" }}>Loading form…</p>}
@@ -455,64 +373,13 @@ export default function RegistrationModal({
               <button type="button" className="registration-cancel-button" onClick={handleClose}>
                 Cancel
               </button>
-              <button type="button" className="registration-primary-button" onClick={handleContinue}>
-                Continue to Payment
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!configLoading && step === "payment" && selectedCourse && selectedDuration && (
-          <div className="payment-step">
-            <div className="payment-summary-grid">
-              {fields
-                .filter((f) => !["course", "duration", "captcha"].includes(f.type))
-                .filter((f) => responses[f.id]?.trim())
-                .map((f) => (
-                  <div key={f.id}>
-                    <span>{f.label}</span>
-                    <strong>{responses[f.id]}</strong>
-                  </div>
-                ))}
-              <div>
-                <span>Course</span>
-                <strong>{selectedCourse.name}</strong>
-              </div>
-              <div>
-                <span>Duration</span>
-                <strong>{selectedDuration.label}</strong>
-              </div>
-            </div>
-
-            <div className="payment-amount-box">
-              <span>Amount Payable</span>
-              <strong>₹{selectedDuration.fee.toLocaleString("en-IN")}</strong>
-              <p>You'll be taken to a secure payment screen to complete your registration.</p>
-            </div>
-
-            {error && <div className="registration-error">{error}</div>}
-
-            <p className="payment-note">
-              Payments are processed by Razorpay and verified on our server before your seat is
-              confirmed.
-            </p>
-
-            <div className="registration-form-actions">
-              <button
-                type="button"
-                className="registration-cancel-button"
-                onClick={() => setStep("details")}
-                disabled={loading}
-              >
-                Back
-              </button>
-              <button type="button" className="registration-primary-button" onClick={handlePay} disabled={loading}>
+              <button type="button" className="registration-primary-button" onClick={handleContinue} disabled={loading}>
                 {loading ? (
                   <>
-                    <Loader2 size={17} className="spin" /> Processing...
+                    <Loader2 size={17} className="spin" /> Submitting...
                   </>
                 ) : (
-                  `Pay ₹${selectedDuration.fee.toLocaleString("en-IN")}`
+                  "Submit Registration"
                 )}
               </button>
             </div>
@@ -524,11 +391,11 @@ export default function RegistrationModal({
             <div className="registration-success-icon">
               <CheckCircle2 size={44} />
             </div>
-            <h3>Payment Successful!</h3>
+            <h3>Registration Successful!</h3>
             <p>
-              Thank you, {successRecord.displayName}. Your registration for {successRecord.course}{" "}
-              has been confirmed. Please save your registration ID below — you'll need it for all
-              future communication.
+              Thank you, {successRecord.displayName}. You have successfully registered for{" "}
+              {successRecord.course}. Please visit the ASF office to pay the course fee and
+              continue your learning. Save your registration ID for future communication.
             </p>
 
             <div className="registration-id-card">
@@ -547,7 +414,7 @@ export default function RegistrationModal({
                 <strong>{successRecord.duration}</strong>
               </div>
               <div>
-                <span>Amount Paid</span>
+                <span>Course Fee</span>
                 <strong>₹{successRecord.amount.toLocaleString("en-IN")}</strong>
               </div>
             </div>
