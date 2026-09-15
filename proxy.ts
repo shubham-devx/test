@@ -13,7 +13,12 @@ export async function proxy(req: NextRequest) {
   }
 
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  const authed = await verifySessionToken(token);
+  let authed = false;
+  try {
+    authed = await verifySessionToken(token);
+  } catch (error) {
+    console.error("Admin authentication is not configured:", error);
+  }
 
   if (!authed) {
     if (isAdminApi) {

@@ -13,12 +13,12 @@ export async function POST(req: NextRequest) {
 
     const { password } = await req.json();
     const adminPassword = process.env.ADMIN_PASSWORD;
+    const sessionSecret = process.env.ADMIN_SESSION_SECRET;
 
-    if (!adminPassword) {
+    if (!adminPassword || !sessionSecret) {
       return NextResponse.json(
         {
-          error:
-            "Admin panel is not configured. Add ADMIN_PASSWORD to .env.local.",
+          error: "Admin panel is not configured. Add the required server environment variables.",
         },
         { status: 500 }
       );
