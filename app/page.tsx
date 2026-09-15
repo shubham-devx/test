@@ -419,11 +419,6 @@ const heroImages = [
     alt: "FabLab and advanced technology training at AKGEC Skills Foundation",
     position: "center 42%",
   },
-  {
-    src: "/images/hero/asf-training.jpg",
-    alt: "Industry-oriented training at AKGEC Skills Foundation",
-    position: "center 40%",
-  },
 ];
 
 /* =====================================================
