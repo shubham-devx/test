@@ -806,6 +806,17 @@ export default function Home() {
 
             </div>
 
+            <div className="about-image">
+              <Image
+                src="/images/about/about-asf.jpg"
+                alt="Learners gaining hands-on technical experience at AKGEC Skills Foundation"
+                fill
+                sizes="33vw"
+                className="cover-image"
+              />
+              <span className="about-image-caption">Hands-on learning, built for industry</span>
+            </div>
+
             <div className="about-copy">
 
               <p className="lead">

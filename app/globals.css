@@ -952,11 +952,58 @@ section {
   display: grid;
 
   grid-template-columns:
+    0.85fr
     1fr
     1fr;
 
   gap:
     clamp(50px, 8vw, 120px);
+}
+
+.about-image {
+  min-height: 360px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--warm);
+
+  box-shadow: var(--shadow-md);
+}
+
+.about-image::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background: linear-gradient(180deg, transparent 55%, rgba(25, 16, 12, 0.58));
+}
+
+.about-image .cover-image {
+  transition: transform 0.7s ease;
+}
+
+.about-image:hover .cover-image {
+  transform: scale(1.045);
+}
+
+.about-image-caption {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  left: 18px;
+
+  z-index: 1;
+
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .about h2 {
@@ -2474,6 +2521,10 @@ section {
   .industry,
   .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .about-image {
+    min-height: 330px;
   }
 
   .industry-image {
