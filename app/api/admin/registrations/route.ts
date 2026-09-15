@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
 import path from "path";
+import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 const DATA_FILE = path.join(process.cwd(), "data", "registrations.json");
 
@@ -19,18 +19,12 @@ type Registration = {
 const VALID_STATUSES = ["new", "contacted", "enrolled", "not-interested"];
 
 async function readRegistrations(): Promise<Registration[]> {
-  try {
-    const raw = await fs.readFile(DATA_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+  const records = await readJsonFile<unknown>(DATA_FILE, []);
+  return Array.isArray(records) ? records as Registration[] : [];
 }
 
 async function writeRegistrations(records: Registration[]): Promise<void> {
-  await fs.mkdir(path.dirname(DATA_FILE), { recursive: true });
-  await fs.writeFile(DATA_FILE, JSON.stringify(records, null, 2), "utf-8");
+  await writeJsonFile(DATA_FILE, records);
 }
 
 // Note: this route is already protected by proxy.ts (any request

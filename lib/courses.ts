@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
 import path from "path";
+import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 export type CourseDuration = {
   label: string;
@@ -61,18 +61,12 @@ const DEFAULT_COURSES: Course[] = [
 ];
 
 export async function getCourses(): Promise<Course[]> {
-  try {
-    const raw = await fs.readFile(DATA_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_COURSES;
-  } catch {
-    return DEFAULT_COURSES;
-  }
+  const courses = await readJsonFile<unknown>(DATA_FILE, null);
+  return Array.isArray(courses) && courses.length ? courses as Course[] : DEFAULT_COURSES;
 }
 
 export async function saveCourses(courses: Course[]): Promise<void> {
-  await fs.mkdir(path.dirname(DATA_FILE), { recursive: true });
-  await fs.writeFile(DATA_FILE, JSON.stringify(courses, null, 2), "utf-8");
+  await writeJsonFile(DATA_FILE, courses);
 }
 
 export async function findCourse(courseId: string): Promise<Course | undefined> {

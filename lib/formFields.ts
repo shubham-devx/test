@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
 import path from "path";
+import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 const FIELDS_FILE = path.join(process.cwd(), "data", "form-fields.json");
 
@@ -31,16 +31,10 @@ const FALLBACK_FIELDS: FormField[] = [
 ];
 
 export async function getFormFields(): Promise<FormField[]> {
-  try {
-    const raw = await fs.readFile(FIELDS_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length ? parsed : FALLBACK_FIELDS;
-  } catch {
-    return FALLBACK_FIELDS;
-  }
+  const fields = await readJsonFile<unknown>(FIELDS_FILE, null);
+  return Array.isArray(fields) && fields.length ? fields as FormField[] : FALLBACK_FIELDS;
 }
 
 export async function saveFormFields(fields: FormField[]): Promise<void> {
-  await fs.mkdir(path.dirname(FIELDS_FILE), { recursive: true });
-  await fs.writeFile(FIELDS_FILE, JSON.stringify(fields, null, 2), "utf-8");
+  await writeJsonFile(FIELDS_FILE, fields);
 }

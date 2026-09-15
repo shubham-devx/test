@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { promises as fs } from "fs";
 import path from "path";
 import { findCourse, findDuration } from "@/lib/courses";
+import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "registrations.json");
@@ -168,16 +168,8 @@ export async function POST(req: NextRequest) {
     // Railway, Render, `next start`, etc). On serverless platforms (e.g.
     // Vercel) the filesystem is read-only/ephemeral at runtime, and this
     // file will NOT persist between requests.
-    await fs.mkdir(DATA_DIR, { recursive: true });
-
-    let existing: unknown[] = [];
-    try {
-      const raw = await fs.readFile(DATA_FILE, "utf-8");
-      const parsed = JSON.parse(raw);
-      existing = Array.isArray(parsed) ? parsed : [];
-    } catch {
-      existing = [];
-    }
+    const saved = await readJsonFile<unknown>(DATA_FILE, []);
+    const existing: unknown[] = Array.isArray(saved) ? saved : [];
 
     const duplicate = existing.find(
       (item) =>
@@ -192,7 +184,7 @@ export async function POST(req: NextRequest) {
     }
 
     existing.push(record);
-    await fs.writeFile(DATA_FILE, JSON.stringify(existing, null, 2), "utf-8");
+    await writeJsonFile(DATA_FILE, existing);
 
     return NextResponse.json({ success: true, registrationId });
   } catch (err) {

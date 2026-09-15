@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
 import path from "path";
+import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 const FILE = path.join(process.cwd(), "data", "announcement.json");
 
@@ -20,15 +20,10 @@ const DEFAULT_ANNOUNCEMENT: Announcement = {
 };
 
 export async function getAnnouncement(): Promise<Announcement> {
-  try {
-    const raw = await fs.readFile(FILE, "utf-8");
-    return { ...DEFAULT_ANNOUNCEMENT, ...JSON.parse(raw) };
-  } catch {
-    return DEFAULT_ANNOUNCEMENT;
-  }
+  const saved = await readJsonFile<Partial<Announcement> | null>(FILE, null);
+  return { ...DEFAULT_ANNOUNCEMENT, ...(saved ?? {}) };
 }
 
 export async function saveAnnouncement(a: Announcement): Promise<void> {
-  await fs.mkdir(path.dirname(FILE), { recursive: true });
-  await fs.writeFile(FILE, JSON.stringify(a, null, 2), "utf-8");
+  await writeJsonFile(FILE, a);
 }
