@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_COOKIE_NAME, createSessionToken } from "@/lib/adminAuth";
+import { allowRequest, getClientIdentifier } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!allowRequest(`admin-login:${getClientIdentifier(req)}`, 5, 15 * 60_000)) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Please wait 15 minutes and try again." },
+        { status: 429, headers: { "Retry-After": "900" } }
+      );
+    }
+
     const { password } = await req.json();
     const adminPassword = process.env.ADMIN_PASSWORD;
 

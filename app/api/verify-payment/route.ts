@@ -14,6 +14,19 @@ function generateRegistrationId(courseId: string) {
   return `ASF-${prefix}-${year}-${random}`;
 }
 
+async function razorpayGet<T>(url: string, keyId: string, keySecret: string): Promise<T> {
+  const response = await fetch(`https://api.razorpay.com/v1/${url}`, {
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}`,
+    },
+    cache: "no-store",
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error("Razorpay verification request failed");
+  return data as T;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -27,11 +40,16 @@ export async function POST(req: NextRequest) {
     } = body ?? {};
 
     if (
-      !razorpay_order_id ||
-      !razorpay_payment_id ||
-      !razorpay_signature ||
-      !courseId ||
-      !durationLabel
+      typeof razorpay_order_id !== "string" ||
+      typeof razorpay_payment_id !== "string" ||
+      typeof razorpay_signature !== "string" ||
+      typeof courseId !== "string" ||
+      typeof durationLabel !== "string" ||
+      razorpay_order_id.length > 120 ||
+      razorpay_payment_id.length > 120 ||
+      razorpay_signature.length !== 64 ||
+      courseId.length > 120 ||
+      durationLabel.length > 120
     ) {
       return NextResponse.json(
         { error: "Incomplete payment verification data." },
@@ -39,8 +57,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
-    if (!keySecret) {
+    if (!keyId || !keySecret) {
       return NextResponse.json(
         { error: "Payment gateway is not configured on the server." },
         { status: 500 }
@@ -55,7 +74,12 @@ export async function POST(req: NextRequest) {
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
-    if (expectedSignature !== razorpay_signature) {
+    const actualSignature = Buffer.from(razorpay_signature, "hex");
+    const expectedSignatureBuffer = Buffer.from(expectedSignature, "hex");
+    if (
+      actualSignature.length !== expectedSignatureBuffer.length ||
+      !crypto.timingSafeEqual(actualSignature, expectedSignatureBuffer)
+    ) {
       return NextResponse.json(
         { error: "Payment verification failed. Signature mismatch." },
         { status: 400 }
@@ -68,6 +92,48 @@ export async function POST(req: NextRequest) {
     if (!course || !duration) {
       return NextResponse.json(
         { error: "Invalid course selection." },
+        { status: 400 }
+      );
+    }
+
+    type RazorpayOrder = {
+      amount: number;
+      currency: string;
+      notes?: { courseId?: string; durationLabel?: string };
+    };
+    type RazorpayPayment = {
+      order_id: string;
+      amount: number;
+      currency: string;
+      status: string;
+    };
+
+    const [order, payment] = await Promise.all([
+      razorpayGet<RazorpayOrder>(
+        `orders/${encodeURIComponent(razorpay_order_id)}`,
+        keyId,
+        keySecret
+      ),
+      razorpayGet<RazorpayPayment>(
+        `payments/${encodeURIComponent(razorpay_payment_id)}`,
+        keyId,
+        keySecret
+      ),
+    ]);
+
+    const expectedAmount = duration.fee * 100;
+    if (
+      order.amount !== expectedAmount ||
+      order.currency !== "INR" ||
+      (order.notes?.courseId && order.notes.courseId !== courseId) ||
+      (order.notes?.durationLabel && order.notes.durationLabel !== durationLabel) ||
+      payment.order_id !== razorpay_order_id ||
+      payment.amount !== expectedAmount ||
+      payment.currency !== "INR" ||
+      payment.status !== "captured"
+    ) {
+      return NextResponse.json(
+        { error: "Payment details could not be verified." },
         { status: 400 }
       );
     }
@@ -113,10 +179,22 @@ export async function POST(req: NextRequest) {
       existing = [];
     }
 
+    const duplicate = existing.find(
+      (item) =>
+        typeof item === "object" &&
+        item !== null &&
+        ((item as { paymentId?: string }).paymentId === razorpay_payment_id ||
+          (item as { orderId?: string }).orderId === razorpay_order_id)
+    ) as { registrationId?: string } | undefined;
+
+    if (duplicate?.registrationId) {
+      return NextResponse.json({ success: true, registrationId: duplicate.registrationId });
+    }
+
     existing.push(record);
     await fs.writeFile(DATA_FILE, JSON.stringify(existing, null, 2), "utf-8");
 
-    return NextResponse.json({ success: true, registrationId, record });
+    return NextResponse.json({ success: true, registrationId });
   } catch (err) {
     console.error("verify-payment error:", err);
     return NextResponse.json(
