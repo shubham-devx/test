@@ -68,3 +68,26 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { registrationId } = await req.json();
+
+    if (typeof registrationId !== "string" || !registrationId.trim()) {
+      return NextResponse.json({ error: "registrationId is required." }, { status: 400 });
+    }
+
+    const records = await readRegistrations();
+    const nextRecords = records.filter((record) => record.registrationId !== registrationId);
+
+    if (nextRecords.length === records.length) {
+      return NextResponse.json({ error: "Registration not found." }, { status: 404 });
+    }
+
+    await writeRegistrations(nextRecords);
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("admin registrations DELETE error:", err);
+    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
+  }
+}

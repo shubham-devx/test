@@ -50,7 +50,6 @@ export default function RegistrationModal({
     registrationId: string;
     course: string;
     duration: string;
-    amount: number;
     displayName: string;
   } | null>(null);
 
@@ -180,7 +179,6 @@ export default function RegistrationModal({
         registrationId: registerData.registrationId,
         course: selectedCourse.name,
         duration: selectedDuration.label,
-        amount: selectedDuration.fee,
         displayName,
       });
       setStep("success");
@@ -223,7 +221,7 @@ export default function RegistrationModal({
           >
             {selectedCourse?.durations.map((d) => (
               <option key={d.label} value={d.label}>
-                {d.label} — ₹{d.fee.toLocaleString("en-IN")}
+                {d.label}
               </option>
             ))}
           </select>
@@ -353,7 +351,7 @@ export default function RegistrationModal({
         </h2>
         <p className="registration-intro">
           Fill in your details to register for a course. After registration, visit the ASF office
-          to pay the course fee and continue your learning.
+          to complete the enrolment process.
         </p>
 
         <div className="registration-progress">
@@ -394,8 +392,8 @@ export default function RegistrationModal({
             <h3>Registration Successful!</h3>
             <p>
               Thank you, {successRecord.displayName}. You have successfully registered for{" "}
-              {successRecord.course}. Please visit the ASF office to pay the course fee and
-              continue your learning. Save your registration ID for future communication.
+              {successRecord.course}. Please visit the ASF office to continue your learning. Save
+              your registration ID for future communication.
             </p>
 
             <div className="registration-id-card">
@@ -404,7 +402,7 @@ export default function RegistrationModal({
               <small>A confirmation has been recorded with our team.</small>
             </div>
 
-            <div className="registration-success-grid">
+            <div className="registration-success-grid registration-success-grid-compact">
               <div>
                 <span>Course</span>
                 <strong>{successRecord.course}</strong>
@@ -412,10 +410,6 @@ export default function RegistrationModal({
               <div>
                 <span>Duration</span>
                 <strong>{successRecord.duration}</strong>
-              </div>
-              <div>
-                <span>Course Fee</span>
-                <strong>₹{successRecord.amount.toLocaleString("en-IN")}</strong>
               </div>
             </div>
 

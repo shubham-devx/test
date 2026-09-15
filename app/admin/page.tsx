@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Trash2 } from "lucide-react";
 
 type Registration = {
   registrationId: string;
@@ -47,6 +48,7 @@ export default function AdminDashboardPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     loadRegistrations();
@@ -96,6 +98,29 @@ export default function AdminDashboardPage() {
       alert("Could not update status.");
     } finally {
       setUpdatingId(null);
+    }
+  }
+
+  async function deleteRegistration(registrationId: string) {
+    if (!confirm(`Delete registration ${registrationId}? This cannot be undone.`)) return;
+
+    setDeletingId(registrationId);
+    try {
+      const res = await fetch("/api/admin/registrations", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ registrationId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Could not delete registration.");
+        return;
+      }
+      setRecords((prev) => prev.filter((record) => record.registrationId !== registrationId));
+    } catch {
+      alert("Could not delete registration.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -208,6 +233,7 @@ export default function AdminDashboardPage() {
                 <th style={styles.th}>Amount</th>
                 <th style={styles.th}>Registered</th>
                 <th style={styles.th}>Status</th>
+                <th style={styles.th}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -243,6 +269,19 @@ export default function AdminDashboardPage() {
                         </option>
                       ))}
                     </select>
+                  </td>
+                  <td style={styles.td}>
+                    <button
+                      type="button"
+                      onClick={() => deleteRegistration(r.registrationId)}
+                      disabled={deletingId === r.registrationId}
+                      style={styles.deleteBtn}
+                      title="Delete registration"
+                      aria-label={`Delete registration ${r.registrationId}`}
+                    >
+                      <Trash2 size={15} />
+                      {deletingId === r.registrationId ? "Deleting" : "Delete"}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -358,6 +397,19 @@ const styles: Record<string, CSSProperties> = {
     fontSize: 12,
     fontWeight: 700,
     background: "#fff",
+    cursor: "pointer",
+  },
+  deleteBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 5,
+    padding: "7px 10px",
+    border: "1px solid #f0d4d4",
+    borderRadius: 8,
+    background: "#fdecec",
+    color: "#a33b49",
+    fontSize: 12,
+    fontWeight: 700,
     cursor: "pointer",
   },
 };
