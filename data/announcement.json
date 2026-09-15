@@ -1,7 +1,7 @@
 {
-  "enabled": true,
-  "text": "start addmissionnn",
-  "linkText": "click to clickregister",
+  "enabled": false,
+  "text": "",
+  "linkText": "",
   "linkUrl": "",
   "style": "info"
 }
