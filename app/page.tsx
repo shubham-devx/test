@@ -26,7 +26,7 @@ import AnnouncementBanner from "../components/AnnouncementBanner";
 /* =====================================================
    WHATSAPP
    ===================================================== */
-const ADMIN_WHATSAPP = "918743879879";
+const ADMIN_WHATSAPP = "917518681245";
 
 /* =====================================================
    SOCIAL LINKS
@@ -420,7 +420,7 @@ const heroImages = [
     position: "center 42%",
   },
   {
-    src: "/images/hero/asf-industry.jpg",
+    src: "/images/hero/asf-training.jpg",
     alt: "Industry-oriented training at AKGEC Skills Foundation",
     position: "center 40%",
   },
@@ -604,7 +604,8 @@ export default function Home() {
               href={adminUrl}
               className="admin-link"
             >
-              Contact Admin
+              WhatsApp Us
+              <MessageCircle size={16} />
             </a>
 
             <button
@@ -1637,7 +1638,8 @@ export default function Home() {
               </a>
 
               <a href={adminUrl}>
-                WhatsApp Admin
+                WhatsApp: +91 7518681245
+                <MessageCircle size={15} />
               </a>
 
               <a href="https://www.akgecskills.in/" target="_blank" rel="noopener noreferrer">

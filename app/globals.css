@@ -49,6 +49,8 @@ html {
 body {
   margin: 0;
 
+  overflow-x: hidden;
+
   background: var(--paper);
   color: var(--ink);
 
@@ -321,6 +323,7 @@ img {
   align-items: center;
 
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .admin-link,
@@ -337,7 +340,7 @@ img {
 
   border-radius: 3px;
 
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 
   white-space: nowrap;
@@ -2212,7 +2215,7 @@ section {
 
   color: var(--maroon);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 
   letter-spacing: 0.13em;
@@ -2221,7 +2224,11 @@ section {
 .footer-column a {
   color: #4f4b47;
 
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 
   transition:
     color 0.2s ease,
@@ -2369,7 +2376,7 @@ section {
    TABLET
    ===================================================== */
 
-@media (max-width: 1200px) {
+@media (max-width: 1300px) {
 
   .main-nav {
     gap: 18px;
@@ -2514,6 +2521,12 @@ section {
 
   .header-inner {
     min-height: 76px;
+  }
+  .main-nav.mobile-open {
+    top: 76px;
+  }
+  .admin-link {
+    display: none;
   }
 
   .brand-logo {
@@ -2711,7 +2724,9 @@ section {
 @media (max-width: 400px) {
 
   .register-link {
-    display: none;
+    min-height: 36px;
+    padding: 0 9px;
+    font-size: 11px;
   }
 
   .hero h1 {
