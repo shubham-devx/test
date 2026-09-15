@@ -22,6 +22,7 @@ import {
 import { useEffect, useState } from "react";
 import RegistrationModal from "../components/RegistrationModal";
 import AnnouncementBanner from "../components/AnnouncementBanner";
+import CourseFeesModal from "../components/CourseFeesModal";
 
 /* =====================================================
    WHATSAPP
@@ -501,6 +502,7 @@ export default function Home() {
   const [selectedProudMoment, setSelectedProudMoment] = useState<(typeof proudMoments)[number] | null>(null);
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [registrationCourse, setRegistrationCourse] = useState<string | undefined>(undefined);
+	const [courseFeesOpen, setCourseFeesOpen] = useState(false);
 	const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   function openRegistration(courseName?: string) {
@@ -896,6 +898,11 @@ export default function Home() {
               <p>
                 ASF provides skill-development training supported by industry partners, practical facilities and nationally and internationally recognized certification ecosystems.
               </p>
+
+              <button type="button" className="course-fees-trigger" onClick={() => setCourseFeesOpen(true)}>
+                Courses & Fees
+                <ArrowUpRight size={17} />
+              </button>
 
             </div>
 
@@ -1588,6 +1595,15 @@ export default function Home() {
         isOpen={registrationOpen}
         initialCourseName={registrationCourse}
         onClose={() => setRegistrationOpen(false)}
+      />
+
+      <CourseFeesModal
+        isOpen={courseFeesOpen}
+        onClose={() => setCourseFeesOpen(false)}
+        onRegister={(courseName) => {
+          setCourseFeesOpen(false);
+          openRegistration(courseName);
+        }}
       />
 
       {/* =================================================
