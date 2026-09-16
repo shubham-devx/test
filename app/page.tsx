@@ -35,6 +35,10 @@ const ADMIN_WHATSAPP = "917518681245";
    ===================================================== */
 
 const SOCIAL = {
+  instagram:
+    "https://www.instagram.com/akgecskillsfoundation/",
+  facebook:
+    "https://www.facebook.com/search/pages/?q=AKGEC%20Skills%20Foundation",
   linkedin:
     "https://in.linkedin.com/company/akgec-skills-foundation",
 };
@@ -1731,6 +1735,8 @@ export default function Home() {
             </p>
 
             <div className="footer-social">
+              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
+              <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
               <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
               <a href={adminUrl} aria-label="Contact ASF Admin on WhatsApp"><MessageCircle size={20} /></a>
             </div>

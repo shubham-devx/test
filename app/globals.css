@@ -795,7 +795,7 @@ section {
 
 .glance {
   padding:
-    70px 0;
+    56px 0;
 
   background:
     linear-gradient(
@@ -919,7 +919,7 @@ section {
 
 .about {
   padding:
-    100px 0;
+    76px 0;
 
   background: #fff;
 }
@@ -1091,7 +1091,7 @@ section {
 
 .training {
   padding:
-    100px 0;
+    76px 0;
 
   background:
     linear-gradient(
@@ -1366,7 +1366,7 @@ section {
 
 .centres {
   padding:
-    100px 0;
+    76px 0;
 
   background: #fff;
 }
@@ -1742,7 +1742,7 @@ section {
 
 .career {
   padding:
-    100px 0;
+    76px 0;
 
   background: #fff;
 }
@@ -1874,7 +1874,7 @@ section {
 
 .news {
   padding:
-    95px 0;
+    72px 0;
 
   background:
     linear-gradient(
@@ -2023,7 +2023,7 @@ section {
 
 .contact {
   padding:
-    95px 0;
+    72px 0;
 
   position: relative;
 
@@ -3470,7 +3470,7 @@ section {
 /* =====================================================
    MoUs & PARTNERSHIPS
    ===================================================== */
-.mous-section{padding:96px 0;background:var(--cream)}
+.mous-section{padding:72px 0;background:var(--cream)}
 .mou-category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px;margin-top:48px}
 .mou-category{padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--paper);box-shadow:var(--shadow-xs)}
 .mou-category-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
@@ -3504,7 +3504,7 @@ section {
 /* =====================================================
    PROUD MOMENTS
    ===================================================== */
-.proud-section{padding:96px 0;background:var(--paper)}
+.proud-section{padding:72px 0;background:var(--paper)}
 .proud-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:48px}
 .proud-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:26px;border:1px solid var(--line);border-radius:16px;background:var(--cream);text-align:left;cursor:pointer;transition:.25s;font:inherit;color:inherit}
 .proud-card:hover{transform:translateY(-4px);border-color:var(--maroon-light);box-shadow:var(--shadow-md)}
