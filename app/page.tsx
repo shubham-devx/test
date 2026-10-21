@@ -64,23 +64,27 @@ const navItems = [
   ["Training", "#training"],
   ["Centres of Excellence", "#centres"],
   ["Industry", "#industry"],
-  ["MoUs", "#mous"],
-  ["Proud Moments", "#proud-moments"],
-  ["Careers", "#placements"],
-  ["Facilities", "#facilities"],
+  // ["MoUs", "#mous"],
+  // ["Proud Moments", "#proud-moments"],
+  // ["Careers", "#placements"],
+  // ["Facilities", "#facilities"],
 ];
 
 const industryFocusAreas = [
-  "Industrial Robotics",
-  "Product Design",
-  "Testing, Calibration & Metrology",
-  "Integrated Automation",
-  "Instrumentation & Automation",
-  "Welding, Thermal Cutting & NDT",
-  "Digital Manufacturing",
-  "Advanced Manufacturing",
-  "Factory Automation",
-  "Drone Technology",
+  // "Industrial Robotics",
+  // "Product Design",
+  // "Testing, Calibration & Metrology",
+  // "Integrated Automation",
+  // "Instrumentation & Automation",
+  // "Welding, Thermal Cutting & NDT",
+  // "Digital Manufacturing",
+  // "Advanced Manufacturing",
+  // "Factory Automation",
+  // "Drone Technology",
+  " Automation",
+  "Aero.& Defence",
+  "Healthcare",
+  "General Engineering"
 ];
 
 /* =====================================================
@@ -544,7 +548,7 @@ export default function Home() {
       <div className="top-strip">
         <div className="container top-strip-inner">
           <span>
-            AKGEC Skills Foundation
+            
           </span>
 
           <div>
@@ -573,20 +577,20 @@ export default function Home() {
             <Image
               src="/logo/asf-logo.png"
               alt="AKGEC Skills Foundation"
-              width={68}
-              height={68}
+              width={98}
+              height={98}
               className="brand-logo"
             />
 
             <div className="brand-copy">
 
               <strong>
-                AKGEC
+                AKGEC SKILLS FOUNDATION
               </strong>
 
-              <span>
+              {/* <span>
                 SKILLS FOUNDATION
-              </span>
+              </span> */}
 
 
             </div>
@@ -689,7 +693,7 @@ export default function Home() {
           <div className="container hero-content">
 
             <span className="hero-kicker">
-              AKGEC SKILLS FOUNDATION
+              {/* AKGEC SKILLS FOUNDATION */}
             </span>
 
             <h1>
@@ -1122,6 +1126,7 @@ export default function Home() {
         {/* =================================================
             MOUs & PARTNERSHIPS
         ================================================= */}
+        {/*
 
         <section id="mous" className="mous-section">
           <div className="container">
@@ -1179,7 +1184,7 @@ export default function Home() {
         {/* =================================================
             PROUD MOMENTS
         ================================================= */}
-
+ {/*
         <section id="proud-moments" className="proud-section">
           <div className="container">
             <div className="section-heading">
@@ -1222,7 +1227,7 @@ export default function Home() {
         {/* =================================================
             CAREER
         ================================================= */}
-
+{/*
         <section
           id="placements"
           className="career"
@@ -1292,14 +1297,17 @@ export default function Home() {
 
             </div>
 
+
+
           </div>
 
         </section>
+*/}
 
         {/* =================================================
             NEWS & EVENTS
         ================================================= */}
-
+{/*
         <section
           id="facilities"
           className="news"
@@ -1360,6 +1368,7 @@ export default function Home() {
 
         </section>
 
+        */}
         <section
           id="contact"
           className="contact"
