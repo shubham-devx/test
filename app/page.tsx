@@ -1010,7 +1010,7 @@ export default function Home() {
               <div className="centres-image">
 
                 <Image
-                  src="/images/centres/kuka.JPG"
+                  src="/images/centres/kuka.jpg"
                   alt="KUKA robotics training centre"
                   fill
                   sizes="50vw"
