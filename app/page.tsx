@@ -1010,7 +1010,7 @@ export default function Home() {
               <div className="centres-image">
 
                 <Image
-                  src="/images/centres/kuka.jpg"
+                  src="/images/centres/kuka.JPG"
                   alt="KUKA robotics training centre"
                   fill
                   sizes="50vw"
@@ -1104,7 +1104,7 @@ export default function Home() {
             </div>
 
             {industryFocusAreas.length > 3 && (
-              <button type="button" className="view-more-button" onClick={() => toggleSection("industry")}>
+              <button type="button" className="dark-action" onClick={() => toggleSection("industry")}>
                 {expandedSections.industry ? "Show less" : "View more focus areas"}
                 <ArrowUpRight size={17} />
               </button>
