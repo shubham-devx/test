@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, RefreshCw, X } from "lucide-react";
+import { CheckCircle2, GraduationCap, Loader2, RefreshCw, X } from "lucide-react";
 
 type Step = "details" | "success";
 
@@ -385,18 +385,19 @@ export default function RegistrationModal({
           <X size={20} />
         </button>
 
+        <div className="registration-kicker"><GraduationCap size={17} /> AKGEC Skills Foundation Training</div>
         <h2 id="registration-modal-title">
-          Course <em>Registration</em>
+          Register for <em>Training</em>
         </h2>
         <p className="registration-intro">
-          Fill in your details to register for a course. After registration, visit the ASF office
-          to complete the enrolment process.
+          Register here for hands-on training. Choose your course and duration, then share your details.
+          Visit the ASF office after registration to complete enrolment.
         </p>
         <p className="registration-required-note"><span aria-hidden="true">*</span> Required fields</p>
 
         <div className="registration-progress">
-          <div className={step === "details" ? "active" : ""}>1. Details</div>
-          <div className={step === "success" ? "active" : ""}>2. Confirmation</div>
+          <div className={step === "details" ? "active" : ""}><span>01</span><strong>Your Details</strong></div>
+          <div className={step === "success" ? "active" : ""}><span>02</span><strong>Confirmation</strong></div>
         </div>
 
         {configLoading && <p style={{ padding: "20px 0" }}>Loading form…</p>}
