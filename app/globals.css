@@ -1120,7 +1120,8 @@ section {
 
 .training-grid {
   display: grid;
-  align-items: start;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
 
   grid-template-columns:
     repeat(auto-fit, minmax(min(100%, 240px), 1fr));
@@ -1184,6 +1185,7 @@ section {
 
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
+  grid-template-rows: minmax(3.2em, auto) minmax(0, 1fr) auto;
   align-items: start;
   column-gap: 12px;
   padding: 14px;
@@ -2866,6 +2868,10 @@ section {
     grid-template-columns: 1fr;
   }
 
+  .training-grid {
+    grid-auto-rows: auto;
+  }
+
   .glance-grid > div {
     border-right: 0;
 
@@ -2881,6 +2887,7 @@ section {
   .training-card {
     display: grid;
     grid-template-columns: 46px minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
     align-items: start;
     column-gap: 12px;
     padding: 14px;
