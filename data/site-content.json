@@ -30,23 +30,63 @@
   "trainingPrograms": [
     {
       "icon": "robotics",
-      "title": "Industrial Robotics",
-      "text": "Program industrial robots from foundational to advanced levels, and explore arc and spot welding, milling, ultrasonic welding, and laser applications."
+      "title": "AKGEC-KUKA Centre",
+      "text": "Build practical robotics skills through programming and hands-on training with industrial robot applications."
+    },
+    {
+      "icon": "labview",
+      "title": "AKGEC-NI LabVIEW Academy",
+      "text": "Explore LabVIEW, test and measurement, machine vision, control systems and industrial IoT."
+    },
+    {
+      "icon": "bosch",
+      "title": "AKGEC-BOSCH CEAT",
+      "text": "Develop hands-on technical skills through applied training at the AKGEC-BOSCH CEAT."
     },
     {
       "icon": "automation",
-      "title": "Automation & Control",
-      "text": "Build practical skills in PLC, HMI and SCADA systems, industrial drives, hydraulics, pneumatics, mechatronics and process instrumentation."
+      "title": "AIA-CIA",
+      "text": "Learn integrated automation concepts and build practical, industry-oriented engineering skills."
+    },
+    {
+      "icon": "welding",
+      "title": "AWTRC",
+      "text": "Explore welding technology, thermal cutting and non-destructive testing through practical training."
     },
     {
       "icon": "manufacturing",
-      "title": "Advanced Manufacturing",
-      "text": "Work with CNC turning and milling, CAD/CAM, computer-aided analysis, additive manufacturing and digital production workflows."
+      "title": "AMC",
+      "text": "Build advanced manufacturing skills with hands-on exposure to modern production technologies."
     },
     {
-      "icon": "certification",
-      "title": "Welding, Metrology & Drone",
-      "text": "Explore welding, ASNT certification, CMM and GD&T, DGCA remote-pilot training, agricultural drones and drone servicing."
+      "icon": "bosch-jcc",
+      "title": "BOSCH JCC",
+      "text": "Gain practical engineering experience through industry-oriented training at BOSCH JCC."
+    },
+    {
+      "icon": "welding",
+      "title": "AKGEC-FRONIUS",
+      "text": "Develop welding skills with practical exposure to welding processes and related technologies."
+    },
+    {
+      "icon": "siemens",
+      "title": "AKGEC-SIEMENS PLM",
+      "text": "Explore product lifecycle management and digital engineering workflows used in industry."
+    },
+    {
+      "icon": "siemens",
+      "title": "AKGEC-SIEMENS COE",
+      "text": "Build applied technical skills through hands-on learning at the AKGEC-SIEMENS Centre of Excellence."
+    },
+    {
+      "icon": "fablab",
+      "title": "AKGEC-FABLAB",
+      "text": "Turn ideas into prototypes with practical design, making and digital fabrication experiences."
+    },
+    {
+      "icon": "cfc",
+      "title": "CFC-AFIPD",
+      "text": "Explore practical, career-focused technical training through the CFC-AFIPD programme."
     }
   ],
   "industryFocusAreas": [

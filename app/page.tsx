@@ -4,12 +4,17 @@ import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
+  Boxes,
+  Bot,
   Cog,
   BadgeCheck,
   ChevronRight,
   ChevronDown,
   Cpu,
+  DraftingCompass,
+  Flame,
   Factory,
+  Gauge,
   HeartPulse,
   Mail,
   MapPin,
@@ -18,6 +23,7 @@ import {
   Menu,
   MessageCircle,
   ShieldCheck,
+  ScanLine,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -78,44 +84,24 @@ const navItems = [
    TRAINING PROGRAMMES
    ===================================================== */
 
-const trainingPrograms = [
-  {
-    icon: Cog,
-    number: "01",
-    title: "Industrial Robotics",
-    text: "Robot Programming - Basic / Advance / Expert; robotic arc welding; robotic spot and ultrasonic welding; robotic milling and laser welding & cutting.",
-  },
-  {
-    icon: Cpu,
-    number: "02",
-    title: "Automation & Control",
-    text: "Integrated Automation, Industrial Automation, PLC/HMI/SCADA, drives and control, industrial hydraulics, industrial pneumatics, mechatronics and process instrumentation.",
-  },
-  {
-    icon: Factory,
-    number: "03",
-    title: "Advanced Manufacturing",
-    text: "CIM, CNC operation and programming for turning/milling/grinding, CAD/CAM, computer-aided analysis, additive manufacturing and digital manufacturing.",
-  },
-  {
-    icon: BadgeCheck,
-    number: "04",
-    title: "Welding, Metrology & Drone",
-    text: "Welding technology, ASNT Level-1 & 2, CMM and GD&T training, remote pilot training, agriculture drone spray and drone service technician programmes.",
-  },
-];
-
-const trainingIconKeys = ["robotics", "automation", "manufacturing", "certification"];
+const trainingIcons = {
+  robotics: Bot,
+  labview: Gauge,
+  bosch: Cog,
+  automation: Cpu,
+  welding: Flame,
+  manufacturing: Factory,
+  "bosch-jcc": BadgeCheck,
+  siemens: Boxes,
+  fablab: ScanLine,
+  cfc: DraftingCompass,
+};
 
 function createFallbackSiteContent(): SiteContent {
   return {
     ...(defaultSiteContent as SiteContent),
     navigation: navItems.map(([label, href]) => ({ label, section: href.slice(1) as SiteSection })),
-    trainingPrograms: trainingPrograms.map((program, index) => ({
-      icon: trainingIconKeys[index] ?? "automation",
-      title: program.title,
-      text: program.text,
-    })),
+    trainingPrograms: defaultSiteContent.trainingPrograms as SiteContent["trainingPrograms"],
     industryFocusAreas: defaultSiteContent.industryFocusAreas as SiteContent["industryFocusAreas"],
     centresList: centres.map((centre) => ({
       name: centre.name,
@@ -939,7 +925,7 @@ export default function Home() {
             <div className="training-grid">
 
               {siteContent.trainingPrograms.slice(0, expandedSections.training ? undefined : 4).map((item, index) => {
-                const Icon = ({ robotics: Cog, automation: Cpu, manufacturing: Factory, certification: BadgeCheck } as const)[item.icon as "robotics" | "automation" | "manufacturing" | "certification"] ?? Cog;
+                const Icon = trainingIcons[item.icon as keyof typeof trainingIcons] ?? Cog;
 
                 return (
                   <article
@@ -979,10 +965,15 @@ export default function Home() {
 
             </div>
 
-            {siteContent.trainingPrograms.length > 3 && (
-              <button type="button" className="view-more-button" onClick={() => toggleSection("training")}>
-                {expandedSections.training ? "Show less" : "View more training"}
-                <ArrowUpRight size={17} />
+            {siteContent.trainingPrograms.length > 4 && (
+              <button
+                type="button"
+                className="view-more-button"
+                onClick={() => toggleSection("training")}
+                aria-expanded={Boolean(expandedSections.training)}
+              >
+                {expandedSections.training ? "Show fewer courses" : `View all ${siteContent.trainingPrograms.length} courses`}
+                {expandedSections.training ? <ChevronDown size={17} /> : <ArrowUpRight size={17} />}
               </button>
             )}
 
@@ -1772,4 +1763,3 @@ export default function Home() {
     </>
   );
 }
-

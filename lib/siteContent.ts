@@ -32,6 +32,8 @@ export type SiteContent = {
 
 export const DEFAULT_SITE_CONTENT = defaultContent as SiteContent;
 const DATA_FILE = path.join(process.cwd(), "data", "site-content.json");
+const CONTENT_VERSION_FILE = path.join(process.cwd(), "data", "site-content-version.json");
+const CONTENT_VERSION = 1;
 const sections: SiteSection[] = ["about", "training", "centres", "industry"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -79,7 +81,19 @@ export function isSiteContent(value: unknown): value is SiteContent {
 
 export async function getSiteContent(): Promise<SiteContent> {
   const content = await readJsonFile<unknown>(DATA_FILE, null);
-  if (isSiteContent(content)) return content;
+  if (isSiteContent(content)) {
+    const contentVersion = await readJsonFile<number>(CONTENT_VERSION_FILE, 0);
+    if (contentVersion < CONTENT_VERSION) {
+      const migratedContent = {
+        ...content,
+        trainingPrograms: DEFAULT_SITE_CONTENT.trainingPrograms,
+      };
+      await writeJsonFile(DATA_FILE, migratedContent);
+      await writeJsonFile(CONTENT_VERSION_FILE, CONTENT_VERSION);
+      return migratedContent;
+    }
+    return content;
+  }
   if (isRecord(content)) {
     const industryFocusAreas = Array.isArray(content.industryFocusAreas)
       ? content.industryFocusAreas.map((area) => {
