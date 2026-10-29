@@ -14,6 +14,22 @@ export type Course = {
 };
 
 const DATA_FILE = path.join(process.cwd(), "data", "courses.json");
+const CATALOG_VERSION_FILE = path.join(process.cwd(), "data", "course-catalog-version.json");
+const CATALOG_VERSION = 1;
+const CATALOG_ADDITION_IDS = new Set([
+  "akgec-kuka-centre",
+  "akgec-ni-labview-academy",
+  "akgec-bosch-ceat",
+  "aia-cia",
+  "awtrc",
+  "amc",
+  "bosch-jcc",
+  "akgec-fronius",
+  "akgec-siemens-plm",
+  "akgec-siemens-coe",
+  "akgec-fablab",
+  "cfc-afipd",
+]);
 
 const DEFAULT_COURSES: Course[] = [
   {
@@ -58,11 +74,130 @@ const DEFAULT_COURSES: Course[] = [
       { label: "4 Weeks", weeks: 4, fee: 4999 },
     ],
   },
+  {
+    id: "akgec-kuka-centre",
+    name: "AKGEC-KUKA Centre",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "akgec-ni-labview-academy",
+    name: "AKGEC-NI LabVIEW Academy",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "akgec-bosch-ceat",
+    name: "AKGEC-BOSCH CEAT",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "aia-cia",
+    name: "AIA-CIA",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "awtrc",
+    name: "AWTRC",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "amc",
+    name: "AMC",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "bosch-jcc",
+    name: "BOSCH JCC",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "akgec-fronius",
+    name: "AKGEC-FRONIUS",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "akgec-siemens-plm",
+    name: "AKGEC-SIEMENS PLM",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "akgec-siemens-coe",
+    name: "AKGEC-SIEMENS COE",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "akgec-fablab",
+    name: "AKGEC-FABLAB",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
+  {
+    id: "cfc-afipd",
+    name: "CFC-AFIPD",
+    durations: [
+      { label: "2 Weeks", weeks: 2, fee: 2499 },
+      { label: "4 Weeks", weeks: 4, fee: 4999 },
+    ],
+  },
 ];
 
 export async function getCourses(): Promise<Course[]> {
   const courses = await readJsonFile<unknown>(DATA_FILE, null);
-  return Array.isArray(courses) && courses.length ? courses as Course[] : DEFAULT_COURSES;
+  if (!Array.isArray(courses) || !courses.length) return DEFAULT_COURSES;
+
+  const catalogVersion = await readJsonFile<number>(CATALOG_VERSION_FILE, 0);
+  if (catalogVersion < CATALOG_VERSION) {
+    const existingIds = new Set(
+      courses
+        .filter(
+          (course): course is Course =>
+            Boolean(course) && typeof course === "object" && "id" in course
+        )
+        .map((course) => course.id)
+    );
+    const updatedCourses = [
+      ...courses,
+      ...DEFAULT_COURSES.filter(
+        (course) => CATALOG_ADDITION_IDS.has(course.id) && !existingIds.has(course.id)
+      ),
+    ] as Course[];
+    await writeJsonFile(DATA_FILE, updatedCourses);
+    await writeJsonFile(CATALOG_VERSION_FILE, CATALOG_VERSION);
+    return updatedCourses;
+  }
+
+  return courses as Course[];
 }
 
 export async function saveCourses(courses: Course[]): Promise<void> {
