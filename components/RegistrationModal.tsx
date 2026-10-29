@@ -212,7 +212,7 @@ export default function RegistrationModal({
   function renderField(f: FormField) {
     if (f.type === "course") {
       return (
-        <div className="registration-field" key={f.id}>
+        <div className="registration-field registration-field-choice" key={f.id}>
           <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
           <select
             id={`reg-${f.id}`}
@@ -233,7 +233,7 @@ export default function RegistrationModal({
 
     if (f.type === "duration") {
       return (
-        <div className="registration-field" key={f.id}>
+        <div className="registration-field registration-field-choice" key={f.id}>
           <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
           <select
             id={`reg-${f.id}`}
@@ -418,7 +418,7 @@ export default function RegistrationModal({
                     <Loader2 size={17} className="spin" /> Submitting...
                   </>
                 ) : (
-                  "Submit Registration"
+                  "Register for Training"
                 )}
               </button>
             </div>
