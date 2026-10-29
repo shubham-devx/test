@@ -395,11 +395,6 @@ export default function RegistrationModal({
         </p>
         <p className="registration-required-note"><span aria-hidden="true">*</span> Required fields</p>
 
-        <div className="registration-progress">
-          <div className={step === "details" ? "active" : ""}><span>01</span><strong>Your Details</strong></div>
-          <div className={step === "success" ? "active" : ""}><span>02</span><strong>Confirmation</strong></div>
-        </div>
-
         {configLoading && <p style={{ padding: "20px 0" }}>Loading form…</p>}
 
         {!configLoading && step === "details" && (
