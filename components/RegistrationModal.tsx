@@ -31,6 +31,15 @@ async function getRegistrationChallenge(): Promise<RegistrationChallenge> {
   return data as RegistrationChallenge;
 }
 
+function FieldLabel({ htmlFor, label, required }: { htmlFor: string; label: string; required: boolean }) {
+  return (
+    <label htmlFor={htmlFor}>
+      {label}
+      {required && <span className="registration-required-marker" aria-hidden="true"> *</span>}
+    </label>
+  );
+}
+
 export default function RegistrationModal({
   isOpen,
   initialCourseName,
@@ -204,9 +213,11 @@ export default function RegistrationModal({
     if (f.type === "course") {
       return (
         <div className="registration-field" key={f.id}>
-          <label htmlFor={`reg-${f.id}`}>{f.label}</label>
+          <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
           <select
             id={`reg-${f.id}`}
+            required={f.required}
+            aria-required={f.required}
             value={responses[f.id] ?? ""}
             onChange={(e) => handleCourseChange(f.id, e.target.value)}
           >
@@ -223,9 +234,11 @@ export default function RegistrationModal({
     if (f.type === "duration") {
       return (
         <div className="registration-field" key={f.id}>
-          <label htmlFor={`reg-${f.id}`}>{f.label}</label>
+          <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
           <select
             id={`reg-${f.id}`}
+            required={f.required}
+            aria-required={f.required}
             value={responses[f.id] ?? ""}
             onChange={(e) => updateResponse(f.id, e.target.value)}
           >
@@ -243,7 +256,10 @@ export default function RegistrationModal({
       return (
         <div className="captcha-box" style={{ gridColumn: "1 / -1" }} key={f.id}>
           <div>
-            <span className="captcha-label">{f.label || "Security Check"}</span>
+            <span className="captcha-label">
+              {f.label || "Security Check"}
+              {f.required && <span aria-hidden="true"> *</span>}
+            </span>
             <strong>
               {captcha.a} + {captcha.b} = ?
             </strong>
@@ -252,6 +268,9 @@ export default function RegistrationModal({
             <span className="captcha-label">Your Answer</span>
             <input
               type="text"
+              required={f.required}
+              aria-required={f.required}
+              aria-label="Security check answer"
               inputMode="numeric"
               value={captchaInput}
               onChange={(e) => setCaptchaInput(e.target.value.replace(/\D/g, ""))}
@@ -280,9 +299,11 @@ export default function RegistrationModal({
     if (f.type === "select") {
       return (
         <div className="registration-field" key={f.id}>
-          <label htmlFor={`reg-${f.id}`}>{f.label}</label>
+          <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
           <select
             id={`reg-${f.id}`}
+            required={f.required}
+            aria-required={f.required}
             value={responses[f.id] ?? ""}
             onChange={(e) => updateResponse(f.id, e.target.value)}
           >
@@ -300,9 +321,11 @@ export default function RegistrationModal({
     if (f.type === "textarea") {
       return (
         <div className="registration-field full" key={f.id}>
-          <label htmlFor={`reg-${f.id}`}>{f.label}</label>
+          <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
           <textarea
             id={`reg-${f.id}`}
+            required={f.required}
+            aria-required={f.required}
             value={responses[f.id] ?? ""}
             onChange={(e) => updateResponse(f.id, e.target.value)}
             placeholder={f.placeholder}
@@ -324,10 +347,12 @@ export default function RegistrationModal({
     // text, tel, email, date
     return (
       <div className="registration-field" key={f.id}>
-        <label htmlFor={`reg-${f.id}`}>{f.label}</label>
+        <FieldLabel htmlFor={`reg-${f.id}`} label={f.label} required={f.required} />
         <input
           id={`reg-${f.id}`}
           type={f.type}
+          required={f.required}
+          aria-required={f.required}
           inputMode={f.type === "tel" ? "numeric" : undefined}
           maxLength={f.type === "tel" ? 10 : undefined}
           value={responses[f.id] ?? ""}
@@ -367,6 +392,7 @@ export default function RegistrationModal({
           Fill in your details to register for a course. After registration, visit the ASF office
           to complete the enrolment process.
         </p>
+        <p className="registration-required-note"><span aria-hidden="true">*</span> Required fields</p>
 
         <div className="registration-progress">
           <div className={step === "details" ? "active" : ""}>1. Details</div>

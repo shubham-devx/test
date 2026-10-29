@@ -3774,3 +3774,47 @@ section {
 }
 
 @media(max-width:760px){.course-fees-backdrop{padding:10px;align-items:flex-start}.course-fees-modal{width:100%;max-height:calc(100vh - 20px);padding:26px 18px 20px;border-radius:16px}.course-fees-card-head{align-items:flex-start;flex-direction:column}.course-fees-register{width:100%;justify-content:center}.course-fees-footer{align-items:flex-start;flex-direction:column}.course-fees-footer .modal-close-text{align-self:flex-end}}
+
+.registration-required-note{margin:-12px 0 18px;color:#62544b;font-size:13px;font-weight:650}
+.registration-required-note span,.registration-required-marker{color:#b42318;font-weight:900}
+
+.announcement-banner{position:relative;z-index:10;background:#f7f0e5;border-block:1px solid #e8d6b7;box-shadow:inset 4px 0 0 var(--saffron)}
+.announcement-banner.urgent{background:linear-gradient(108deg,#45121b 0%,var(--maroon-dark) 48%,var(--maroon) 100%);border-color:var(--maroon-dark);box-shadow:inset 6px 0 0 #f0ad3d;color:#fff}
+.announcement-banner-inner{width:min(var(--container),calc(100% - 48px));min-height:62px;display:grid;grid-template-columns:max-content minmax(0,1fr) max-content 38px;align-items:center;gap:16px;margin:0 auto;padding:9px 0}
+.announcement-banner.urgent .announcement-banner-inner{min-height:74px}
+.announcement-banner-label{display:flex;align-items:center;gap:9px;color:var(--maroon);font-family:var(--font-manrope),sans-serif;font-size:12px;font-weight:850;white-space:nowrap}
+.announcement-banner.urgent .announcement-banner-label{gap:10px;padding:8px 11px;border:1px solid rgba(255,255,255,.3);border-radius:5px;background:rgba(255,255,255,.09);color:#fff;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.announcement-banner-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:6px;background:#f0dfc2;color:var(--maroon)}
+.announcement-banner.urgent .announcement-banner-icon{background:#f0ad3d;color:#45121b}
+.announcement-banner-message{position:relative;min-width:0;margin:0;overflow:hidden;color:#332923;font-size:14px;font-weight:650;line-height:1.5;white-space:nowrap}
+.announcement-banner.urgent .announcement-banner-message{color:#fff;font-size:15px;font-weight:750}
+.announcement-banner-track{display:flex;width:max-content;gap:100vw;animation:announcement-marquee 30s linear infinite}
+.announcement-banner-track>span{display:block;flex:0 0 auto;white-space:nowrap}
+.announcement-banner:hover .announcement-banner-track,.announcement-banner:focus-within .announcement-banner-track{animation-play-state:paused}
+.announcement-banner-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@keyframes announcement-marquee{from{transform:translateX(100vw)}to{transform:translateX(calc(50vw - 50%))}}
+.announcement-banner-action{min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 12px;border:1px solid var(--maroon);border-radius:5px;background:var(--maroon);color:#fff;font-size:12px;font-weight:800;text-decoration:none;transition:background .18s ease,transform .18s ease}
+.announcement-banner-action:hover{transform:translateY(-1px);background:var(--maroon-dark)}
+.announcement-banner.urgent .announcement-banner-action{border-color:#fff;background:#fff;color:var(--maroon-dark)}
+.announcement-banner.urgent .announcement-banner-action:hover{background:#f5eee7}
+.announcement-banner-close{width:36px;height:36px;display:grid;place-items:center;border:1px solid #d5c5ae;border-radius:5px;background:transparent;color:var(--maroon);cursor:pointer}
+.announcement-banner-close:hover{background:rgba(123,30,43,.08)}
+.announcement-banner.urgent .announcement-banner-close{border-color:rgba(255,255,255,.45);color:#fff}
+.announcement-banner.urgent .announcement-banner-close:hover{background:rgba(255,255,255,.12)}
+
+@media(max-width:760px){
+  .announcement-banner-inner{width:calc(100% - 32px);grid-template-columns:minmax(0,1fr) 38px;gap:8px 10px;padding:10px 0}
+  .announcement-banner-label{grid-column:1;grid-row:1;font-size:11px}
+  .announcement-banner.urgent .announcement-banner-label{font-size:10px}
+  .announcement-banner.urgent .announcement-banner-inner{min-height:82px}
+  .announcement-banner-icon{width:30px;height:30px}
+  .announcement-banner-close{grid-column:2;grid-row:1}
+  .announcement-banner-message{grid-column:1/-1;font-size:13px}
+  .announcement-banner-action{grid-column:1;justify-self:start;min-height:36px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .announcement-banner-track{display:block;width:auto;animation:none;transform:none}
+  .announcement-banner-track>span{white-space:normal}
+  .announcement-banner-track>span:nth-child(2){display:none}
+}

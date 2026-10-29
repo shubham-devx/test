@@ -1,25 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type DetailedHTMLProps, type HTMLAttributes } from "react";
-import { Megaphone, X } from "lucide-react";
-
-// The <marquee> tag isn't in React's built-in JSX types (it's a legacy,
-// non-standard HTML element), so we declare it ourselves to use it in TSX.
-// React 19 moved the JSX namespace into the "react" module itself, so we
-// augment that module rather than the old global JSX namespace.
-declare module "react" {
-  namespace JSX {
-    interface IntrinsicElements {
-      marquee: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
-        behavior?: "scroll" | "slide" | "alternate";
-        direction?: "left" | "right" | "up" | "down";
-        scrollamount?: number;
-        scrolldelay?: number;
-        loop?: number;
-      };
-    }
-  }
-}
+import { useEffect, useState } from "react";
+import { ArrowUpRight, Megaphone, X } from "lucide-react";
 
 type Announcement = {
   enabled: boolean;
@@ -29,10 +11,20 @@ type Announcement = {
   style: "info" | "urgent";
 };
 
+function safeAnnouncementUrl(value?: string): string {
+  const href = value?.trim() ?? "";
+  if (href.startsWith("#") || (href.startsWith("/") && !href.startsWith("//"))) return href;
+  try {
+    const url = new URL(href);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : "";
+  } catch {
+    return "";
+  }
+}
+
 export default function AnnouncementBanner() {
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
   const [dismissed, setDismissed] = useState(false);
-  const marqueeRef = useRef<HTMLElement & { start?: () => void; stop?: () => void }>(null);
 
   useEffect(() => {
     fetch("/api/announcement", { cache: "no-store" })
@@ -46,151 +38,41 @@ export default function AnnouncementBanner() {
   }
 
   const isUrgent = announcement.style === "urgent";
-  const bg = isUrgent
-    ? "linear-gradient(90deg, #5d1621, #7b1e2b, #5d1621)"
-    : "linear-gradient(90deg, #b8631f, #d9822b, #b8631f)";
+  const linkUrl = safeAnnouncementUrl(announcement.linkUrl);
+  const linkText = announcement.linkText?.trim();
 
-  const hasLink = Boolean(announcement.linkUrl?.trim());
-
-  const text = (
-    <>
-      {announcement.text}
-      {hasLink && announcement.linkText && (
-        <span className="asf-announce-link">&nbsp;&nbsp;{announcement.linkText} →</span>
-      )}
-    </>
-  );
-
-  const inner = (
-    <>
-      <BannerStyles />
-      <span className="asf-announce-badge">
-        <span className="asf-announce-dot" />
-        <Megaphone size={12} />
-        New
-      </span>
-
-      <marquee
-        ref={marqueeRef}
-        className="asf-announce-marquee"
-        behavior="scroll"
-        direction="left"
-        scrollamount={5}
-        onMouseEnter={() => marqueeRef.current?.stop?.()}
-        onMouseLeave={() => marqueeRef.current?.start?.()}
-      >
-        {text}
-      </marquee>
-
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setDismissed(true);
-        }}
-        aria-label="Dismiss announcement"
-        className="asf-announce-close"
-      >
-        <X size={13} />
-      </button>
-    </>
-  );
-
-  return hasLink ? (
-    <a href={announcement.linkUrl} className="asf-announce-wrap asf-announce-wrap-link" style={{ background: bg }}>
-      {inner}
-    </a>
-  ) : (
-    <div className="asf-announce-wrap" style={{ background: bg }}>
-      {inner}
-    </div>
-  );
-}
-
-function BannerStyles() {
   return (
-    <style>{`
-      .asf-announce-wrap {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 9px 44px 9px 14px;
-        color: #fff;
-        overflow: hidden;
-        text-decoration: none;
-      }
-      .asf-announce-wrap-link {
-        cursor: pointer;
-      }
-      .asf-announce-wrap-link:hover {
-        filter: brightness(1.06);
-      }
-      .asf-announce-badge {
-        flex: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 12px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.16);
-        border: 1px solid rgba(255,255,255,0.35);
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        white-space: nowrap;
-        color: #fff;
-      }
-      .asf-announce-dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #fff;
-        animation: asf-pulse 1.6s infinite;
-        flex: none;
-      }
-      @keyframes asf-pulse {
-        0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.55); }
-        70%  { box-shadow: 0 0 0 7px rgba(255,255,255,0); }
-        100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-      }
-      .asf-announce-marquee {
-        flex: 1;
-        color: #fff;
-        font-size: 13.5px;
-        font-weight: 600;
-      }
-      .asf-announce-link {
-        color: #fff;
-        font-weight: 800;
-        text-decoration: underline;
-        text-underline-offset: 2px;
-      }
-      .asf-announce-close {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255,255,255,0.14);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        cursor: pointer;
-        flex: none;
-      }
-      .asf-announce-close:hover {
-        background: rgba(255,255,255,0.28);
-      }
-      @media (max-width: 640px) {
-        .asf-announce-wrap { padding: 8px 38px 8px 10px; gap: 10px; }
-        .asf-announce-badge { display: none; }
-      }
-    `}</style>
+    <aside className={`announcement-banner ${isUrgent ? "urgent" : "info"}`} aria-label="Site announcement" aria-live="polite">
+      <div className="announcement-banner-inner">
+        <div className="announcement-banner-label">
+          <span className="announcement-banner-icon"><Megaphone size={17} /></span>
+          <span>{isUrgent ? "Important notice" : "Foundation update"}</span>
+        </div>
+        <div className="announcement-banner-message" aria-label="Announcement message">
+          <div
+            className="announcement-banner-track"
+            style={{ animationDuration: `${Math.max(26, announcement.text.length * 0.55 + 12)}s` }}
+            aria-hidden="true"
+          >
+            <span>{announcement.text}</span>
+            <span>{announcement.text}</span>
+          </div>
+          <span className="announcement-banner-sr-only">{announcement.text}</span>
+        </div>
+        {linkUrl && linkText && (
+          <a className="announcement-banner-action" href={linkUrl}>
+            {linkText}<ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+        )}
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Dismiss announcement"
+          className="announcement-banner-close"
+        >
+          <X size={17} />
+        </button>
+      </div>
+    </aside>
   );
 }
