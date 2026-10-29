@@ -15,65 +15,16 @@ export type Course = {
 
 const DATA_FILE = path.join(process.cwd(), "data", "courses.json");
 const CATALOG_VERSION_FILE = path.join(process.cwd(), "data", "course-catalog-version.json");
-const CATALOG_VERSION = 1;
-const CATALOG_ADDITION_IDS = new Set([
-  "akgec-kuka-centre",
-  "akgec-ni-labview-academy",
-  "akgec-bosch-ceat",
-  "aia-cia",
-  "awtrc",
-  "amc",
-  "bosch-jcc",
-  "akgec-fronius",
-  "akgec-siemens-plm",
-  "akgec-siemens-coe",
-  "akgec-fablab",
-  "cfc-afipd",
+const CATALOG_VERSION = 2;
+const REMOVED_COURSE_IDS = new Set([
+  "industrial-robotics",
+  "automation-control",
+  "advanced-manufacturing",
+  "welding-metrology-drone",
+  "general",
 ]);
 
 const DEFAULT_COURSES: Course[] = [
-  {
-    id: "industrial-robotics",
-    name: "Industrial Robotics",
-    durations: [
-      { label: "2 Weeks - Basic", weeks: 2, fee: 2999 },
-      { label: "4 Weeks - Advance", weeks: 4, fee: 5999 },
-      { label: "8 Weeks - Expert", weeks: 8, fee: 9999 },
-    ],
-  },
-  {
-    id: "automation-control",
-    name: "Automation & Control",
-    durations: [
-      { label: "2 Weeks - Basic", weeks: 2, fee: 2999 },
-      { label: "4 Weeks - Advance", weeks: 4, fee: 5999 },
-      { label: "8 Weeks - Expert", weeks: 8, fee: 9999 },
-    ],
-  },
-  {
-    id: "advanced-manufacturing",
-    name: "Advanced Manufacturing",
-    durations: [
-      { label: "2 Weeks - Basic", weeks: 2, fee: 3499 },
-      { label: "4 Weeks - Advance", weeks: 4, fee: 6499 },
-    ],
-  },
-  {
-    id: "welding-metrology-drone",
-    name: "Welding, Metrology & Drone",
-    durations: [
-      { label: "2 Weeks - Basic", weeks: 2, fee: 3999 },
-      { label: "4 Weeks - Advance", weeks: 4, fee: 7499 },
-    ],
-  },
-  {
-    id: "general",
-    name: "General Enquiry / Other Programme",
-    durations: [
-      { label: "2 Weeks", weeks: 2, fee: 2499 },
-      { label: "4 Weeks", weeks: 4, fee: 4999 },
-    ],
-  },
   {
     id: "akgec-kuka-centre",
     name: "AKGEC-KUKA Centre",
@@ -187,11 +138,15 @@ export async function getCourses(): Promise<Course[]> {
         .map((course) => course.id)
     );
     const updatedCourses = [
-      ...courses,
-      ...DEFAULT_COURSES.filter(
-        (course) => CATALOG_ADDITION_IDS.has(course.id) && !existingIds.has(course.id)
+      ...courses.filter(
+        (course): course is Course =>
+          Boolean(course) &&
+          typeof course === "object" &&
+          "id" in course &&
+          !REMOVED_COURSE_IDS.has(course.id)
       ),
-    ] as Course[];
+      ...DEFAULT_COURSES.filter((course) => !existingIds.has(course.id)),
+    ];
     await writeJsonFile(DATA_FILE, updatedCourses);
     await writeJsonFile(CATALOG_VERSION_FILE, CATALOG_VERSION);
     return updatedCourses;
