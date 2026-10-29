@@ -22,10 +22,13 @@ type FormField = {
 type CourseDuration = { label: string; weeks: number; fee: number };
 type Course = { id: string; name: string; durations: CourseDuration[] };
 
-function randomCaptcha() {
-  const a = Math.floor(Math.random() * 8) + 2;
-  const b = Math.floor(Math.random() * 8) + 1;
-  return { a, b };
+type RegistrationChallenge = { a: number; b: number; ticket: string };
+
+async function getRegistrationChallenge(): Promise<RegistrationChallenge> {
+  const response = await fetch("/api/registration-challenge", { cache: "no-store" });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Could not load the security check.");
+  return data as RegistrationChallenge;
 }
 
 export default function RegistrationModal({
@@ -42,7 +45,7 @@ export default function RegistrationModal({
   const [fields, setFields] = useState<FormField[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [responses, setResponses] = useState<Record<string, string>>({});
-  const [captcha, setCaptcha] = useState(randomCaptcha);
+  const [captcha, setCaptcha] = useState<RegistrationChallenge>({ a: 0, b: 0, ticket: "" });
   const [captchaInput, setCaptchaInput] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -63,7 +66,7 @@ export default function RegistrationModal({
     setStep("details");
     setError("");
     setSuccessRecord(null);
-    setCaptcha(randomCaptcha());
+    setCaptcha({ a: 0, b: 0, ticket: "" });
     setCaptchaInput("");
     setConfigLoading(true);
 
@@ -71,11 +74,15 @@ export default function RegistrationModal({
       fetch("/api/form-fields", { cache: "no-store" }).then((r) => r.json()),
       fetch("/api/courses", { cache: "no-store" }).then((r) => r.json()),
     ])
-      .then(([fieldsData, coursesData]) => {
+      .then(async ([fieldsData, coursesData]) => {
         const loadedFields: FormField[] = fieldsData.fields ?? [];
         const loadedCourses: Course[] = coursesData.courses ?? [];
         setFields(loadedFields);
         setCourses(loadedCourses);
+
+        if (loadedFields.some((field) => field.type === "captcha")) {
+          setCaptcha(await getRegistrationChallenge());
+        }
 
         const matched =
           loadedCourses.find(
@@ -134,6 +141,7 @@ export default function RegistrationModal({
     if (hasCaptchaField && Number(captchaInput) !== captcha.a + captcha.b) {
       return "Captcha answer is incorrect.";
     }
+    if (hasCaptchaField && !captcha.ticket) return "The security check is not ready. Please refresh it.";
     if (!selectedCourse || !selectedDuration) {
       return "Please select a course and duration.";
     }
@@ -162,6 +170,8 @@ export default function RegistrationModal({
           courseId: selectedCourse.id,
           durationLabel: selectedDuration.label,
           responses,
+          captchaAnswer: hasCaptchaField ? captchaInput : undefined,
+          captchaTicket: hasCaptchaField ? captcha.ticket : undefined,
         }),
       });
       const registerData = await registerRes.json();
@@ -252,8 +262,12 @@ export default function RegistrationModal({
             type="button"
             className="captcha-refresh"
             onClick={() => {
-              setCaptcha(randomCaptcha());
               setCaptchaInput("");
+              getRegistrationChallenge()
+                .then(setCaptcha)
+                .catch((challengeError: unknown) => {
+                  setError(challengeError instanceof Error ? challengeError.message : "Could not refresh the security check.");
+                });
             }}
             aria-label="Refresh captcha"
           >

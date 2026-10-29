@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_COOKIE_NAME, createSessionToken } from "@/lib/adminAuth";
 import { allowRequest, getClientIdentifier } from "@/lib/rateLimit";
+import { readJsonBody, RequestBodyError } from "@/lib/requestBody";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +12,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { password } = await req.json();
+    const body = await readJsonBody(req, 4 * 1024);
+    const password = body && typeof body === "object" && !Array.isArray(body)
+      ? (body as Record<string, unknown>).password
+      : undefined;
     const adminPassword = process.env.ADMIN_PASSWORD;
     const sessionSecret = process.env.ADMIN_SESSION_SECRET;
 
@@ -37,8 +41,12 @@ export async function POST(req: NextRequest) {
       path: "/",
       maxAge: 60 * 60 * 8, // 8 hours
     });
+    res.headers.set("Cache-Control", "no-store");
     return res;
   } catch (err) {
+    if (err instanceof RequestBodyError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     console.error("admin login error:", err);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }

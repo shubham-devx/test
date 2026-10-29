@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import path from "path";
 import { findCourse, findDuration } from "@/lib/courses";
+import { allowRequest, getClientIdentifier } from "@/lib/rateLimit";
+import { readJsonBody, RequestBodyError } from "@/lib/requestBody";
 import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -29,7 +31,17 @@ async function razorpayGet<T>(url: string, keyId: string, keySecret: string): Pr
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    if (!allowRequest(`payment-verification:${getClientIdentifier(req)}`, 12, 60_000)) {
+      return NextResponse.json(
+        { error: "Too many verification attempts. Please try again in a minute." },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+
+    const body = await readJsonBody(req, 24 * 1024);
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json({ error: "Invalid payment verification data." }, { status: 400 });
+    }
     const {
       razorpay_order_id,
       razorpay_payment_id,
@@ -37,7 +49,7 @@ export async function POST(req: NextRequest) {
       courseId,
       durationLabel,
       responses,
-    } = body ?? {};
+    } = body as Record<string, unknown>;
 
     if (
       typeof razorpay_order_id !== "string" ||
@@ -180,14 +192,23 @@ export async function POST(req: NextRequest) {
     ) as { registrationId?: string } | undefined;
 
     if (duplicate?.registrationId) {
-      return NextResponse.json({ success: true, registrationId: duplicate.registrationId });
+      return NextResponse.json(
+        { success: true, registrationId: duplicate.registrationId },
+        { headers: { "Cache-Control": "no-store" } }
+      );
     }
 
     existing.push(record);
     await writeJsonFile(DATA_FILE, existing);
 
-    return NextResponse.json({ success: true, registrationId });
+    return NextResponse.json(
+      { success: true, registrationId },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (err) {
+    if (err instanceof RequestBodyError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     console.error("verify-payment error:", err);
     return NextResponse.json(
       { error: "Something went wrong while verifying the payment." },

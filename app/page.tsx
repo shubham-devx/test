@@ -4,22 +4,26 @@ import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
-  Bot,
-  Building2,
+  Cog,
+  BadgeCheck,
   ChevronRight,
+  ChevronDown,
   Cpu,
   Factory,
-  GraduationCap,
+  HeartPulse,
   Mail,
   MapPin,
   Phone,
+  Plane,
   Menu,
   MessageCircle,
   ShieldCheck,
-  Users,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import defaultSiteContent from "@/data/site-content.json";
+import type { SiteContent, SiteSection } from "@/lib/siteContent";
+import { SITE_THEMES } from "@/lib/siteThemes";
 import RegistrationModal from "../components/RegistrationModal";
 import AnnouncementBanner from "../components/AnnouncementBanner";
 import CourseFeesModal from "../components/CourseFeesModal";
@@ -70,30 +74,13 @@ const navItems = [
   // ["Facilities", "#facilities"],
 ];
 
-const industryFocusAreas = [
-  // "Industrial Robotics",
-  // "Product Design",
-  // "Testing, Calibration & Metrology",
-  // "Integrated Automation",
-  // "Instrumentation & Automation",
-  // "Welding, Thermal Cutting & NDT",
-  // "Digital Manufacturing",
-  // "Advanced Manufacturing",
-  // "Factory Automation",
-  // "Drone Technology",
-  " Automation",
-  "Aero.& Defence",
-  "Healthcare",
-  "General Engineering"
-];
-
 /* =====================================================
    TRAINING PROGRAMMES
    ===================================================== */
 
 const trainingPrograms = [
   {
-    icon: Bot,
+    icon: Cog,
     number: "01",
     title: "Industrial Robotics",
     text: "Robot Programming - Basic / Advance / Expert; robotic arc welding; robotic spot and ultrasonic welding; robotic milling and laser welding & cutting.",
@@ -111,12 +98,36 @@ const trainingPrograms = [
     text: "CIM, CNC operation and programming for turning/milling/grinding, CAD/CAM, computer-aided analysis, additive manufacturing and digital manufacturing.",
   },
   {
-    icon: ShieldCheck,
+    icon: BadgeCheck,
     number: "04",
     title: "Welding, Metrology & Drone",
     text: "Welding technology, ASNT Level-1 & 2, CMM and GD&T training, remote pilot training, agriculture drone spray and drone service technician programmes.",
   },
 ];
+
+const trainingIconKeys = ["robotics", "automation", "manufacturing", "certification"];
+
+function createFallbackSiteContent(): SiteContent {
+  return {
+    ...(defaultSiteContent as SiteContent),
+    navigation: navItems.map(([label, href]) => ({ label, section: href.slice(1) as SiteSection })),
+    trainingPrograms: trainingPrograms.map((program, index) => ({
+      icon: trainingIconKeys[index] ?? "automation",
+      title: program.title,
+      text: program.text,
+    })),
+    industryFocusAreas: defaultSiteContent.industryFocusAreas as SiteContent["industryFocusAreas"],
+    centresList: centres.map((centre) => ({
+      name: centre.name,
+      partner: centre.partner,
+      focus: centre.focus,
+      description: centre.description,
+      itemsTitle: "facilities" in centre ? "Facilities" : "Training programmes",
+      items: centre.programs ?? ("facilities" in centre ? centre.facilities : []) ?? [],
+      recognition: centre.recognition,
+    })),
+  };
+}
 
 /* =====================================================
    CENTRES OF EXCELLENCE
@@ -326,6 +337,23 @@ const centres = [
     ],
     recognition: "DGCA-Certified Remote Pilot Training Organization (RPTO), Authorization No. 35/2024. The brochure lists a smartboard classroom, drone simulation lab, drone flying station and four DGCA type-certified drones.",
   },
+  {
+  name: "CFC",
+  fullName: "Common Facility Center",
+  partner: "AKG Foundation for Innovation and Product Development",
+  focus: "General Engineering, Product Development, and Industry 4.0",
+  description:
+    "A Common Facility Center proposed at AKGEC, Ghaziabad, under the Uttar Pradesh government's One District, One Product (ODOP) scheme. The center aims to support local general engineering industries through advanced manufacturing facilities, material testing, research, and product development.",
+  facilities: [
+    "Modern Tool Room",
+    "Material Testing Laboratory",
+    "Research and Development Laboratory",
+    "Industry 4.0 Laboratory",
+    "High-End Engineering Product Development"
+  ],
+  recognition:
+    "Established as an initiative to support Ghaziabad's general engineering industry and promote industry–academia collaboration."
+} ,
 ];
 
 
@@ -505,13 +533,31 @@ function HeroSlider() {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedCentre, setSelectedCentre] = useState<(typeof centres)[number] | null>(null);
+  const [siteContent, setSiteContent] = useState<SiteContent>(() => createFallbackSiteContent());
+  const [selectedCentre, setSelectedCentre] = useState<SiteContent["centresList"][number] | null>(null);
   const [selectedMou, setSelectedMou] = useState<(typeof mouGroups)[number]["items"][number] | null>(null);
   const [selectedProudMoment, setSelectedProudMoment] = useState<(typeof proudMoments)[number] | null>(null);
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [registrationCourse, setRegistrationCourse] = useState<string | undefined>(undefined);
 	const [courseFeesOpen, setCourseFeesOpen] = useState(false);
 	const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const palette = SITE_THEMES[siteContent.theme];
+    const root = document.documentElement;
+    root.style.setProperty("--maroon", palette.primary);
+    root.style.setProperty("--maroon-dark", palette.dark);
+    root.style.setProperty("--maroon-light", palette.light);
+    root.style.setProperty("--saffron", palette.accent);
+    root.style.setProperty("--brand-rgb", palette.rgb);
+  }, [siteContent.theme]);
+
+  useEffect(() => {
+    fetch("/api/site-content", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() as Promise<SiteContent> : null)
+      .then((content) => { if (content) setSiteContent(content); })
+      .catch(() => undefined);
+  }, []);
 
   function openRegistration(courseName?: string) {
     setRegistrationCourse(courseName);
@@ -606,9 +652,9 @@ export default function Home() {
                 : "main-nav"
             }
           >
-            {navItems.map(([label, href]) => (
+            {siteContent.navigation.map(({ label, section }) => (
               <a
-                href={href}
+                href={`#${section}`}
                 key={label}
                 onClick={() =>
                   setMenuOpen(false)
@@ -701,7 +747,7 @@ export default function Home() {
               <br />
               skill development for
               <br />
-              <em>future-ready careers.</em>
+              <em>future-ready careers</em>
             </h1>
 
             <p>
@@ -774,7 +820,7 @@ export default function Home() {
               </span>
 
               <h2>
-                Built around practical capability.
+                Built around practical capability
               </h2>
 
             </div>
@@ -792,7 +838,7 @@ export default function Home() {
               </div>
 
               <div>
-                <strong>14</strong>
+                <strong>15</strong>
                 <span>Centres / initiatives listed under the ASF umbrella</span>
               </div>
 
@@ -820,17 +866,8 @@ export default function Home() {
 
             <div>
 
-              <span className="section-label">
-                ABOUT THE FOUNDATION
-              </span>
-
-              <h2>
-                Industry-oriented skills
-                <em>
-                  {" "}
-                  for employability.
-                </em>
-              </h2>
+              <span className="section-label">{siteContent.about.label}</span>
+              <h2>{siteContent.about.heading}</h2>
 
             </div>
 
@@ -847,13 +884,8 @@ export default function Home() {
 
             <div className="about-copy">
 
-              <p className="lead">
-                AKGEC Skills Foundation (ASF) is an initiative of AKGEC supported by the National Skill Development Corporation (NSDC), Ministry of Skill Development and Entrepreneurship, Government of India, to promote industry-oriented skills among young students and professionals and make them employable.
-              </p>
-
-              <p>
-                ASF offers skill-development training through industry–institution collaboration, aligned with National Occupational Standards (NOS) and Qualification Packs (QP). Its facilities support training, prototyping, testing and measurement in Automation, Robotics and Manufacturing.
-              </p>
+              <p className="lead">{siteContent.about.lead}</p>
+              <p>{siteContent.about.description}</p>
 
               <div className="about-points">
 
@@ -893,19 +925,9 @@ export default function Home() {
 
             <div className="section-heading">
 
-              <span>
-                TRAINING & PROGRAMMES
-              </span>
-
-              <h2>
-                Learn through
-                <br />
-                <em>practical exposure.</em>
-              </h2>
-
-              <p>
-                ASF provides skill-development training supported by industry partners, practical facilities and nationally and internationally recognized certification ecosystems.
-              </p>
+              <span>{siteContent.training.label}</span>
+              <h2>{siteContent.training.heading}</h2>
+              <p>{siteContent.training.description}</p>
 
               <button type="button" className="course-fees-trigger" onClick={() => setCourseFeesOpen(true)}>
                 Courses & Fees
@@ -916,9 +938,8 @@ export default function Home() {
 
             <div className="training-grid">
 
-              {trainingPrograms.slice(0, expandedSections.training ? undefined : 3).map((item) => {
-
-                const Icon = item.icon;
+              {siteContent.trainingPrograms.slice(0, expandedSections.training ? undefined : 4).map((item, index) => {
+                const Icon = ({ robotics: Cog, automation: Cpu, manufacturing: Factory, certification: BadgeCheck } as const)[item.icon as "robotics" | "automation" | "manufacturing" | "certification"] ?? Cog;
 
                 return (
                   <article
@@ -927,13 +948,12 @@ export default function Home() {
                   >
 
                     <div className="training-top">
-
-                      <Icon size={42} />
-
-                      <span>
-                        {item.number}
+                      <span className={`training-icon-badge ${item.icon}`} aria-hidden="true">
+                        <Icon size={26} strokeWidth={2.4} />
                       </span>
-
+                      <span className="training-number">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                     </div>
 
                     <h3>
@@ -959,7 +979,7 @@ export default function Home() {
 
             </div>
 
-            {trainingPrograms.length > 3 && (
+            {siteContent.trainingPrograms.length > 3 && (
               <button type="button" className="view-more-button" onClick={() => toggleSection("training")}>
                 {expandedSections.training ? "Show less" : "View more training"}
                 <ArrowUpRight size={17} />
@@ -986,21 +1006,15 @@ export default function Home() {
               <div>
 
                 <span className="section-label">
-                  CENTRES OF EXCELLENCE
+                  {siteContent.centres.label}
                 </span>
 
-                <h2>
-                  Advanced technology.
-                  <br />
-                  <em>
-                    Practical exposure.
-                  </em>
-                </h2>
+                <h2>{siteContent.centres.heading}</h2>
 
               </div>
 
               <p>
-                The ASF brochure lists Centres of Excellence and specialized academies covering robotics, welding, automation, manufacturing, metrology, pneumatics, digital manufacturing and drone technology.
+                {siteContent.centres.description}
               </p>
 
             </div>
@@ -1025,7 +1039,7 @@ export default function Home() {
 
               <div className="centres-list">
 
-                {centres.slice(0, expandedSections.centres ? undefined : 3).map((centre, index) => (
+                {siteContent.centresList.map((centre, index) => (
                   <button
                     type="button"
                     className="centre-select"
@@ -1039,13 +1053,6 @@ export default function Home() {
                     <ChevronRight size={21} />
                   </button>
                 ))}
-
-                {centres.length > 3 && (
-                  <button type="button" className="view-more-button" onClick={() => toggleSection("centres")}>
-                    {expandedSections.centres ? "Show less" : "View more centres"}
-                    <ArrowUpRight size={17} />
-                  </button>
-                )}
 
               </div>
 
@@ -1079,36 +1086,27 @@ export default function Home() {
           <div className="industry-content">
 
             <span className="section-label">
-              INDUSTRY ENGAGEMENT
+              {siteContent.industry.label}
             </span>
 
-            <h2>
-              Skills that respond
-              <br />
-              to{" "}
-              <em>
-                industry needs.
-              </em>
-            </h2>
-
-            <p>
-              ASF provides state-of-the-art training, prototyping, testing and measurement facilities with active industry support to meet the growing requirement for highly skilled manpower.
-            </p>
+            <h2>{siteContent.industry.heading}</h2>
+            <p>{siteContent.industry.description}</p>
 
             <div className="industry-list">
-
-                {industryFocusAreas.slice(0, expandedSections.industry ? undefined : 3).map((area) => (
-                  <span key={area}>{area}</span>
-                ))}
-
+              {siteContent.industryFocusAreas.map((area) => {
+                const Icon = area.icon === "aerospace" ? Plane : area.icon === "healthcare" ? HeartPulse : Factory;
+                return (
+                  <details className="industry-area-card" key={area.name}>
+                    <summary>
+                      <span className={`industry-area-icon ${area.icon}`} aria-hidden="true"><Icon size={21} strokeWidth={2} /></span>
+                      <strong>{area.name}</strong>
+                      <ChevronDown className="industry-area-chevron" size={18} aria-hidden="true" />
+                    </summary>
+                    <p>{area.details}</p>
+                  </details>
+                );
+              })}
             </div>
-
-            {industryFocusAreas.length > 3 && (
-              <button type="button" className="dark-action" onClick={() => toggleSection("industry")}>
-                {expandedSections.industry ? "Show less" : "View more focus areas"}
-                <ArrowUpRight size={17} />
-              </button>
-            )}
 
             <a
               href={adminUrl}
@@ -1132,7 +1130,7 @@ export default function Home() {
           <div className="container">
             <div className="section-heading">
               <span>MoUs & PARTNERSHIPS</span>
-              <h2>Building bridges with <em>industry & academia.</em></h2>
+              <h2>Building bridges with <em>industry & academia</em></h2>
               <p>
                 Strategic collaborations supporting Centres of Excellence, skill development,
                 research, innovation, entrepreneurship and industry-academia engagement.
@@ -1189,7 +1187,7 @@ export default function Home() {
           <div className="container">
             <div className="section-heading">
               <span>PROUD MOMENTS</span>
-              <h2>Milestones that reflect <em>our journey.</em></h2>
+              <h2>Milestones that reflect <em>our journey</em></h2>
               <p>
                 Selected institutional achievements, engagements and documented milestones
                 from the supplied ASF material.
@@ -1322,7 +1320,7 @@ export default function Home() {
               <h2>
                 Infrastructure for
                 <br />
-                <em>learning and collaboration.</em>
+                <em>learning and collaboration</em>
               </h2>
 
               <p>
@@ -1386,7 +1384,7 @@ export default function Home() {
                 Need information?
                 <br />
                 <em>
-                  We are here to help.
+                  We are here to help
                 </em>
               </h2>
 
@@ -1560,7 +1558,7 @@ export default function Home() {
               <X size={22} />
             </button>
 
-            <span className="section-label">CENTRE OF EXCELLENCE</span>
+            <span className="section-label">CENTRE OF EXCELLENCE(COE)</span>
             <h2 id="centre-modal-title">{selectedCentre.name}</h2>
 
             <div className="centre-modal-meta">
@@ -1571,10 +1569,10 @@ export default function Home() {
             <p>{selectedCentre.description}</p>
 
             <div className="centre-modal-section">
-              <h3>Training programmes</h3>
+              <h3>{selectedCentre.itemsTitle}</h3>
               <ul>
-                {selectedCentre.programs.map((program) => (
-                  <li key={program}>{program}</li>
+                {selectedCentre.items.map((item) => (
+                  <li key={item}>{item}</li>
                 ))}
               </ul>
             </div>
@@ -1667,7 +1665,7 @@ export default function Home() {
               </a>
 
               <a href="#centres">
-                Centres of Excellence
+                Centres of Excellence(COE)
               </a>
 
               <a href="#industry">
@@ -1765,7 +1763,10 @@ export default function Home() {
         className="floating-whatsapp"
         aria-label="Contact ASF Admin on WhatsApp"
       >
-        <MessageCircle size={28} />
+        <span className="floating-whatsapp-icon" aria-hidden="true">
+          <MessageCircle />
+          <Phone />
+        </span>
       </a>
 
     </>

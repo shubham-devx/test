@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { findDuration } from "@/lib/courses";
 import { allowRequest, getClientIdentifier } from "@/lib/rateLimit";
+import { readJsonBody, RequestBodyError } from "@/lib/requestBody";
 
 // This route runs on the server only. process.env.RAZORPAY_KEY_SECRET is
 // NEVER sent to the browser.
@@ -13,8 +14,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { courseId, durationLabel, responses } = body ?? {};
+    const body = await readJsonBody(req, 16 * 1024);
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json({ error: "Invalid order data." }, { status: 400 });
+    }
+    const { courseId, durationLabel, responses } = body as Record<string, unknown>;
 
     if (
       typeof courseId !== "string" ||
@@ -57,8 +61,11 @@ export async function POST(req: NextRequest) {
     // Pull a couple of human-readable fields for Razorpay's notes/receipt,
     // if the current form happens to have them. Purely cosmetic — doesn't
     // affect pricing or verification.
-    const name = typeof responses?.name === "string" ? responses.name.trim().slice(0, 120) : "";
-    const phone = typeof responses?.phone === "string" ? responses.phone.trim().slice(0, 20) : "";
+    const responseValues = responses && typeof responses === "object" && !Array.isArray(responses)
+      ? responses as Record<string, unknown>
+      : {};
+    const name = typeof responseValues.name === "string" ? responseValues.name.trim().slice(0, 120) : "";
+    const phone = typeof responseValues.phone === "string" ? responseValues.phone.trim().slice(0, 20) : "";
 
     const razorpayRes = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
@@ -91,6 +98,9 @@ export async function POST(req: NextRequest) {
       keyId,
     });
   } catch (err) {
+    if (err instanceof RequestBodyError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     console.error("create-order error:", err);
     return NextResponse.json(
       { error: "Something went wrong while creating the order." },

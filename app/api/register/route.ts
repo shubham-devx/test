@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { findCourse, findDuration } from "@/lib/courses";
+import { getFormFields } from "@/lib/formFields";
 import { allowRequest, getClientIdentifier } from "@/lib/rateLimit";
+import { readJsonBody, RequestBodyError } from "@/lib/requestBody";
+import { verifyRegistrationChallenge } from "@/lib/registrationChallenge";
 import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
 
 const DATA_FILE = path.join(process.cwd(), "data", "registrations.json");
@@ -22,8 +25,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const { courseId, durationLabel, responses } = body ?? {};
+    const body = await readJsonBody(req, 24 * 1024);
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json({ error: "Invalid registration data." }, { status: 400 });
+    }
+    const { courseId, durationLabel, responses, captchaAnswer, captchaTicket } = body as Record<string, unknown>;
 
     if (
       typeof courseId !== "string" ||
@@ -42,12 +48,47 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course or duration selected." }, { status: 400 });
     }
 
-    const cleanResponses: Record<string, string> = {};
-    if (responses && typeof responses === "object") {
-      for (const [key, value] of Object.entries(responses)) {
-        if (["course", "duration", "captcha"].includes(key)) continue;
-        cleanResponses[key] = String(value ?? "").trim().slice(0, 500);
+    const fields = await getFormFields();
+    if (!responses || typeof responses !== "object" || Array.isArray(responses)) {
+      return NextResponse.json({ error: "Registration responses are required." }, { status: 400 });
+    }
+
+    const responseValues = responses as Record<string, unknown>;
+    const captchaField = fields.some((field) => field.type === "captcha");
+    if (captchaField) {
+      const challenge = verifyRegistrationChallenge(captchaTicket, captchaAnswer);
+      if (!challenge.valid || !challenge.nonce) {
+        return NextResponse.json({ error: "Security check failed. Please refresh it and try again." }, { status: 400 });
       }
+      if (!allowRequest(`registration-captcha-used:${challenge.nonce}`, 1, 10 * 60_000)) {
+        return NextResponse.json({ error: "This security check has already been used. Please refresh it." }, { status: 409 });
+      }
+    }
+
+    const cleanResponses: Record<string, string> = {};
+    for (const field of fields) {
+      if (["course", "duration", "captcha"].includes(field.type)) continue;
+      const rawValue = responseValues[field.id];
+      const value = typeof rawValue === "string" ? rawValue.trim() : "";
+      if (field.required && !value) {
+        return NextResponse.json({ error: `Please fill in "${field.label}".` }, { status: 400 });
+      }
+      if (value.length > 500) {
+        return NextResponse.json({ error: `"${field.label}" is too long.` }, { status: 400 });
+      }
+      if (field.type === "tel" && value && !/^\d{10}$/.test(value)) {
+        return NextResponse.json({ error: `"${field.label}" must be a valid 10-digit phone number.` }, { status: 400 });
+      }
+      if (field.type === "email" && value && !/^\S+@\S+\.\S+$/.test(value)) {
+        return NextResponse.json({ error: `"${field.label}" must be a valid email address.` }, { status: 400 });
+      }
+      if (field.type === "select" && value && !field.options?.includes(value)) {
+        return NextResponse.json({ error: `Invalid selection for "${field.label}".` }, { status: 400 });
+      }
+      if (rawValue !== undefined && typeof rawValue !== "string") {
+        return NextResponse.json({ error: `Invalid value for "${field.label}".` }, { status: 400 });
+      }
+      cleanResponses[field.id] = value;
     }
 
     const registrationId = generateRegistrationId(course.id);
@@ -69,8 +110,14 @@ export async function POST(req: NextRequest) {
     existing.push(record);
     await writeJsonFile(DATA_FILE, existing);
 
-    return NextResponse.json({ success: true, registrationId });
+    return NextResponse.json(
+      { success: true, registrationId },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (err) {
+    if (err instanceof RequestBodyError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     console.error("registration error:", err);
     return NextResponse.json(
       { error: "Something went wrong while submitting your registration." },

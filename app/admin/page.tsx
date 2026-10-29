@@ -173,6 +173,9 @@ export default function AdminDashboardPage() {
         <Link href="/admin/announcement" style={styles.navLink}>
           Announcement
         </Link>
+        <Link href="/admin/site-content" style={styles.navLink}>
+          Website Content
+        </Link>
       </nav>
 
       <div style={styles.toolbar}>
