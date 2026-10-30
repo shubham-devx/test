@@ -198,7 +198,7 @@ export default function AdminAnnouncementPage() {
               <div
                 style={{
                   ...styles.previewBanner,
-                  background: isUrgent ? "#7b1e2b" : "#d9822b",
+                  background: isUrgent ? "#7b1e2b" : "#d9822b"  ,
                 }}
               >
                 {announcement.text}
