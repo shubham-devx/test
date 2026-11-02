@@ -48,32 +48,36 @@ export default function AdminFormFieldsPage() {
   const [newType, setNewType] = useState<FieldType>("text");
 
   useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function load() {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/admin/form-fields");
-      if (res.status === 401) {
-        router.push("/admin/login");
-        return;
-      }
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Could not load the form.");
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/admin/form-fields");
+        if (cancelled) return;
+        if (res.status === 401) {
+          router.push("/admin/login");
+          return;
+        }
+        const data = await res.json();
+        if (cancelled) return;
+        if (!res.ok) {
+          setError(data.error || "Could not load the form.");
+          setLoading(false);
+          return;
+        }
+        setFields(data.fields);
         setLoading(false);
-        return;
+      } catch {
+        if (cancelled) return;
+        setError("Could not load the form.");
+        setLoading(false);
       }
-      setFields(data.fields);
-      setLoading(false);
-    } catch {
-      setError("Could not load the form.");
-      setLoading(false);
     }
-  }
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
 
   function updateField(index: number, patch: Partial<FormField>) {
     setFields((prev) => prev.map((f, i) => (i === index ? { ...f, ...patch } : f)));

@@ -347,6 +347,7 @@ const centres = [
    MoUs & PARTNERSHIPS
    ===================================================== */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Retained for the commented-out MoUs section.
 const mouGroups = [
   {
     category: "Industry Partners",
@@ -411,6 +412,7 @@ const mouGroups = [
    PROUD MOMENTS
    ===================================================== */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Retained for the commented-out milestones section.
 const proudMoments = [
   { number: "01", title: "Distinguished German Expert Visit", date: "24 October – 14 November 2025", text: "Prof. Wolf Burger, Senior Experten Service (SES), Germany, visited AKGEC for an expert engagement." },
   { number: "02", title: "AICTE Nodal Centre Initiative", date: "27 September 2025", text: "AKGEC hosted an AICTE–CBSE Design Thinking & Innovation workshop as an AICTE Nodal Centre." },
@@ -654,15 +656,6 @@ export default function Home() {
           {/* HEADER ACTIONS */}
 
           <div className="header-actions">
-
-            <a
-              href={adminUrl}
-              className="admin-link"
-            >
-              WhatsApp Us
-              <MessageCircle size={16} />
-            </a>
-
             <button
   type="button"
   className="register-link"
@@ -1593,11 +1586,13 @@ export default function Home() {
         </div>
       )}
 
-      <RegistrationModal
-        isOpen={registrationOpen}
-        initialCourseName={registrationCourse}
-        onClose={() => setRegistrationOpen(false)}
-      />
+      {registrationOpen && (
+        <RegistrationModal
+          isOpen
+          initialCourseName={registrationCourse}
+          onClose={() => setRegistrationOpen(false)}
+        />
+      )}
 
       <CourseFeesModal
         isOpen={courseFeesOpen}
@@ -1711,9 +1706,9 @@ export default function Home() {
                 LinkedIn
               </a>
 
-              <a href={adminUrl}>
-                WhatsApp: +91 7518681245
-                <MessageCircle size={15} />
+              <a href="mailto:subhamv2003@gmail.com">
+                Need help?
+                <Mail size={15} />
               </a>
 
               <a href="https://www.akgecskills.in/" target="_blank" rel="noopener noreferrer">
@@ -1736,7 +1731,7 @@ export default function Home() {
               <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
               <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
               <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
-              <a href={adminUrl} aria-label="Contact ASF Admin on WhatsApp"><MessageCircle size={20} /></a>
+              <a href="mailto:subhamv2003@gmail.com" aria-label="Email AKGEC Skills Foundation"><Mail size={20} /></a>
             </div>
 
           </div>
@@ -1746,13 +1741,13 @@ export default function Home() {
       </footer>
 
       {/* =================================================
-          FLOATING ADMIN WHATSAPP
+          FLOATING SKILLMATE LINK
       ================================================= */}
 
       <a
-        href={adminUrl}
+        href="https://akgec-skillmate.vercel.app/"
         className="floating-whatsapp"
-        aria-label="Contact ASF Admin on WhatsApp"
+        aria-label="Visit AKGEC Skillmate"
       >
         <span className="floating-whatsapp-icon" aria-hidden="true">
           <MessageCircle />

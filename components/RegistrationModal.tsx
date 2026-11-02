@@ -72,13 +72,6 @@ export default function RegistrationModal({
   useEffect(() => {
     if (!isOpen) return;
 
-    setStep("details");
-    setError("");
-    setSuccessRecord(null);
-    setCaptcha({ a: 0, b: 0, ticket: "" });
-    setCaptchaInput("");
-    setConfigLoading(true);
-
     Promise.all([
       fetch("/api/form-fields", { cache: "no-store" }).then((r) => r.json()),
       fetch("/api/courses", { cache: "no-store" }).then((r) => r.json()),
