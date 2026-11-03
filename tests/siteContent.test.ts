@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidSiteImageUrl, shouldBypassImageOptimization } from "../lib/siteImage";
+import { isValidSiteImageUrl, normalizeIndustryImageUrl, shouldBypassImageOptimization } from "../lib/siteImage";
 
 describe("homepage image URLs", () => {
   it("accepts local image paths", () => {
@@ -26,6 +26,15 @@ describe("homepage image URLs", () => {
     expect(shouldBypassImageOptimization(
       "https://store.public.blob.vercel-storage.com/uploads/site-content/industry.webp"
     )).toBe(true);
-    expect(shouldBypassImageOptimization("/images/industry/industrial-services.JPG")).toBe(false);
+    expect(shouldBypassImageOptimization("/images/industry/industrial-services.jpg")).toBe(false);
+  });
+
+  it("normalizes the legacy uppercase Industry photo extension for case-sensitive hosting", () => {
+    expect(normalizeIndustryImageUrl("/images/industry/industrial-services.JPG"))
+      .toBe("/images/industry/industrial-services.jpg");
+    expect(normalizeIndustryImageUrl("/images/industry/industrial-services.jpg"))
+      .toBe("/images/industry/industrial-services.jpg");
+    expect(normalizeIndustryImageUrl("/api/site-content/images/uploads/site-content/industry.webp"))
+      .toBe("/api/site-content/images/uploads/site-content/industry.webp");
   });
 });

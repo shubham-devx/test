@@ -15,3 +15,9 @@ export function isValidSiteImageUrl(value: unknown): value is string {
 export function shouldBypassImageOptimization(value: string): boolean {
   return value.startsWith("https://") || value.startsWith("/api/site-content/images/");
 }
+
+export function normalizeIndustryImageUrl(value: string): string {
+  return value.toLowerCase() === "/images/industry/industrial-services.jpg"
+    ? "/images/industry/industrial-services.jpg"
+    : value;
+}

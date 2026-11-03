@@ -3,7 +3,7 @@
   "images": {
     "hero": "/images/hero/asf-main.jpg",
     "about": "/images/about/about-asf.jpg",
-    "industry": "/images/industry/industrial-services.JPG"
+    "industry": "/images/industry/industrial-services.jpg"
   },
   "navigation": [
     { "label": "About Foundation", "section": "about" },

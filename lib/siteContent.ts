@@ -1,7 +1,7 @@
 import path from "path";
 import defaultContent from "@/data/site-content.json";
 import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
-import { isValidSiteImageUrl } from "@/lib/siteImage";
+import { isValidSiteImageUrl, normalizeIndustryImageUrl } from "@/lib/siteImage";
 import { SITE_THEMES, type SiteTheme } from "@/lib/siteThemes";
 
 export type SiteSection = "about" | "training" | "centres" | "industry";
@@ -40,7 +40,7 @@ export type SiteContent = {
 export const DEFAULT_SITE_CONTENT = defaultContent as SiteContent;
 const DATA_FILE = path.join(process.cwd(), "data", "site-content.json");
 const CONTENT_VERSION_FILE = path.join(process.cwd(), "data", "site-content-version.json");
-const CONTENT_VERSION = 2;
+const CONTENT_VERSION = 3;
 const sections: SiteSection[] = ["about", "training", "centres", "industry"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -102,6 +102,7 @@ export async function getSiteContent(): Promise<SiteContent> {
         images: {
           ...DEFAULT_SITE_CONTENT.images,
           ...content.images,
+          industry: normalizeIndustryImageUrl(content.images.industry),
         },
       };
       await writeJsonFile(DATA_FILE, migratedContent);
@@ -131,6 +132,11 @@ export async function getSiteContent(): Promise<SiteContent> {
       images: {
         ...DEFAULT_SITE_CONTENT.images,
         ...(isRecord(content.images) ? content.images : {}),
+        industry: normalizeIndustryImageUrl(
+          isRecord(content.images) && typeof content.images.industry === "string"
+            ? content.images.industry
+            : DEFAULT_SITE_CONTENT.images.industry
+        ),
       },
       industryFocusAreas,
     };
