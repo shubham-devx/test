@@ -443,7 +443,7 @@ const heroImages = [
     position: "center 38%",
   },
   {
-    src: "/images/hero/asf-robotics.jpg",
+    src: "/images/hero/asf-robotics.JPG",
     alt: "Industrial robotics training at AKGEC Skills Foundation",
     position: "center 42%",
   },
@@ -463,8 +463,9 @@ const heroImages = [
    HERO SLIDER COMPONENT
    ===================================================== */
 
-function HeroSlider() {
+function HeroSlider({ heroImage }: { heroImage: string }) {
   const [current, setCurrent] = useState(0);
+  const slides = [{ ...heroImages[0], src: heroImage }, ...heroImages.slice(1)];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -480,7 +481,7 @@ function HeroSlider() {
 
   return (
     <div className="hero-slider">
-      {heroImages.map((image, index) => (
+      {slides.map((image, index) => (
         <Image
           key={image.src}
           src={image.src}
@@ -488,6 +489,7 @@ function HeroSlider() {
           fill
           priority={index === 0}
           sizes="100vw"
+          unoptimized={image.src.startsWith("https://")}
           className={`hero-slide ${
             index === current ? "active" : ""
           }`}
@@ -496,7 +498,7 @@ function HeroSlider() {
       ))}
 
       <div className="hero-slider-dots">
-        {heroImages.map((image, index) => (
+        {slides.map((image, index) => (
           <button
             key={image.src}
             type="button"
@@ -710,7 +712,7 @@ export default function Home() {
 
           {/* AUTOMATIC IMAGE SLIDER */}
 
-          <HeroSlider />
+          <HeroSlider heroImage={siteContent.images.hero} />
 
           {/* HERO DARK OVERLAY */}
 
@@ -846,48 +848,47 @@ export default function Home() {
 
           <div className="container about-grid">
 
-            <div>
-
-              <span className="section-label">{siteContent.about.label}</span>
-              <h2>{siteContent.about.heading}</h2>
-
-            </div>
-
             <div className="about-image">
               <Image
-                src="/images/about/about-asf.jpg"
+                src={siteContent.images.about}
                 alt="Learners gaining hands-on technical experience at AKGEC Skills Foundation"
                 fill
                 sizes="33vw"
                 className="cover-image"
+                unoptimized={siteContent.images.about.startsWith("https://")}
               />
               <span className="about-image-caption">Hands-on learning, built for industry</span>
             </div>
 
-            <div className="about-copy">
-
-              <p className="lead">{siteContent.about.lead}</p>
-              <p>{siteContent.about.description}</p>
-
-              <div className="about-points">
-
-                <div>
-                  <ShieldCheck size={21} />
-                  Courses aligned with NOS and QP
-                </div>
-
-                <div>
-                  <ShieldCheck size={21} />
-                  Industry–institution collaboration
-                </div>
-
-                <div>
-                  <ShieldCheck size={21} />
-                  Training, prototyping, testing and measurement
-                </div>
-
+            <div className="about-content">
+              <div>
+                <span className="section-label">{siteContent.about.label}</span>
+                <h2>{siteContent.about.heading}</h2>
               </div>
 
+              <div className="about-copy">
+                <p className="lead">{siteContent.about.lead}</p>
+                <p>{siteContent.about.description}</p>
+
+                <div className="about-points">
+
+                  <div>
+                    <ShieldCheck size={21} />
+                    Courses aligned with NOS and QP
+                  </div>
+
+                  <div>
+                    <ShieldCheck size={21} />
+                    Industry–institution collaboration
+                  </div>
+
+                  <div>
+                    <ShieldCheck size={21} />
+                    Training, prototyping, testing and measurement
+                  </div>
+
+                </div>
+              </div>
             </div>
 
           </div>
@@ -1018,15 +1019,11 @@ export default function Home() {
                   className="cover-image"
                 />
 
-                <div className="image-caption">
-                  Centres & specialised training facilities
-                </div>
-
               </div>
 
               <div className="centres-list">
 
-                {siteContent.centresList.map((centre, index) => (
+                {siteContent.centresList.slice(0, expandedSections.centres ? undefined : 5).map((centre, index) => (
                   <button
                     type="button"
                     className="centre-select"
@@ -1040,6 +1037,18 @@ export default function Home() {
                     <ChevronRight size={21} />
                   </button>
                 ))}
+
+                {siteContent.centresList.length > 5 && (
+                  <button
+                    type="button"
+                    className="view-more-button"
+                    onClick={() => toggleSection("centres")}
+                    aria-expanded={Boolean(expandedSections.centres)}
+                  >
+                    {expandedSections.centres ? "Show fewer centres" : `View all ${siteContent.centresList.length} centres`}
+                    {expandedSections.centres ? <ChevronDown size={17} /> : <ArrowUpRight size={17} />}
+                  </button>
+                )}
 
               </div>
 
@@ -1061,11 +1070,12 @@ export default function Home() {
           <div className="industry-image">
 
             <Image
-              src="/images/industry/industrial-services.jpg"
+              src={siteContent.images.industry}
               alt="Industrial technology and services"
               fill
               sizes="50vw"
               className="cover-image"
+              unoptimized={siteContent.images.industry.startsWith("https://")}
             />
 
           </div>

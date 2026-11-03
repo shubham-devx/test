@@ -3,8 +3,9 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, Save, Trash2 } from "lucide-react";
-import type { SiteContent, SiteSection } from "@/lib/siteContent";
+import Image from "next/image";
+import { ImagePlus, Plus, Save, Trash2 } from "lucide-react";
+import type { SiteContent, SiteImageSlot, SiteSection } from "@/lib/siteContent";
 import { SITE_THEMES, type SiteTheme } from "@/lib/siteThemes";
 
 const inputStyle = {
@@ -21,6 +22,51 @@ const inputStyle = {
 
 const labelStyle = { display: "grid", gap: 6, color: "#51443d", fontSize: 13, fontWeight: 700 } as const;
 const panelStyle = { padding: "20px 0", borderBottom: "1px solid #e6ddd5" } as const;
+const maximumUploadBytes = 3 * 1024 * 1024;
+const supportedImageTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+
+async function prepareImage(file: File): Promise<Blob> {
+  if (!supportedImageTypes.includes(file.type)) {
+    throw new Error("Choose a JPEG, PNG, WebP or AVIF image.");
+  }
+  if (file.size > 25 * 1024 * 1024) {
+    throw new Error("Choose an image smaller than 25 MB.");
+  }
+
+  const bitmap = await createImageBitmap(file);
+  try {
+    if (bitmap.width * bitmap.height > 80_000_000) {
+      throw new Error("This image has too many pixels. Choose a smaller image.");
+    }
+
+    let scale = Math.min(1, 2560 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Your browser could not process this image.");
+
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const quality = Math.max(0.74, 0.9 - attempt * 0.04);
+      const image = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Your browser could not process this image."));
+        }, "image/webp", quality);
+      });
+
+      if (image.size <= maximumUploadBytes) return image;
+      if (attempt % 2 === 1) scale *= 0.9;
+    }
+  } finally {
+    bitmap.close();
+  }
+
+  throw new Error("This image could not be reduced below 3 MB. Choose a smaller image.");
+}
+
 const buttonStyle = {
   minHeight: 40,
   display: "inline-flex",
@@ -45,6 +91,8 @@ export default function AdminSiteContentPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [uploadingImage, setUploadingImage] = useState<SiteImageSlot | null>(null);
+  const [pendingImageSlots, setPendingImageSlots] = useState<SiteImageSlot[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -94,8 +142,42 @@ export default function AdminSiteContentPage() {
     } : previous);
   }
 
+  async function uploadImage(slot: SiteImageSlot, file: File) {
+    setUploadingImage(slot);
+    setError("");
+    setSuccess("");
+
+    try {
+      const image = await prepareImage(file);
+      const formData = new FormData();
+      formData.set("slot", slot);
+      formData.set("image", image, `${slot}.webp`);
+
+      const response = await fetch("/api/admin/site-content/image", {
+        method: "POST",
+        body: formData,
+      });
+      const data: { error?: string; url?: string } = await response.json();
+      const imageUrl = data.url;
+      if (!response.ok || typeof imageUrl !== "string") {
+        throw new Error(data.error || "Could not upload the image.");
+      }
+
+      setContent((previous) => previous ? {
+        ...previous,
+        images: { ...previous.images, [slot]: imageUrl },
+      } : previous);
+      setPendingImageSlots((previous) => previous.includes(slot) ? previous : [...previous, slot]);
+      setSuccess("Image uploaded. Select Save and publish to put it live.");
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Could not upload the image.");
+    } finally {
+      setUploadingImage(null);
+    }
+  }
+
   async function save() {
-    if (!content) return;
+    if (!content || uploadingImage) return;
     setSaving(true);
     setError("");
     setSuccess("");
@@ -108,6 +190,7 @@ export default function AdminSiteContentPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not save website content.");
       setContent(data.content);
+      setPendingImageSlots([]);
       setSuccess("Website content saved and published.");
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Could not save website content.");
@@ -133,6 +216,19 @@ export default function AdminSiteContentPage() {
       {!content && !error && <p>Website content is unavailable.</p>}
 
       {content && <>
+        <section style={panelStyle}>
+          <h2 style={styles.sectionTitle}>Hero Image</h2>
+          <p style={styles.themeIntro}>Choose the first image visitors see in the homepage hero slider.</p>
+          <ImageUploadField
+            slot="hero"
+            src={content.images.hero}
+            uploading={uploadingImage === "hero"}
+            disabled={uploadingImage !== null}
+            pendingSave={pendingImageSlots.includes("hero")}
+            onSelect={(file) => { void uploadImage("hero", file); }}
+          />
+        </section>
+
         <section style={panelStyle}>
           <h2 style={styles.sectionTitle}>Website Colours</h2>
           <p style={styles.themeIntro}>Choose a professional palette for buttons, headings and accent details across the site.</p>
@@ -193,6 +289,26 @@ export default function AdminSiteContentPage() {
                 <label style={labelStyle}>Section heading<textarea style={inputStyle} rows={2} value={fields.heading} onChange={(event) => updateSection(section, "heading", event.target.value)} /></label>
                 {section === "about" && <label style={labelStyle}>Introduction<textarea style={{ ...inputStyle, minHeight: 96 }} rows={4} value={content.about.lead} onChange={(event) => updateSection("about", "lead", event.target.value)} /></label>}
                 <label style={labelStyle}>Description<textarea style={{ ...inputStyle, minHeight: 96 }} rows={4} value={fields.description} onChange={(event) => updateSection(section, "description", event.target.value)} /></label>
+                {section === "about" && (
+                  <ImageUploadField
+                    slot="about"
+                    src={content.images.about}
+                    uploading={uploadingImage === "about"}
+                    disabled={uploadingImage !== null}
+                    pendingSave={pendingImageSlots.includes("about")}
+                    onSelect={(file) => { void uploadImage("about", file); }}
+                  />
+                )}
+                {section === "industry" && (
+                  <ImageUploadField
+                    slot="industry"
+                    src={content.images.industry}
+                    uploading={uploadingImage === "industry"}
+                    disabled={uploadingImage !== null}
+                    pendingSave={pendingImageSlots.includes("industry")}
+                    onSelect={(file) => { void uploadImage("industry", file); }}
+                  />
+                )}
               </div>
             </section>
           );
@@ -264,10 +380,63 @@ export default function AdminSiteContentPage() {
 
         <div style={styles.saveBar}>
           <span>Changes go live on the public homepage after saving.</span>
-          <button type="button" style={buttonStyle} onClick={save} disabled={saving}><Save size={16} /> {saving ? "Saving..." : "Save and publish"}</button>
+          <button type="button" style={buttonStyle} onClick={save} disabled={saving || uploadingImage !== null}><Save size={16} /> {saving ? "Saving..." : "Save and publish"}</button>
         </div>
       </>}
     </main>
+  );
+}
+
+function ImageUploadField({
+  slot,
+  src,
+  uploading,
+  disabled,
+  pendingSave,
+  onSelect,
+}: {
+  slot: SiteImageSlot;
+  src: string;
+  uploading: boolean;
+  disabled: boolean;
+  pendingSave: boolean;
+  onSelect: (file: File) => void;
+}) {
+  const title = slot === "hero" ? "Homepage hero" : slot === "about" ? "About Foundation" : "Industry";
+
+  return (
+    <div style={styles.imageUpload}>
+      <span style={styles.imageUploadLabel}>{title} image</span>
+      <div style={styles.imageUploadRow}>
+        <Image
+          src={src}
+          alt={`Current ${title.toLowerCase()} image`}
+          width={600}
+          height={280}
+          unoptimized
+          style={styles.imagePreview}
+        />
+        <label style={{ ...styles.secondaryButton, ...(disabled ? styles.disabledUpload : {}) }}>
+          <ImagePlus size={16} />
+          {uploading ? "Uploading..." : "Choose image"}
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            disabled={disabled}
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              event.currentTarget.value = "";
+              if (file) onSelect(file);
+            }}
+            style={styles.hiddenFileInput}
+          />
+        </label>
+      </div>
+      <span style={styles.imageUploadHint}>
+        Select a JPEG, PNG, WebP or AVIF. Images are optimized for the website before uploading.
+        {pendingSave ? " Save and publish to apply this image." : ""}
+      </span>
+    </div>
   );
 }
 
@@ -286,6 +455,13 @@ const styles: Record<string, CSSProperties> = {
   themeDescription: { color: "#695c53", fontSize: 12 },
   themeStatus: { marginTop: "auto", fontSize: 12, fontWeight: 800 },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 14, marginTop: 16 },
+  imageUpload: { display: "grid", gap: 10, marginTop: 16 },
+  imageUploadLabel: { color: "#51443d", fontSize: 13, fontWeight: 700 },
+  imageUploadRow: { display: "flex", alignItems: "flex-start", gap: 14, flexWrap: "wrap" },
+  imagePreview: { width: "min(100%, 560px)", height: 220, objectFit: "cover", border: "1px solid #e1d8d0", borderRadius: 6, background: "#f5f0ec" },
+  imageUploadHint: { color: "#695c53", fontSize: 12, fontWeight: 400 },
+  hiddenFileInput: { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap" },
+  disabledUpload: { opacity: 0.6, cursor: "wait" },
   sectionHead: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14 },
   secondaryButton: { minHeight: 38, display: "inline-flex", alignItems: "center", gap: 7, padding: "0 12px", border: "1px solid #bcae9f", borderRadius: 6, background: "#fff", color: "#641c1c", font: "inherit", fontSize: 13, fontWeight: 700, cursor: "pointer" },
   items: { display: "grid", gap: 12, marginTop: 14 },

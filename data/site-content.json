@@ -1,5 +1,10 @@
 {
   "theme": "crimson",
+  "images": {
+    "hero": "/images/hero/asf-main.jpg",
+    "about": "/images/about/about-asf.jpg",
+    "industry": "/images/industry/industrial-services.JPG"
+  },
   "navigation": [
     { "label": "About Foundation", "section": "about" },
     { "label": "Training", "section": "training" },

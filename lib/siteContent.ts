@@ -1,9 +1,11 @@
 import path from "path";
 import defaultContent from "@/data/site-content.json";
 import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
+import { isValidSiteImageUrl } from "@/lib/siteImage";
 import { SITE_THEMES, type SiteTheme } from "@/lib/siteThemes";
 
 export type SiteSection = "about" | "training" | "centres" | "industry";
+export type SiteImageSlot = "hero" | "about" | "industry";
 export type IndustryFocusArea = {
   icon: "automation" | "aerospace" | "healthcare";
   name: string;
@@ -12,6 +14,11 @@ export type IndustryFocusArea = {
 
 export type SiteContent = {
   theme: SiteTheme;
+  images: {
+    hero: string;
+    about: string;
+    industry: string;
+  };
   navigation: { label: string; section: SiteSection }[];
   about: { label: string; heading: string; lead: string; description: string };
   training: { label: string; heading: string; description: string };
@@ -33,7 +40,7 @@ export type SiteContent = {
 export const DEFAULT_SITE_CONTENT = defaultContent as SiteContent;
 const DATA_FILE = path.join(process.cwd(), "data", "site-content.json");
 const CONTENT_VERSION_FILE = path.join(process.cwd(), "data", "site-content-version.json");
-const CONTENT_VERSION = 1;
+const CONTENT_VERSION = 2;
 const sections: SiteSection[] = ["about", "training", "centres", "industry"];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -57,6 +64,11 @@ export function isSiteContent(value: unknown): value is SiteContent {
     return false;
   }
   if (!Object.hasOwn(SITE_THEMES, value.theme as string)) return false;
+
+  if (!isRecord(value.images) ||
+    !isValidSiteImageUrl(value.images.hero) ||
+    !isValidSiteImageUrl(value.images.about) ||
+    !isValidSiteImageUrl(value.images.industry)) return false;
 
   if (!value.navigation.every((item) =>
     isRecord(item) && typeof item.label === "string" && sections.includes(item.section as SiteSection)
@@ -86,7 +98,11 @@ export async function getSiteContent(): Promise<SiteContent> {
     if (contentVersion < CONTENT_VERSION) {
       const migratedContent = {
         ...content,
-        trainingPrograms: DEFAULT_SITE_CONTENT.trainingPrograms,
+        ...(contentVersion < 1 ? { trainingPrograms: DEFAULT_SITE_CONTENT.trainingPrograms } : {}),
+        images: {
+          ...DEFAULT_SITE_CONTENT.images,
+          ...content.images,
+        },
       };
       await writeJsonFile(DATA_FILE, migratedContent);
       await writeJsonFile(CONTENT_VERSION_FILE, CONTENT_VERSION);
@@ -95,6 +111,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     return content;
   }
   if (isRecord(content)) {
+    const contentVersion = await readJsonFile<number>(CONTENT_VERSION_FILE, 0);
     const industryFocusAreas = Array.isArray(content.industryFocusAreas)
       ? content.industryFocusAreas.map((area) => {
         if (typeof area !== "string") return area;
@@ -108,9 +125,20 @@ export async function getSiteContent(): Promise<SiteContent> {
     const migratedContent = {
       ...content,
       theme: content.theme ?? DEFAULT_SITE_CONTENT.theme,
+      trainingPrograms: contentVersion < 1
+        ? DEFAULT_SITE_CONTENT.trainingPrograms
+        : content.trainingPrograms ?? DEFAULT_SITE_CONTENT.trainingPrograms,
+      images: {
+        ...DEFAULT_SITE_CONTENT.images,
+        ...(isRecord(content.images) ? content.images : {}),
+      },
       industryFocusAreas,
     };
-    if (isSiteContent(migratedContent)) return migratedContent;
+    if (isSiteContent(migratedContent)) {
+      await writeJsonFile(DATA_FILE, migratedContent);
+      await writeJsonFile(CONTENT_VERSION_FILE, CONTENT_VERSION);
+      return migratedContent;
+    }
   }
   return DEFAULT_SITE_CONTENT;
 }

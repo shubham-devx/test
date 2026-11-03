@@ -46,3 +46,7 @@ ASF-TBI content is stored separately from the Foundation homepage content in `da
 Startup applications from the ASF-TBI form are stored separately from course registrations in `data/asf-tbi-applications.json`. The list and status updates are available only after admin sign-in at `/admin/asf-tbi/applications`. The submission endpoint validates form fields and HTTPS links, limits request size, uses a honeypot and per-client rate limit, and asks applicants to consent before their information is stored.
 
 Administrators can add, edit or remove application questions in **ASF-TBI Website → Application Form**. Custom questions support short answers, long answers, HTTPS links and dropdown options, with required/optional and enabled settings. Responses are included in the separate startup-application review page. Existing saved website content and application records remain readable after this form configuration is added.
+
+## Foundation homepage
+
+Sign in to the admin panel and open **Website Content** to replace the homepage hero, About Foundation or Industry image. Choose a JPEG, PNG, WebP or AVIF file and select **Save and publish** to make the new image live. Images are resized and optimized as WebP before being stored. Vercel deployments use the configured `BLOB_READ_WRITE_TOKEN`; local development stores uploaded images under `public/uploads/`.
