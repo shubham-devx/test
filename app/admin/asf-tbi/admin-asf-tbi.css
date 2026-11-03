@@ -1,0 +1,36 @@
+.asftbi-admin-page{--admin-ink:#26221e;--admin-muted:#746d66;--admin-maroon:#641c1c;min-height:100vh;padding:36px max(24px,calc((100% - 1120px)/2));background:#f8f6f2;color:var(--admin-ink);font:14px/1.6 var(--font-dm-sans),Arial,sans-serif}
+.asftbi-admin-header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:24px;border-bottom:1px solid #e5dfd8}.asftbi-admin-header>div:first-child>p{margin:0;color:#a4774d;font-size:10px;font-weight:800;letter-spacing:.13em}.asftbi-admin-header h1{margin:7px 0;color:#392d26;font:700 33px/1.2 var(--font-manrope),sans-serif;letter-spacing:-.04em}.asftbi-admin-header>div:first-child>span{color:var(--admin-muted);font-size:13px}
+.asftbi-admin-actions{display:flex;align-items:center;gap:15px}.asftbi-admin-actions>a{color:var(--admin-maroon);font-size:12px;font-weight:700}.asftbi-admin-actions>a:first-child{display:inline-flex;align-items:center;gap:5px}
+.asftbi-admin-toolbar{margin:23px 0 15px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid #e5dfd8;background:#fff}.asftbi-admin-toolbar>div:first-child{display:flex;flex-direction:column}.asftbi-admin-toolbar>div:first-child>strong{color:#3e342d;font-size:13px}.asftbi-admin-toolbar>div:first-child>span{color:#857c73;font-size:11px}.asftbi-admin-toolbar>div:last-child{display:flex;gap:8px}
+.asftbi-reset-button,.asftbi-save-button,.asftbi-secondary-button{min-height:38px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #ddd6cf;border-radius:4px;background:#fff;color:#51463d;font:700 11px var(--font-dm-sans),sans-serif;cursor:pointer}
+.asftbi-save-button{border-color:var(--admin-maroon);background:var(--admin-maroon);color:#fff}.asftbi-save-button:disabled{opacity:.6;cursor:wait}.asftbi-admin-message{margin:12px 0;padding:11px 14px;border:1px solid #e3ddd5;background:#fff;font-size:12px}.asftbi-admin-error{border-color:#e4c4bf;background:#fff7f5;color:#8a2e26}.asftbi-admin-success{border-color:#c7dccb;background:#f3faf4;color:#336344}
+.asftbi-admin-sections{display:grid;gap:10px}.asftbi-admin-section{border:1px solid #e4ded7;background:#fff}.asftbi-admin-section>summary{min-height:57px;padding:12px 17px;display:flex;align-items:center;justify-content:space-between;color:#44372e;font-size:14px;font-weight:750;cursor:pointer;list-style:none}.asftbi-admin-section>summary::-webkit-details-marker{display:none}
+.asftbi-admin-section>summary>span:first-child{display:flex;align-items:center;gap:12px}.asftbi-admin-section>summary small{color:#a6764e;font-size:10px;letter-spacing:.08em}.asftbi-section-chevron{color:#8e8175;font-size:20px;transition:transform .2s}.asftbi-admin-section[open]>summary .asftbi-section-chevron{transform:rotate(180deg)}.asftbi-admin-section[open]>summary{border-bottom:1px solid #eee8e0}
+.asftbi-section-content{padding:18px}.asftbi-object-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.asftbi-field{min-width:0;display:grid;gap:5px}.asftbi-field>span{color:#53483f;font-size:11px;font-weight:750}.asftbi-field textarea,.asftbi-field input{width:100%;min-height:40px;padding:8px 10px;border:1px solid #dcd5cd;border-radius:4px;background:#fff;color:#302821;font:12px/1.5 var(--font-dm-sans),sans-serif}.asftbi-field textarea{min-height:58px;resize:vertical}.asftbi-field textarea:focus,.asftbi-field input:focus{border-color:#986d4a;outline:2px solid rgba(152,109,74,.12)}
+.asftbi-field>small{color:#857c73;font-size:10px}
+.asftbi-toggle{min-height:40px;display:flex;align-items:center;gap:8px;color:#51463d;font-size:12px}.asftbi-toggle input{accent-color:var(--admin-maroon)}
+.asftbi-collection{margin-top:8px;padding:13px;border:1px solid #e9e3dc;background:#fbfaf8}.asftbi-collection-head{margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;gap:12px}.asftbi-collection-head>strong{color:#574a40;font-size:12px}.asftbi-collection-head>strong small{margin-left:4px;color:#9a8b7e;font-size:10px}
+.asftbi-secondary-button{min-height:32px;padding:0 9px;border-color:#d9cec4;color:#6b4535;font-size:10px}.asftbi-item{margin-top:8px;border:1px solid #e5ded6;background:#fff}.asftbi-item>summary{min-height:43px;padding:8px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#51453c;font-size:11px;font-weight:700;cursor:pointer;list-style:none}.asftbi-item>summary::-webkit-details-marker{display:none}.asftbi-item-fields{padding:13px;border-top:1px solid #eee8e0}.asftbi-item-fields>.asftbi-object-fields{gap:12px}
+.asftbi-delete-button{width:32px;height:30px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;border:1px solid #ebd8d4;border-radius:4px;background:#fff;color:#944a3e;cursor:pointer}.asftbi-delete-button:hover{background:#fff5f2}
+.asftbi-list-item{display:flex;align-items:center;gap:9px;margin-top:8px}.asftbi-list-item>.asftbi-field{flex:1}
+@media(max-width:720px){.asftbi-admin-page{padding:23px 16px}.asftbi-admin-header{flex-direction:column}.asftbi-admin-header h1{font-size:28px}.asftbi-admin-toolbar{align-items:flex-start;flex-direction:column}.asftbi-admin-toolbar>div:last-child{width:100%;flex-wrap:wrap}.asftbi-object-fields{grid-template-columns:1fr}.asftbi-section-content{padding:12px}.asftbi-collection{padding:9px}}
+
+.asftbi-admin-page{font-size:15px}
+.asftbi-admin-header h1{font-size:36px}
+.asftbi-admin-header>div:first-child>span{font-size:15px}
+.asftbi-admin-actions>a{font-size:14px}
+.asftbi-admin-toolbar>div:first-child>strong{font-size:15px}
+.asftbi-admin-toolbar>div:first-child>span{font-size:13px}
+.asftbi-reset-button,.asftbi-save-button,.asftbi-secondary-button{font-size:13px}
+.asftbi-admin-section>summary{font-size:16px}
+.asftbi-field>span{font-size:13px}
+.asftbi-field textarea,.asftbi-field input,.asftbi-field select{font-size:14px}
+.asftbi-toggle{font-size:14px}
+.asftbi-collection-head>strong{font-size:14px}
+.asftbi-item>summary{font-size:14px}
+.asftbi-form-editor-note{grid-column:1/-1;margin:0;padding:13px 15px;border-left:3px solid #a4774d;background:#f8f4ee;color:#61574e;font-size:14px;line-height:1.6}
+@media(max-width:720px){
+  .asftbi-admin-header h1{font-size:31px}
+  .asftbi-admin-toolbar>div:last-child>*{flex:1}
+  .asftbi-admin-section>summary{font-size:15px}
+}

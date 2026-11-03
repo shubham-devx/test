@@ -176,6 +176,12 @@ export default function AdminDashboardPage() {
         <Link href="/admin/site-content" style={styles.navLink}>
           Website Content
         </Link>
+        <Link href="/admin/asf-tbi" style={styles.navLink}>
+          ASF-TBI Website
+        </Link>
+        <Link href="/admin/asf-tbi/applications" style={styles.navLink}>
+          Startup Applications
+        </Link>
       </nav>
 
       <div style={styles.toolbar}>

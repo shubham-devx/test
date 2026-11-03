@@ -1,0 +1,410 @@
+.tbi-site{--ti:#1d302d;--tf:#173c35;--tg:#315d50;--tc:#bd8050;--ta:#e6bb7b;--tp:#fbfaf7;--tl:#f2f1eb;--tn:#727d77;--td:#e2e0d8;overflow-x:clip;background:var(--tp);color:var(--ti);font:15px/1.65 var(--font-dm-sans),Arial,sans-serif}
+.main-nav .tbi-nav-entry{display:inline-flex;align-items:center;gap:4px;color:var(--maroon);font-weight:800}
+.tbi-site *,.tbi-article-page *{box-sizing:border-box}
+.tbi-container{width:min(1200px,calc(100% - 64px));margin:0 auto}
+.tbi-topline{min-height:37px;background:var(--tf);color:rgba(255,255,255,.82);font-size:11px;letter-spacing:.035em}
+.tbi-topline-inner,.tbi-topline-inner>a{min-height:37px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tbi-topline-inner>span i{margin:0 8px;color:var(--ta);font-style:normal}.tbi-topline-inner>a{justify-content:flex-end;color:#fff}.tbi-topline-inner>a svg{color:var(--ta)}
+.tbi-header{position:sticky;z-index:1000;top:0;background:rgba(251,250,247,.96);border-bottom:1px solid rgba(29,48,45,.08);backdrop-filter:blur(16px)}
+.tbi-header-inner{min-height:83px;display:flex;align-items:center;gap:34px}
+.tbi-brand{display:inline-flex;align-items:center;gap:10px;flex-shrink:0}.tbi-brand>img{width:52px;height:52px;object-fit:contain}.tbi-brand>span{display:flex;flex-direction:column;line-height:1.2}
+.tbi-brand strong{color:var(--tf);font:650 19px/1.2 var(--font-manrope),sans-serif;letter-spacing:.015em}.tbi-brand strong>span{padding:0 2px;color:var(--tc)}.tbi-brand small{margin-top:5px;color:var(--tn);font-size:8px;font-weight:700;letter-spacing:.13em}
+.tbi-nav{margin-left:auto;display:flex;align-items:center;gap:25px}.tbi-nav a,.tbi-footer-main nav a{color:#40514a;font-size:12px;font-weight:650;transition:color .2s}.tbi-nav a:hover,.tbi-footer-main nav a:hover{color:var(--tc)}
+.tbi-header-cta,.tbi-button{min-height:46px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:2px;font-size:12px;font-weight:700;transition:transform .2s,background .2s,border-color .2s}
+.tbi-header-cta,.tbi-button-primary{background:var(--tf);color:#fff}.tbi-header-cta:hover,.tbi-button-primary:hover{transform:translateY(-2px);background:#245347}.tbi-header-cta svg,.tbi-button-primary svg{color:var(--ta)}
+.tbi-menu-button{display:none;width:42px;height:42px;align-items:center;justify-content:center;border:1px solid var(--td);background:transparent;color:var(--tf);cursor:pointer}
+.tbi-hero{min-height:645px;position:relative;display:flex;align-items:center;isolation:isolate;overflow:hidden;background:#243d35}.tbi-hero-image{z-index:-2;object-fit:cover;object-position:center 42%}
+.tbi-hero-shade{position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(17,38,33,.93),rgba(19,43,37,.83) 43%,rgba(19,43,37,.42) 75%,rgba(19,43,37,.15)),linear-gradient(0deg,rgba(20,40,34,.34),transparent 45%)}
+.tbi-hero-inner{min-height:645px;position:relative;display:flex;align-items:center}.tbi-hero-copy{max-width:690px;padding:75px 0 96px;color:#fff}
+.tbi-hero-kicker{display:flex;align-items:center;gap:12px;color:#ead4b5;font-size:10px;font-weight:700;letter-spacing:.17em}.tbi-hero-kicker>span,.tbi-demo-label>span{width:25px;height:2px;display:inline-block;background:var(--ta)}
+.tbi-hero h1{margin:25px 0 17px;color:#fff;font:600 clamp(52px,7vw,89px)/1.04 var(--font-manrope),sans-serif;letter-spacing:-.065em}.tbi-hero h1 em,.tbi-contact-heading h2 em{color:var(--ta);font:400 1em/1 Georgia,serif}
+.tbi-hero-copy>p{max-width:570px;margin:0;color:rgba(255,255,255,.84);font-size:17px;line-height:1.8}.tbi-hero-actions{margin-top:31px;display:flex;flex-wrap:wrap;gap:12px}
+.tbi-button-glass{border-color:rgba(255,255,255,.5);color:#fff}.tbi-button-glass:hover{transform:translateY(-2px);border-color:#fff;background:rgba(255,255,255,.08)}
+.tbi-scroll-link{margin-top:48px;display:inline-flex;align-items:center;gap:12px;color:rgba(255,255,255,.75);font-size:11px;font-weight:650;letter-spacing:.08em}.tbi-scroll-link svg{color:var(--ta);animation:tbi-float 1.6s ease-in-out infinite}
+.tbi-hero-note{position:absolute;right:0;bottom:47px;display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.84);font-size:12px}.tbi-hero-note svg{color:var(--ta)}
+.tbi-stats{padding:25px 0 30px;background:#fff}.tbi-demo-label{margin:0 0 20px;display:flex;align-items:center;gap:9px;color:#7a7469;font-size:10px;font-weight:600;letter-spacing:.035em}.tbi-demo-label>span{width:15px;background:var(--tc)}
+.tbi-stats-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}.tbi-stat{padding:6px 20px 4px;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--td)}.tbi-stat:first-child{padding-left:0;border-left:0}
+.tbi-stat strong{color:var(--tf);font:650 31px/1.3 var(--font-manrope),sans-serif;letter-spacing:-.055em}.tbi-stat>span{color:var(--tn);font-size:11px}
+.tbi-section{padding:94px 0}.tbi-about{padding-bottom:85px;background:var(--tp)}.tbi-about-grid{display:grid;grid-template-columns:1fr .83fr;align-items:center;gap:86px}
+.tbi-section-intro{max-width:660px}.tbi-eyebrow{display:block;color:var(--tc);font-size:10px;font-weight:750;letter-spacing:.15em;line-height:1.5;text-transform:uppercase}
+.tbi-section-intro h2,.tbi-objectives h3,.tbi-application-header h2{margin:15px 0 12px;color:var(--ti);font:600 clamp(33px,4vw,49px)/1.17 var(--font-manrope),sans-serif;letter-spacing:-.055em}
+.tbi-section-intro>p{max-width:610px;margin:12px 0 0;color:#707b75;font-size:15px}.tbi-about-copy .tbi-section-intro>p{display:none}
+.tbi-about-lead{max-width:560px;margin:24px 0 13px;color:#3e5149;font:600 18px/1.65 var(--font-manrope),sans-serif}.tbi-body-copy{max-width:590px;margin:0;color:#717a74;font-size:14px;line-height:1.9}
+.tbi-text-link,.tbi-program-card>a,.tbi-mentor-card>a,.tbi-career-card>a,.tbi-news-copy>a,.tbi-resource-card>a{width:fit-content;margin-top:22px;display:inline-flex;align-items:center;gap:8px;color:var(--tf);font-size:12px;font-weight:750}
+.tbi-text-link:hover,.tbi-program-card>a:hover,.tbi-mentor-card>a:hover,.tbi-career-card>a:hover,.tbi-news-copy>a:hover,.tbi-resource-card>a:hover{color:var(--tc)}
+.tbi-purpose-card{padding:30px;border:1px solid #e8e4da;background:#fff;box-shadow:0 22px 65px rgba(37,54,46,.06)}.tbi-purpose-item{display:grid;grid-template-columns:46px 1fr;gap:17px}
+.tbi-icon-box{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#eaf0e9;color:var(--tf)}.tbi-icon-box-orange{background:#f7ede2;color:#ab7044}
+.tbi-purpose-item .tbi-eyebrow{margin:2px 0 8px}.tbi-purpose-item p{margin:0;color:#526059;font-size:13px;line-height:1.75}.tbi-purpose-divider{height:1px;margin:25px 0;background:var(--td)}
+.tbi-objectives{margin-top:78px;padding-top:51px;display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;border-top:1px solid var(--td)}.tbi-objectives h3{margin:13px 0 0;font-size:30px}
+.tbi-objectives ul,.tbi-application-list ul,.tbi-application-list ol,.tbi-application-aside ul{margin:0;padding:0;list-style:none}
+.tbi-objectives ul{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:18px 26px}.tbi-objectives li,.tbi-application-list li{display:flex;align-items:flex-start;gap:10px;color:#59645d;font-size:12px;line-height:1.65}
+.tbi-objectives li svg,.tbi-application-list li svg{flex:0 0 auto;margin-top:2px;color:#67866e}
+.tbi-startups-section,.tbi-facilities-section,.tbi-news-section,.tbi-resources-section{background:#f2f1eb}.tbi-portfolio-note{margin:22px 0 0;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;border-left:2px solid #c69a68;background:rgba(255,255,255,.67);color:#6f6c62;font-size:11px;line-height:1.55}.tbi-portfolio-note svg{flex:0 0 auto;color:#a8794e}
+.tbi-portfolio-toolbar{margin:27px 0 25px;display:flex;align-items:center;justify-content:space-between;gap:20px}.tbi-filter-list{display:flex;flex-wrap:wrap;gap:7px}
+.tbi-filter-list button,.tbi-event-toggle button{min-height:34px;padding:0 13px;border:1px solid #deded5;border-radius:2px;background:transparent;color:#59645d;font-size:11px;font-weight:650;cursor:pointer;transition:.2s}
+.tbi-filter-list button:hover,.tbi-filter-list button.active,.tbi-event-toggle button.active{border-color:var(--tf);background:var(--tf);color:#fff}
+.tbi-search{min-width:215px;min-height:39px;padding:0 11px;display:flex;align-items:center;gap:8px;border:1px solid #deded5;background:#fff;color:#828980}
+.tbi-search input{width:100%;border:0;outline:0;background:transparent;color:var(--ti);font:11px var(--font-dm-sans),sans-serif}
+.tbi-startup-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.tbi-startup-card{min-height:246px;padding:21px;position:relative;border:1px solid #e7e5dd;background:#fff;transition:transform .25s,box-shadow .25s}
+.tbi-startup-card:hover,.tbi-program-card:hover,.tbi-mentor-card:hover,.tbi-funding-card:hover,.tbi-facility-card:hover,.tbi-resource-card:hover{transform:translateY(-4px);box-shadow:0 15px 34px rgba(34,54,46,.08)}
+.tbi-startup-mark,.tbi-mentor-avatar{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;background:#e8eee8;color:#335749;font:750 14px var(--font-manrope),sans-serif;letter-spacing:-.02em}
+.tbi-startup-mark-1,.tbi-mentor-avatar-1{background:#f3e9df;color:#946742}.tbi-startup-mark-2,.tbi-mentor-avatar-2{background:#e5eced;color:#436a6e}.tbi-startup-mark-3,.tbi-mentor-avatar-3{background:#eee8f0;color:#705675}
+.tbi-card-tag{width:fit-content;display:inline-flex;color:#748078;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.tbi-startup-card>.tbi-card-tag{position:absolute;top:29px;right:20px}
+.tbi-startup-card h3,.tbi-program-card h3,.tbi-funding-card h3,.tbi-mentor-card h3,.tbi-facility-card h3,.tbi-event-info h3,.tbi-news-copy h3,.tbi-career-card h3,.tbi-resource-card h3{margin:16px 0 7px;color:var(--ti);font:650 18px/1.4 var(--font-manrope),sans-serif;letter-spacing:-.035em}
+.tbi-startup-card>p,.tbi-program-card>p,.tbi-funding-card>p,.tbi-mentor-card>p,.tbi-facility-card>p,.tbi-news-copy>p,.tbi-career-card>p,.tbi-resource-card>p{margin:0;color:#737d76;font-size:12px;line-height:1.75}
+.tbi-startup-meta{margin-top:17px;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #ecebe5;color:#81877f;font-size:10px}.tbi-startup-meta strong{margin-left:4px;color:#495950}.tbi-startup-meta>span:last-child{padding:4px 8px;background:#f2f3ef;color:#53665b}
+.tbi-empty-state{padding:35px;border:1px dashed #c9cfc5;color:#758078;text-align:center}.tbi-programs-section{background:#fff}.tbi-program-grid{margin-top:35px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tbi-program-card{min-height:330px;padding:23px;position:relative;display:flex;flex-direction:column;border:1px solid #e7e7e0;background:#fff;transition:transform .25s,box-shadow .25s}
+.tbi-program-number{position:absolute;top:21px;right:22px;color:#b6bbb3;font:12px var(--font-manrope),sans-serif}.tbi-program-icon,.tbi-funding-icon{width:43px;height:43px;display:flex;align-items:center;justify-content:center;background:#edf2eb;color:var(--tf)}
+.tbi-program-card h3{margin:17px 0 8px}.tbi-program-card>p{min-height:62px}.tbi-program-detail{margin-top:17px;padding-top:13px;border-top:1px solid #e9e9e3;color:#637068;font-size:11px}
+.tbi-program-detail>span,.tbi-expertise>span{margin-bottom:4px;display:block;color:#a0734d;font-size:9px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.tbi-benefits{margin-top:13px;display:flex;flex-wrap:wrap;gap:5px 10px}.tbi-benefits>span{display:inline-flex;align-items:center;gap:4px;color:#647168;font-size:9px}.tbi-benefits svg{color:#6a8a6c}.tbi-program-card>a{margin-top:auto;padding-top:17px}
+.tbi-funding-section{background:#f3f1e9}.tbi-funding-alert{margin:25px 0 22px;padding:13px 16px;display:flex;align-items:flex-start;gap:11px;border:1px solid #e4d8c1;background:#fbf7ed;color:#74684f}.tbi-funding-alert svg{flex:0 0 auto;margin-top:2px;color:#a77a3e}.tbi-funding-alert p{margin:0;font-size:11px;line-height:1.65}.tbi-funding-alert strong{color:#695633}
+.tbi-funding-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tbi-funding-card{min-height:283px;padding:21px;border:1px solid #e8e4d9;background:#fff;transition:transform .25s,box-shadow .25s}
+.tbi-funding-icon{margin-bottom:15px;display:inline-flex;vertical-align:middle}.tbi-funding-card>.tbi-card-tag{margin-left:10px;vertical-align:middle}.tbi-funding-card h3{margin-top:13px;font-size:17px}.tbi-funding-range{color:#a16f45;font-size:11px;font-weight:750}.tbi-funding-card>p{min-height:42px;margin-top:10px}
+.tbi-funding-card details{margin-top:15px;padding-top:12px;border-top:1px solid #e9e8e2}.tbi-funding-card summary,.tbi-faq summary{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#40534a;font-size:11px;font-weight:700;cursor:pointer;list-style:none}
+.tbi-funding-card summary::-webkit-details-marker,.tbi-faq summary::-webkit-details-marker{display:none}.tbi-funding-card details[open] summary>svg,.tbi-faq details[open] summary>svg{transform:rotate(180deg)}
+.tbi-funding-card details>p{margin:12px 0 6px;color:#68756c;font-size:11px}.tbi-funding-card details>small{display:block;color:#92816c;font-size:10px}
+.tbi-mentors-section,.tbi-events-section,.tbi-careers-section,.tbi-partners-section{background:var(--tp)}.tbi-mentor-grid{margin-top:20px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.tbi-mentor-card{min-height:298px;padding:20px;border:1px solid #e7e5dd;background:#fff;transition:transform .25s,box-shadow .25s}.tbi-mentor-avatar{width:55px;height:55px;margin-bottom:16px;border-radius:50%}.tbi-mentor-card>.tbi-card-tag{display:flex}.tbi-mentor-card h3{margin:9px 0 2px}.tbi-mentor-card>strong{display:block;color:#6c7b70;font-size:10px;font-weight:700}.tbi-mentor-card>p{margin-top:12px}
+.tbi-expertise{margin-top:13px;color:#657269;font-size:10px}.tbi-mentor-card>a{margin-top:14px;font-size:10px}
+.tbi-facility-grid{margin-top:35px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tbi-facility-card{min-height:184px;padding:22px;border:1px solid #e5e4dc;background:#fff;transition:transform .25s,box-shadow .25s}
+.tbi-facility-card>span{width:39px;height:39px;display:flex;align-items:center;justify-content:center;background:#e8eee7;color:var(--tg)}.tbi-facility-card h3{margin:14px 0 5px;font-size:16px}.tbi-small-note{margin:17px 0 0;color:#87877e;font-size:10px;line-height:1.6}
+.tbi-section-row{display:flex;align-items:flex-end;justify-content:space-between;gap:25px}.tbi-event-toggle{margin-bottom:5px;display:inline-flex;gap:5px}
+.tbi-event-grid{margin-top:18px;display:grid;gap:11px}.tbi-event-card{padding:20px;display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:start;gap:20px;border:1px solid #e7e4dc;background:#fff}
+.tbi-event-date{min-height:67px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#eff2ec;color:var(--tf)}.tbi-event-date>span{color:#7b8b7b;font-size:9px;font-weight:750;letter-spacing:.08em}.tbi-event-date>strong{font:25px/1.15 var(--font-manrope),sans-serif}
+.tbi-event-info .tbi-card-tag{display:block}.tbi-event-info h3{margin:4px 0;font-size:18px}.tbi-event-info>p{max-width:670px;margin:0;color:#758078;font-size:11px}
+.tbi-event-meta{margin-top:13px;display:flex;flex-wrap:wrap;gap:15px;color:#758078;font-size:10px}.tbi-event-meta>span{display:inline-flex;align-items:center;gap:5px}.tbi-event-meta svg{color:#a5784c}
+.tbi-event-register,.tbi-event-complete{align-self:center;display:inline-flex;align-items:center;gap:7px;color:var(--tf);font-size:11px;font-weight:750;white-space:nowrap}.tbi-event-complete{padding:6px 9px;background:#eff2ec;color:#728078;font-size:10px}
+.tbi-news-grid{margin-top:32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.tbi-news-card{overflow:hidden;border:1px solid #e4e3db;background:#fff}
+.tbi-news-art{min-height:145px;padding:17px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(135deg,#dce5d8,#edf0e7 56%,#d1ddd4);color:#456750}
+.tbi-news-art-1{background:linear-gradient(135deg,#e9e0d2,#f4eee3 56%,#dfd5c6);color:#986a44}.tbi-news-art-2{background:linear-gradient(135deg,#dce5e4,#edf0eb 56%,#d5e0dc);color:#4a6964}
+.tbi-news-art>span{padding:5px 9px;background:rgba(255,255,255,.7);color:#566a5d;font-size:9px;font-weight:750;letter-spacing:.06em;text-transform:uppercase}.tbi-news-copy{padding:19px}
+.tbi-news-meta{display:flex;justify-content:space-between;gap:8px;color:#85877e;font-size:9px}.tbi-news-meta>span:first-child{display:flex;align-items:center;gap:5px}.tbi-news-copy h3{min-height:49px;margin:13px 0 7px}.tbi-news-copy>p{min-height:62px}.tbi-news-copy>a{margin-top:17px}
+.tbi-career-grid{margin-top:30px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.tbi-career-card{padding:24px;border:1px solid #e6e3db;background:#fff}.tbi-career-card h3{margin:10px 0 8px}
+.tbi-career-card dl{margin:16px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:13px}.tbi-career-card dl>div{padding-top:10px;border-top:1px solid #eceae4}.tbi-career-card dt{color:#a0734d;font-size:9px;font-weight:750;text-transform:uppercase}.tbi-career-card dd{margin:4px 0 0;color:#67736b;font-size:10px}.tbi-career-card>a{margin-top:17px}
+.tbi-application-section{background:#f2f1eb}.tbi-application-header{padding:36px;display:flex;align-items:center;justify-content:space-between;gap:32px;background:var(--tf);color:#fff}
+.tbi-application-header h2{max-width:650px;margin:11px 0 8px;color:#fff;font-size:37px}.tbi-application-header p{max-width:620px;margin:0;color:rgba(255,255,255,.75);font-size:12px}.tbi-application-header .tbi-button{flex:0 0 auto;background:#fff;color:var(--tf)}.tbi-application-header .tbi-button svg{color:var(--tc)}
+.tbi-application-grid{margin-top:32px;display:grid;grid-template-columns:1.1fr .9fr;gap:45px}.tbi-application-list>h3{margin:27px 0 14px;display:flex;align-items:center;gap:12px;color:var(--ti);font:600 16px var(--font-manrope),sans-serif}.tbi-application-list>h3:first-child{margin-top:0}.tbi-application-list>h3>span{color:#b47c4c;font-size:10px;letter-spacing:.08em}
+.tbi-application-list ul{display:grid;gap:10px}.tbi-application-list ol{display:grid;gap:12px}.tbi-application-list ol>li{align-items:flex-start}.tbi-application-list ol>li>b{flex:0 0 auto;color:#ae7e54;font-size:10px}
+.tbi-application-aside{padding:25px;background:#fff;border:1px solid #e4e2d9}.tbi-application-aside h3{margin:12px 0 18px;color:var(--tf);font:600 22px/1.35 var(--font-manrope),sans-serif;letter-spacing:-.035em}
+.tbi-application-aside ul{display:grid;gap:10px}.tbi-application-aside li{padding-left:13px;position:relative;color:#667269;font-size:11px}.tbi-application-aside li:before{width:4px;height:4px;position:absolute;top:8px;left:0;border-radius:50%;background:#b57d4d;content:""}
+.tbi-criteria{margin-top:23px;padding-top:19px;border-top:1px solid #e9e7df}.tbi-criteria h4{margin:0 0 11px;color:#42584b;font:600 14px var(--font-manrope),sans-serif}
+.tbi-faq{max-width:830px;margin:72px auto 0}.tbi-faq h3{margin:9px 0 18px;color:var(--ti);font:600 26px var(--font-manrope),sans-serif;letter-spacing:-.04em}.tbi-faq details{padding:15px 0;border-top:1px solid #dedfd7}.tbi-faq summary{color:#344a3f;font-size:12px}.tbi-faq summary>svg{flex:0 0 auto;transition:transform .2s}.tbi-faq details>p{max-width:730px;margin:10px 0 0;color:#717b73;font-size:11px}
+.tbi-partner-grid{margin-top:25px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.tbi-partner-card{min-height:134px;padding:17px 11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:1px dashed #d9d4c9;background:#fff;text-align:center}
+.tbi-partner-card>span{color:#a27752;font:750 18px var(--font-manrope),sans-serif;letter-spacing:.04em}.tbi-partner-card>strong{color:#4d5e53;font-size:10px}.tbi-partner-card>small{color:#8c8b80;font-size:9px}
+.tbi-resource-grid{margin-top:30px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.tbi-resource-card{min-height:220px;padding:22px;position:relative;border:1px solid #e3e3da;background:#fff;transition:transform .25s,box-shadow .25s}
+.tbi-resource-index{position:absolute;top:21px;right:20px;color:#b4b8af;font-size:11px}.tbi-resource-card>.tbi-card-tag{margin-top:4px}.tbi-resource-card h3{margin-top:12px}.tbi-resource-status{margin-top:18px;padding-top:11px;display:block;border-top:1px solid #ecebe4;color:#998268;font-size:10px;font-weight:700}
+.tbi-contact-section{padding:83px 0 89px;background:#1a3b33;color:#fff}.tbi-contact-grid{margin-top:32px;display:grid;grid-template-columns:1fr .83fr;gap:65px}.tbi-contact-heading .tbi-eyebrow{color:var(--ta)}
+.tbi-contact-heading h2{margin:15px 0 13px;color:#fff;font:550 clamp(38px,5vw,58px)/1.13 var(--font-manrope),sans-serif;letter-spacing:-.06em}.tbi-contact-heading>p{max-width:410px;color:rgba(255,255,255,.72);font-size:13px}
+.tbi-contact-details>a,.tbi-contact-address{padding:15px 0;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.15);color:#fff}
+.tbi-contact-details>a>span,.tbi-contact-address>span{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.09);color:var(--ta)}
+.tbi-contact-details>a>div,.tbi-contact-address>div{display:flex;flex-direction:column}.tbi-contact-details small,.tbi-contact-address small{color:rgba(255,255,255,.59);font-size:9px;letter-spacing:.1em;text-transform:uppercase}.tbi-contact-details strong,.tbi-contact-address strong{margin-top:3px;color:#fff;font-size:12px;font-weight:650}.tbi-contact-details>a>svg{color:rgba(255,255,255,.53)}
+.tbi-contact-address{grid-template-columns:38px minmax(0,1fr);align-items:start}.tbi-contact-address p{margin:5px 0;color:rgba(255,255,255,.74);font-size:11px}.tbi-contact-address .tbi-map-link{width:fit-content;display:inline-flex;align-items:center;gap:5px;color:var(--ta);font-size:10px}
+.tbi-map{height:185px;margin-top:16px;overflow:hidden;background:#e8e9df}.tbi-map iframe{width:100%;height:100%;border:0;filter:saturate(.72)}
+.tbi-social-links{margin-top:15px;display:flex;flex-wrap:wrap;gap:8px}.tbi-social-links>a{padding:7px 9px;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.21);color:rgba(255,255,255,.83);font-size:10px}.tbi-social-links>a:hover{border-color:var(--ta);color:var(--ta)}.tbi-social-links small{color:var(--ta);font-size:8px}
+.tbi-contact-form{padding:27px;background:#fff;color:var(--ti)}.tbi-contact-form h3{margin:8px 0 18px;color:var(--tf);font:600 23px var(--font-manrope),sans-serif;letter-spacing:-.04em}
+.tbi-contact-form label{margin-top:12px;display:grid;gap:5px;color:#4d5c53;font-size:10px;font-weight:700}.tbi-contact-form input,.tbi-contact-form textarea{width:100%;padding:10px 11px;border:1px solid #e0e2da;border-radius:0;outline-color:#8eaa96;background:#fcfcfa;color:var(--ti);font:12px var(--font-dm-sans),sans-serif;resize:vertical}.tbi-contact-form input{min-height:42px}
+.tbi-contact-form .tbi-button{margin-top:15px;border:0;cursor:pointer}.tbi-contact-form>small,.tbi-form-status{margin:10px 0 0;display:block;color:#798178;font-size:9px}.tbi-form-status{color:#3e7253;font-weight:650}
+.tbi-footer{padding:32px 0 18px;background:#132d28;color:rgba(255,255,255,.72)}.tbi-footer-main{padding-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.tbi-footer-brand strong{color:#fff}.tbi-footer-brand small{color:rgba(255,255,255,.55);letter-spacing:.04em}.tbi-footer-main>p{max-width:260px;margin:0;color:rgba(255,255,255,.65);font:italic 13px Georgia,serif}
+.tbi-footer-main nav{display:flex;flex-wrap:wrap;gap:17px}.tbi-footer-main nav a{color:rgba(255,255,255,.75);font-size:10px}.tbi-footer-bottom{padding-top:15px;display:flex;justify-content:space-between;gap:20px;border-top:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.5);font-size:9px}.tbi-footer-bottom>span:last-child{max-width:580px;text-align:right}
+.tbi-foundation-link{width:fit-content;margin:13px 0 0 auto;display:flex;align-items:center;gap:5px;color:var(--ta);font-size:9px}
+.tbi-visually-hidden{width:1px;height:1px;padding:0;position:absolute;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%)}
+.tbi-article-page{min-height:100vh;background:#fbfaf7;color:#1d302d;font-family:var(--font-dm-sans),Arial,sans-serif}.tbi-article-header{min-height:82px;padding:12px max(32px,calc((100% - 1000px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #e2e0d8;background:#fff}
+.tbi-article-brand{display:flex;align-items:center;gap:10px}.tbi-article-brand img{width:48px;height:48px;object-fit:contain}.tbi-article-brand span{display:flex;flex-direction:column}.tbi-article-brand strong{color:#173c35;font-size:17px}.tbi-article-brand small{color:#727d77;font-size:9px}
+.tbi-article-back{display:inline-flex;align-items:center;gap:7px;color:#40534a;font-size:12px;font-weight:700}.tbi-article{max-width:760px;margin:0 auto;padding:75px 32px 92px}
+.tbi-article>h1{margin:15px 0;color:#1d302d;font:600 clamp(36px,6vw,58px)/1.13 var(--font-manrope),sans-serif;letter-spacing:-.055em}.tbi-article-excerpt{margin:0;color:#65736b;font-size:17px;line-height:1.7}
+.tbi-article-meta{margin:22px 0 32px;padding:15px 0;display:flex;gap:20px;border-top:1px solid #e2e0d8;border-bottom:1px solid #e2e0d8;color:#748078;font-size:11px}.tbi-article-meta>span{display:flex;align-items:center;gap:6px}.tbi-article-meta svg{color:#a8794e}
+.tbi-article-body p{margin:0 0 18px;color:#46564d;font-size:15px;line-height:1.95}.tbi-article .tbi-button{margin-top:15px}.tbi-button-outline{border-color:#d5d9d0;color:#315d50}.tbi-button-outline:hover{border-color:#315d50;background:#eef2ec}
+.tbi-article-footer{padding:19px 32px;display:flex;justify-content:center;align-items:center;gap:6px;background:#173c35;color:rgba(255,255,255,.7);font-size:10px}
+@keyframes tbi-float{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@media(max-width:1100px){.tbi-nav{gap:15px}.tbi-header-inner{gap:20px}.tbi-header-cta{padding:0 12px;font-size:11px}.tbi-hero,.tbi-hero-inner{min-height:585px}.tbi-stat{padding-right:11px;padding-left:11px}.tbi-stat strong{font-size:26px}.tbi-about-grid{gap:48px}.tbi-contact-grid{gap:38px}}
+@media(max-width:900px){.tbi-container{width:min(1200px,calc(100% - 44px))}.tbi-header-inner{min-height:74px}.tbi-brand>img{width:46px;height:46px}.tbi-brand strong{font-size:17px}.tbi-menu-button{display:inline-flex;order:3}.tbi-header-cta{margin-left:auto}.tbi-nav{display:none;position:absolute;top:100%;right:0;left:0;padding:12px 22px 19px;align-items:stretch;flex-direction:column;gap:0;border-bottom:1px solid var(--td);background:var(--tp);box-shadow:0 12px 20px rgba(24,43,36,.08)}.tbi-nav-open{display:flex}.tbi-nav a{padding:11px 4px;border-bottom:1px solid #e9e8e1}
+.tbi-stats-grid{grid-template-columns:repeat(3,1fr);gap:18px 0}.tbi-stat:nth-child(4){padding-left:0;border-left:0}.tbi-about-grid{grid-template-columns:1fr;gap:35px}.tbi-about-copy{max-width:700px}.tbi-purpose-card{max-width:680px}.tbi-objectives{grid-template-columns:1fr;gap:24px}.tbi-objectives ul{max-width:750px}
+.tbi-startup-grid,.tbi-program-grid,.tbi-facility-grid,.tbi-funding-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tbi-mentor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tbi-news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tbi-news-card:last-child{display:none}.tbi-partner-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tbi-contact-grid{grid-template-columns:1fr 1fr;gap:26px}.tbi-footer-main{align-items:flex-start;flex-wrap:wrap}.tbi-footer-main>p{max-width:230px}.tbi-footer-main nav{width:100%}}
+@media(max-width:650px){.tbi-container{width:calc(100% - 36px)}.tbi-topline-inner{min-height:32px}.tbi-topline-inner>span{font-size:9px}.tbi-topline-inner>a{display:none}.tbi-header-inner{min-height:68px;gap:10px}.tbi-brand{gap:7px}.tbi-brand>img{width:41px;height:41px}.tbi-brand strong{font-size:15px}.tbi-brand small{font-size:7px}.tbi-header-cta{min-height:39px;padding:0 9px;gap:4px;font-size:9px}.tbi-menu-button{width:37px;height:39px}
+.tbi-hero,.tbi-hero-inner{min-height:590px}.tbi-hero-image{object-position:58% center}.tbi-hero-shade{background:linear-gradient(90deg,rgba(17,38,33,.92),rgba(17,38,33,.67)),linear-gradient(0deg,rgba(17,38,33,.36),transparent 60%)}.tbi-hero-copy{padding:56px 0 95px}.tbi-hero-kicker{font-size:8px;letter-spacing:.1em}.tbi-hero h1{margin-top:20px;font-size:clamp(50px,14vw,69px)}.tbi-hero-copy>p{max-width:430px;font-size:14px}.tbi-hero-actions{gap:8px}.tbi-button{min-height:43px;padding:0 12px;gap:7px;font-size:10px}.tbi-scroll-link{margin-top:33px}.tbi-hero-note{right:0;bottom:28px;font-size:10px}
+.tbi-stats{padding:18px 0 22px}.tbi-demo-label{margin-bottom:15px;font-size:9px}.tbi-stats-grid{grid-template-columns:repeat(2,1fr);gap:15px 0}.tbi-stat{padding:2px 10px}.tbi-stat:nth-child(odd){padding-left:0;border-left:0}.tbi-stat:nth-child(4){padding-left:10px;border-left:1px solid var(--td)}.tbi-stat strong{font-size:25px}.tbi-stat>span{font-size:10px}
+.tbi-section{padding:65px 0}.tbi-section-intro h2{font-size:35px}.tbi-section-intro>p{font-size:13px}.tbi-about-lead{font-size:16px}.tbi-purpose-card{padding:19px}.tbi-purpose-item{grid-template-columns:39px 1fr;gap:12px}.tbi-icon-box{width:38px;height:38px}.tbi-purpose-item p{font-size:12px}.tbi-objectives{margin-top:48px;padding-top:35px}.tbi-objectives h3{font-size:27px}.tbi-objectives ul{grid-template-columns:1fr;gap:13px}
+.tbi-portfolio-toolbar{align-items:stretch;flex-direction:column;gap:12px}.tbi-search{width:100%}.tbi-startup-grid,.tbi-program-grid,.tbi-facility-grid,.tbi-funding-grid,.tbi-mentor-grid,.tbi-news-grid,.tbi-career-grid,.tbi-resource-grid{grid-template-columns:1fr}.tbi-startup-card{min-height:220px}.tbi-program-card{min-height:300px}.tbi-news-card:last-child{display:block}.tbi-news-art{min-height:123px}
+.tbi-section-row{align-items:flex-start;flex-direction:column;gap:12px}.tbi-event-toggle{margin:0}.tbi-event-card{grid-template-columns:54px 1fr;gap:13px;padding:14px}.tbi-event-date{min-height:60px}.tbi-event-info h3{font-size:16px}.tbi-event-register,.tbi-event-complete{grid-column:2;justify-self:start}
+.tbi-partner-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tbi-application-header{padding:23px 18px;align-items:flex-start;flex-direction:column;gap:17px}.tbi-application-header h2{font-size:30px}.tbi-application-grid{grid-template-columns:1fr;gap:25px}.tbi-application-aside{padding:19px}.tbi-faq{margin-top:50px}
+.tbi-contact-section{padding:64px 0}.tbi-contact-grid{grid-template-columns:1fr;gap:25px}.tbi-contact-heading h2{font-size:44px}.tbi-contact-form{padding:21px}.tbi-footer-main{flex-direction:column}.tbi-footer-main>p{margin:0}.tbi-footer-main nav{gap:13px}.tbi-footer-bottom{flex-direction:column;gap:7px}.tbi-footer-bottom>span:last-child{text-align:left}.tbi-foundation-link{margin-left:0}
+.tbi-article-header{min-height:68px;padding:8px 18px}.tbi-article-brand img{width:40px;height:40px}.tbi-article-brand strong{font-size:15px}.tbi-article-back{font-size:10px}.tbi-article{padding:55px 20px 70px}.tbi-article>h1{font-size:39px}.tbi-article-excerpt{font-size:15px}.tbi-article-body p{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.tbi-site *,.tbi-article-page *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Readable type, compact sections, and reliable anchor destinations. */
+.tbi-site{font-size:16px}
+.tbi-site .tbi-section{padding:68px 0}
+.tbi-site .tbi-about{padding-bottom:68px}
+.tbi-site .tbi-section[id],.tbi-site .tbi-contact-section[id]{scroll-margin-top:106px}
+.tbi-site .tbi-nav a{font-size:14px}
+.tbi-site .tbi-eyebrow{font-size:11px}
+.tbi-site .tbi-section-intro>p{font-size:16px}
+.tbi-site .tbi-about-lead{font-size:20px}
+.tbi-site .tbi-body-copy,.tbi-site .tbi-purpose-item p{font-size:15px}
+.tbi-site .tbi-purpose-card{padding:26px}
+.tbi-site .tbi-objectives{margin-top:48px;padding-top:37px;gap:46px}
+.tbi-site .tbi-objectives li,.tbi-site .tbi-application-list li{font-size:14px}
+.tbi-site .tbi-demo-label,.tbi-site .tbi-portfolio-note,.tbi-site .tbi-funding-alert p{font-size:12px}
+.tbi-site .tbi-startup-card{min-height:220px}
+.tbi-site .tbi-program-card{min-height:292px}
+.tbi-site .tbi-startup-card>p,.tbi-site .tbi-program-card>p,.tbi-site .tbi-funding-card>p,
+.tbi-site .tbi-mentor-card>p,.tbi-site .tbi-facility-card>p,.tbi-site .tbi-news-copy>p,
+.tbi-site .tbi-career-card>p,.tbi-site .tbi-resource-card>p{font-size:14px}
+.tbi-site .tbi-card-tag{font-size:10px}
+.tbi-site .tbi-startup-meta,.tbi-site .tbi-benefits>span,.tbi-site .tbi-expertise,
+.tbi-site .tbi-funding-card details>p,.tbi-site .tbi-faq details>p{font-size:11px}
+.tbi-site .tbi-funding-card{min-height:250px}
+.tbi-site .tbi-mentor-card{min-height:270px}
+.tbi-site .tbi-facility-card{min-height:160px}
+.tbi-site .tbi-event-info>p,.tbi-site .tbi-career-card dd,.tbi-site .tbi-application-aside li{font-size:13px}
+.tbi-site .tbi-news-copy h3{min-height:0}
+.tbi-site .tbi-news-copy>p{min-height:0}
+.tbi-site .tbi-contact-section{padding:68px 0}
+.tbi-site .tbi-contact-grid{gap:44px}
+.tbi-site .tbi-contact-heading>p{font-size:15px}
+.tbi-site .tbi-contact-details strong,.tbi-site .tbi-contact-address strong{font-size:14px}
+.tbi-site .tbi-contact-address p,.tbi-site .tbi-contact-form label{font-size:13px}
+.tbi-site .tbi-contact-form>small{font-size:11px}
+.tbi-site .tbi-header-cta{cursor:pointer}
+.tbi-site button.tbi-button{font-family:inherit;cursor:pointer}
+.tbi-site .tbi-button-glass{background:transparent}
+.tbi-site .tbi-button-glass:hover{background:rgba(255,255,255,.08)}
+.tbi-site .tbi-scroll-link:focus-visible,.tbi-site a:focus-visible,.tbi-site button:focus-visible,
+.tbi-article-page a:focus-visible{outline:3px solid #d59b60;outline-offset:3px}
+.tbi-modal-backdrop{position:fixed;z-index:2000;inset:0;padding:24px;display:grid;place-items:center;overflow-y:auto;background:rgba(17,35,29,.72);backdrop-filter:blur(5px)}
+.tbi-application-modal{width:min(820px,100%);max-height:min(92vh,920px);padding:30px;position:relative;overflow-y:auto;background:#fbfaf7;box-shadow:0 24px 90px rgba(0,0,0,.28)}
+.tbi-modal-close{width:40px;height:40px;position:sticky;z-index:2;top:0;float:right;display:grid;place-items:center;border:1px solid #ddded5;background:#fff;color:#355448;cursor:pointer}
+.tbi-modal-close:disabled{opacity:.55;cursor:wait}
+.tbi-modal-heading{padding-right:45px}
+.tbi-modal-heading h2,.tbi-application-success h2{margin:8px 0;color:#1d302d;font:600 clamp(28px,4vw,38px)/1.2 var(--font-manrope),sans-serif;letter-spacing:-.045em}
+.tbi-modal-heading>p,.tbi-application-success>p{margin:0;color:#68756c;font-size:14px}
+.tbi-application-form{margin-top:22px}
+.tbi-form-group{margin-top:20px;padding-top:17px;border-top:1px solid #e4e3db}
+.tbi-form-group>h3{margin:0 0 13px;color:#23483a;font:650 16px var(--font-manrope),sans-serif}
+.tbi-form-group>h3>span{margin-right:9px;color:#af7950;font-size:10px;letter-spacing:.08em}
+.tbi-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 15px}
+.tbi-form-grid>label{min-width:0;display:grid;gap:5px;color:#48574e;font-size:12px;font-weight:700}
+.tbi-form-grid>label>span{color:#8b897f;font-size:10px;font-weight:500}
+.tbi-form-grid input,.tbi-form-grid select,.tbi-form-grid textarea{width:100%;min-height:43px;padding:10px 11px;border:1px solid #dfe1d9;border-radius:0;outline-color:#829d88;background:#fff;color:#27372e;font:14px/1.5 var(--font-dm-sans),sans-serif}
+.tbi-form-grid textarea{min-height:76px;resize:vertical}
+.tbi-form-grid input::placeholder,.tbi-form-grid textarea::placeholder{color:#9a9d94}
+.tbi-form-grid .tbi-form-field-wide{grid-column:1/-1}
+.tbi-form-honeypot{width:1px;height:1px;position:absolute;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%)}
+.tbi-application-consent{margin:20px 0;display:grid;grid-template-columns:18px 1fr;align-items:start;gap:10px;color:#69756c;font-size:12px;line-height:1.55}
+.tbi-application-consent input{width:16px;height:16px;margin:2px 0;accent-color:#315d50}
+.tbi-application-error{padding:10px 12px;border-left:3px solid #a84235;background:#fff2ef;color:#873a30;font-size:12px}
+.tbi-application-submit{padding-top:15px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:1px solid #e4e3db}
+.tbi-application-submit>p{max-width:380px;margin:0;color:#85877d;font-size:11px}
+.tbi-application-submit button:disabled{opacity:.65;cursor:wait}
+.tbi-loader{animation:tbi-spin 1s linear infinite}
+.tbi-application-success{padding:38px 20px;display:flex;align-items:center;flex-direction:column;text-align:center}
+.tbi-application-success>svg{margin-bottom:17px;color:#4f805e}
+.tbi-application-success>h2{max-width:570px}
+.tbi-application-success>p{max-width:520px}
+.tbi-application-success>strong{margin:19px 0 9px;padding:9px 13px;background:#edf2eb;color:#315d50;font-family:ui-monospace,monospace;font-size:13px}
+.tbi-application-success>a{margin-bottom:18px;color:#315d50;font-size:12px;font-weight:700}
+.tbi-application-success>.tbi-button{min-width:120px}
+@keyframes tbi-spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.tbi-site .tbi-nav a{font-size:15px}}
+@media(max-width:650px){
+  .tbi-site .tbi-section{padding:54px 0}
+  .tbi-site .tbi-about{padding-bottom:54px}
+  .tbi-site .tbi-objectives{margin-top:37px;padding-top:29px;gap:22px}
+  .tbi-site .tbi-startup-card,.tbi-site .tbi-program-card,.tbi-site .tbi-funding-card,
+  .tbi-site .tbi-mentor-card,.tbi-site .tbi-facility-card{min-height:0}
+  .tbi-site .tbi-program-card>p,.tbi-site .tbi-funding-card>p{min-height:0}
+  .tbi-site .tbi-contact-section{padding:54px 0}
+  .tbi-site .tbi-contact-grid{gap:26px}
+  .tbi-modal-backdrop{padding:10px;align-items:start}
+  .tbi-application-modal{max-height:calc(100vh - 20px);padding:21px 16px}
+  .tbi-modal-heading{padding-right:30px}
+  .tbi-form-grid{grid-template-columns:1fr}
+  .tbi-form-grid .tbi-form-field-wide{grid-column:auto}
+  .tbi-application-submit{align-items:stretch;flex-direction:column}
+  .tbi-application-submit .tbi-button{width:100%}
+  .tbi-application-success{padding:35px 4px}
+}
+
+.tbi-site{font-size:16px}
+.tbi-site .tbi-topline{font-size:13px;font-weight:650;letter-spacing:.015em}
+.tbi-site .tbi-topline-inner{justify-content:center}
+.tbi-site .tbi-topline-inner>span{white-space:nowrap}
+.tbi-site .tbi-header-inner{min-height:86px}
+.tbi-site .tbi-brand{gap:12px}
+.tbi-site .tbi-brand>img{width:66px;height:66px}
+.tbi-site .tbi-brand strong{font-size:22px}
+.tbi-site .tbi-brand small{font-size:10px;letter-spacing:.08em}
+.tbi-site .tbi-nav a{font-size:15px}
+.tbi-site .tbi-header-cta,.tbi-site .tbi-button{font-size:14px}
+.tbi-site .tbi-eyebrow{font-size:12px}
+.tbi-site .tbi-section{padding:58px 0}
+.tbi-site .tbi-about{padding-bottom:58px}
+.tbi-site .tbi-section-intro>p{font-size:16px;line-height:1.65}
+.tbi-site .tbi-about-lead{font-size:20px}
+.tbi-site .tbi-body-copy,.tbi-site .tbi-purpose-item p{font-size:16px}
+.tbi-site .tbi-purpose-card{padding:26px}
+.tbi-site .tbi-objectives{margin-top:42px;padding-top:32px}
+.tbi-site .tbi-objectives li,.tbi-site .tbi-application-list li{font-size:15px}
+.tbi-site .tbi-demo-label,.tbi-site .tbi-portfolio-note,.tbi-site .tbi-funding-alert p{font-size:13px}
+.tbi-site .tbi-startup-card,.tbi-site .tbi-program-card,.tbi-site .tbi-funding-card,
+.tbi-site .tbi-mentor-card,.tbi-site .tbi-facility-card{min-height:0}
+.tbi-site .tbi-startup-card>p,.tbi-site .tbi-program-card>p,.tbi-site .tbi-funding-card>p,
+.tbi-site .tbi-mentor-card>p,.tbi-site .tbi-facility-card>p,.tbi-site .tbi-news-copy>p,
+.tbi-site .tbi-career-card>p,.tbi-site .tbi-resource-card>p{font-size:15px;line-height:1.65}
+.tbi-site .tbi-card-tag{font-size:11px}
+.tbi-site .tbi-startup-meta,.tbi-site .tbi-benefits>span,.tbi-site .tbi-expertise,
+.tbi-site .tbi-funding-card details>p,.tbi-site .tbi-faq details>p{font-size:13px}
+.tbi-site .tbi-event-info>p,.tbi-site .tbi-career-card dd,.tbi-site .tbi-application-aside li{font-size:14px}
+.tbi-site .tbi-stat>span{font-size:13px}
+.tbi-site .tbi-contact-section{padding:58px 0}
+.tbi-site .tbi-contact-grid{grid-template-columns:1fr 1fr;gap:40px}
+.tbi-site .tbi-contact-heading>p{font-size:16px}
+.tbi-site .tbi-contact-details strong,.tbi-site .tbi-contact-address strong{font-size:15px}
+.tbi-site .tbi-contact-address p{font-size:14px}
+.tbi-site .tbi-contact-visual{align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+.tbi-site .tbi-contact-visual .tbi-map{height:250px;margin:0;border:1px solid rgba(255,255,255,.2)}
+.tbi-site .tbi-contact-visual-caption{min-height:160px;padding:24px;display:flex;align-items:flex-start;flex-direction:column;justify-content:center;gap:9px;background:#224b3f}
+.tbi-site .tbi-contact-visual-caption>span{color:var(--ta);font-size:12px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
+.tbi-site .tbi-contact-visual-caption>strong{max-width:380px;color:#fff;font:600 25px/1.3 var(--font-manrope),sans-serif}
+.tbi-site .tbi-contact-visual-caption .tbi-button{margin-top:5px}
+.tbi-site .tbi-social-links>a{font-size:12px}
+.tbi-site .tbi-footer-main nav a{font-size:14px}
+.tbi-site .tbi-footer-main>p{font-size:15px}
+.tbi-site .tbi-footer-bottom{font-size:12px}
+.tbi-site .tbi-footer-brand>img{width:56px;height:56px}
+.tbi-site .tbi-footer-brand small{font-size:10px;letter-spacing:.04em}
+.tbi-site .tbi-form-grid>label{font-size:14px}
+.tbi-site .tbi-form-grid>label>span{font-size:12px}
+.tbi-site .tbi-form-grid input,.tbi-site .tbi-form-grid select,.tbi-site .tbi-form-grid textarea{font-size:15px}
+.tbi-site .tbi-application-consent{font-size:13px}
+.tbi-site .tbi-application-submit>p{font-size:12px}
+
+@media(max-width:900px){
+  .tbi-site .tbi-contact-grid{grid-template-columns:1fr;gap:24px}
+}
+@media(max-width:650px){
+  .tbi-site .tbi-topline{font-size:10px}
+  .tbi-site .tbi-topline-inner>span{font-size:10px}
+  .tbi-site .tbi-header-inner{min-height:68px}
+  .tbi-site .tbi-brand{gap:7px}
+  .tbi-site .tbi-brand>img{width:42px;height:42px}
+  .tbi-site .tbi-brand strong{font-size:16px}
+  .tbi-site .tbi-brand small{font-size:7px;letter-spacing:.04em}
+  .tbi-site .tbi-header-cta{font-size:10px}
+  .tbi-site .tbi-section{padding:46px 0}
+  .tbi-site .tbi-about{padding-bottom:46px}
+  .tbi-site .tbi-contact-section{padding:46px 0}
+  .tbi-site .tbi-contact-grid{grid-template-columns:1fr;gap:20px}
+  .tbi-site .tbi-contact-visual .tbi-map{height:190px}
+  .tbi-site .tbi-contact-visual-caption{min-height:145px;padding:19px}
+  .tbi-site .tbi-contact-visual-caption>strong{font-size:22px}
+  .tbi-site .tbi-footer-main nav a{font-size:14px}
+  .tbi-site .tbi-footer-bottom{font-size:12px}
+}
+
+.tbi-site .tbi-hero,.tbi-site .tbi-hero-inner{min-height:570px}
+.tbi-site .tbi-hero-copy{max-width:680px;padding:58px 0 78px}
+.tbi-site .tbi-hero h1{font-size:clamp(48px,5.2vw,60px);letter-spacing:-.055em}
+.tbi-site .tbi-hero-kicker{font-size:12px}
+.tbi-site .tbi-scroll-link{margin-top:30px;font-size:13px}
+.tbi-site .tbi-section{padding:50px 0}
+.tbi-site .tbi-about{padding-bottom:50px}
+.tbi-site .tbi-section-intro h2,.tbi-site .tbi-objectives h3,.tbi-site .tbi-application-header h2{font-size:clamp(32px,3.3vw,40px)}
+.tbi-site .tbi-section-intro>p,.tbi-site .tbi-purpose-item p,.tbi-site .tbi-about-lead,.tbi-site .tbi-body-copy{font-size:16px}
+.tbi-site .tbi-startup-card h3,.tbi-site .tbi-program-card h3,.tbi-site .tbi-funding-card h3,
+.tbi-site .tbi-mentor-card h3,.tbi-site .tbi-facility-card h3,.tbi-site .tbi-event-info h3,
+.tbi-site .tbi-news-copy h3,.tbi-site .tbi-career-card h3,.tbi-site .tbi-resource-card h3{font-size:21px}
+.tbi-site .tbi-startup-card>p,.tbi-site .tbi-program-card>p,.tbi-site .tbi-funding-card>p,
+.tbi-site .tbi-mentor-card>p,.tbi-site .tbi-facility-card>p,.tbi-site .tbi-news-copy>p,
+.tbi-site .tbi-career-card>p,.tbi-site .tbi-resource-card>p,.tbi-site .tbi-event-info>p{font-size:16px;line-height:1.55}
+.tbi-site .tbi-card-tag,.tbi-site .tbi-startup-meta,.tbi-site .tbi-mentor-card>strong,
+.tbi-site .tbi-expertise,.tbi-site .tbi-event-meta,.tbi-site .tbi-event-register,
+.tbi-site .tbi-event-complete,.tbi-site .tbi-news-meta,.tbi-site .tbi-career-card dt,
+.tbi-site .tbi-career-card dd,.tbi-site .tbi-small-note,.tbi-site .tbi-search input{font-size:13px}
+.tbi-site .tbi-startup-card,.tbi-site .tbi-mentor-card,.tbi-site .tbi-event-card{height:100%}
+.tbi-site .tbi-startup-card{min-height:270px}
+.tbi-site .tbi-mentor-card{min-height:330px;display:flex;flex-direction:column}
+.tbi-site .tbi-mentor-card>a{margin-top:auto;padding-top:16px;font-size:14px}
+.tbi-site .tbi-portfolio-toolbar{margin:22px 0 15px}
+.tbi-site .tbi-filter-list button,.tbi-site .tbi-event-toggle button{min-height:40px;font-size:13px}
+.tbi-site .tbi-search{min-height:42px}
+.tbi-site .tbi-program-detail,.tbi-site .tbi-benefits>span,.tbi-site .tbi-funding-card details>p,
+.tbi-site .tbi-funding-card details>small,.tbi-site .tbi-program-detail>span,
+.tbi-site .tbi-benefits,.tbi-site .tbi-faq details>p,.tbi-site .tbi-application-aside li{font-size:14px}
+.tbi-site .tbi-portfolio-note,.tbi-site .tbi-funding-alert p,.tbi-site .tbi-demo-label{font-size:14px}
+.tbi-site .tbi-facility-card{min-height:0;padding:0;overflow:hidden}
+.tbi-site .tbi-facility-image{height:174px;position:relative;overflow:hidden;background:#dfe5dc}
+.tbi-site .tbi-facility-image img{object-fit:cover}
+.tbi-site .tbi-facility-content{padding:18px 20px 21px}
+.tbi-site .tbi-facility-content>span{width:39px;height:39px;display:flex;align-items:center;justify-content:center;background:#e8eee7;color:var(--tg)}
+.tbi-site .tbi-facility-content h3{margin:13px 0 5px}
+.tbi-site .tbi-event-card{min-height:250px;grid-template-columns:64px minmax(0,1fr);align-content:start}
+.tbi-site .tbi-event-register,.tbi-site .tbi-event-complete{grid-column:2;justify-self:start}
+.tbi-site .tbi-news-card{height:100%;display:flex;flex-direction:column}
+.tbi-site .tbi-news-art{min-height:132px}
+.tbi-site .tbi-news-copy{flex:1;display:flex;flex-direction:column}
+.tbi-site .tbi-news-copy h3,.tbi-site .tbi-news-copy>p{min-height:0}
+.tbi-site .tbi-news-copy>a{margin-top:auto;padding-top:18px;font-size:15px}
+.tbi-site .tbi-application-header p,.tbi-site .tbi-contact-heading>p{font-size:16px}
+.tbi-site .tbi-contact-heading h2{font-size:clamp(38px,5vw,58px)}
+.tbi-site .tbi-footer-main nav a,.tbi-site .tbi-footer-main>p{font-size:15px}
+.tbi-site .tbi-footer-bottom{font-size:13px}
+.tbi-site .tbi-footer-brand small{font-size:12px}
+
+.tbi-carousel{margin-top:22px}
+.tbi-carousel-controls{margin-bottom:10px;display:flex;justify-content:flex-end;gap:8px}
+.tbi-carousel-controls button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:1px solid #d9ddd5;background:#fff;color:var(--tf);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.tbi-carousel-controls button:hover:not(:disabled){border-color:var(--tf);background:var(--tf);color:#fff}
+.tbi-carousel-controls button:disabled{opacity:.42;cursor:not-allowed}
+.tbi-carousel-track{display:grid;grid-auto-columns:calc((100% - 40px)/3);grid-auto-flow:column;align-items:stretch;gap:20px;overflow-x:auto;overscroll-behavior-x:contain;scroll-behavior:smooth;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x pan-y}
+.tbi-carousel-track::-webkit-scrollbar{display:none}
+.tbi-carousel-track:focus-visible{outline:2px solid #9a764f;outline-offset:3px}
+.tbi-carousel-item{min-width:0;height:100%;scroll-snap-align:start}
+.tbi-carousel-item>article{height:100%}
+.tbi-carousel-dots{margin-top:8px;display:flex;justify-content:center;gap:8px}
+.tbi-carousel-dots button,.tbi-hero-dots button{width:8px;height:8px;padding:0;border:0;border-radius:20px;background:#c9cec5;cursor:pointer;transition:width .2s,background .2s}
+.tbi-carousel-dots button.active,.tbi-hero-dots button.active{width:22px;background:#315d50}
+.tbi-carousel-dots button:focus-visible,.tbi-hero-dots button:focus-visible{outline:2px solid #bd8050;outline-offset:3px}
+.tbi-hero-slide{position:absolute;z-index:-2;inset:0}
+.tbi-hero-controls{position:absolute;right:0;bottom:30px;display:flex;align-items:center;gap:11px}
+.tbi-hero-controls>button{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.52);background:rgba(15,35,30,.25);color:#fff;cursor:pointer;transition:background .2s}
+.tbi-hero-controls>button:hover{background:rgba(15,35,30,.65)}
+.tbi-hero-dots{display:flex;align-items:center;gap:6px}
+.tbi-hero-dots button{width:7px;height:7px;background:rgba(255,255,255,.56)}
+.tbi-hero-dots button.active{width:21px;background:#fff}
+.tbi-site .tbi-hero-note{bottom:80px}
+
+@media(max-width:900px){
+  .tbi-carousel-track{grid-auto-columns:calc((100% - 20px)/2)}
+}
+@media(max-width:650px){
+  .tbi-site .tbi-container{width:calc(100% - 36px)}
+  .tbi-site .tbi-header-cta{font-size:12px}
+  .tbi-site .tbi-hero,.tbi-site .tbi-hero-inner{min-height:540px}
+  .tbi-site .tbi-hero-copy{padding:46px 0 86px}
+  .tbi-site .tbi-hero h1{font-size:48px}
+  .tbi-site .tbi-hero-note{right:auto;bottom:27px;left:0;font-size:13px}
+  .tbi-site .tbi-hero-controls{right:0;bottom:22px}
+  .tbi-site .tbi-section{padding:42px 0}
+  .tbi-site .tbi-about{padding-bottom:42px}
+  .tbi-site .tbi-section-intro h2,.tbi-site .tbi-objectives h3,.tbi-site .tbi-application-header h2{font-size:32px}
+  .tbi-site .tbi-section-row{align-items:flex-start;flex-direction:column;gap:12px}
+  .tbi-site .tbi-event-toggle{margin:0}
+  .tbi-site .tbi-portfolio-toolbar{align-items:stretch;flex-direction:column}
+  .tbi-site .tbi-search{width:100%}
+  .tbi-site .tbi-event-card{grid-template-columns:48px minmax(0,1fr);gap:13px;padding:16px}
+  .tbi-site .tbi-application-header{padding:23px;align-items:flex-start;flex-direction:column;gap:17px}
+  .tbi-site .tbi-application-grid{gap:26px}
+  .tbi-site .tbi-contact-heading h2{font-size:40px}
+  .tbi-carousel{margin-top:17px}
+  .tbi-carousel-track{grid-auto-columns:100%;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .tbi-carousel-track{scroll-behavior:auto}
+  .tbi-site .tbi-scroll-link svg{animation:none}
+  .tbi-carousel-controls button,.tbi-carousel-dots button,.tbi-hero-controls>button,
+  .tbi-hero-dots button{transition:none}
+}

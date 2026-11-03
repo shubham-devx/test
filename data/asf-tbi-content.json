@@ -1,0 +1,387 @@
+{
+  "organization": {
+    "name": "AKGEC Skills Foundation",
+    "subtitle": "Technology Business Incubator",
+    "tagline": "Turning bold ideas into ventures that shape tomorrow."
+  },
+  "hero": {
+    "eyebrow": "AKGEC SKILLS FOUNDATION · TECHNOLOGY BUSINESS INCUBATOR",
+    "title": "Build what",
+    "highlight": "comes next.",
+    "description": "A launchpad for ambitious founders to shape, validate and grow technology-led ventures—with the right people and a place to begin.",
+    "primaryCta": "Explore our programs",
+    "secondaryCta": "Apply for incubation",
+    "image": "/images/hero/asf-fablab.jpg",
+    "slides": [
+      "/images/hero/asf-main.jpg",
+      "/images/hero/asf-robotics.JPG"
+    ]
+  },
+  "about": {
+    "label": "A place for possibility",
+    "title": "From promising idea to lasting impact.",
+    "lead": "ASF-TBI is the Technology Business Incubator of AKGEC Skills Foundation, created to help innovators take the next meaningful step.",
+    "description": "Our incubation ecosystem is designed to bring founders, mentors, technical resources and industry perspectives together. Whether you are exploring a challenge or developing a solution, we aim to help you move forward with clarity and confidence.",
+    "vision": "Build an inclusive, technology-driven entrepreneurial ecosystem where original ideas can grow into sustainable ventures and meaningful impact.",
+    "mission": "Enable founders through mentorship, practical incubation support, industry collaboration and a pathway from early validation to market readiness.",
+    "objectives": [
+      "Help innovators shape and validate promising startup ideas.",
+      "Provide a collaborative environment and access to incubation facilities.",
+      "Encourage entrepreneurship, experimentation and responsible innovation.",
+      "Connect founders with experienced mentors and relevant industry expertise.",
+      "Help startups explore appropriate funding and investment-readiness pathways.",
+      "Strengthen collaboration between academia, industry and entrepreneurs."
+    ]
+  },
+  "stats": [
+    { "label": "Startups supported", "value": 32, "suffix": "+" },
+    { "label": "Startups incubated", "value": 14, "suffix": "" },
+    { "label": "Funding explored", "value": 4.5, "suffix": " Cr" },
+    { "label": "Mentors in the network", "value": 40, "suffix": "+" },
+    { "label": "Opportunities created", "value": 120, "suffix": "+" },
+    { "label": "Recognitions", "value": 18, "suffix": "" }
+  ],
+  "startups": [
+    {
+      "name": "AeroSense Labs",
+      "industry": "Aerospace",
+      "description": "Exploring accessible sensing and inspection tools for safer, more informed infrastructure operations.",
+      "founder": "Aarav Sharma",
+      "stage": "Prototype",
+      "initials": "AS"
+    },
+    {
+      "name": "MedThread",
+      "industry": "Healthcare",
+      "description": "Developing a connected-care concept to help clinical teams coordinate routine patient follow-ups.",
+      "founder": "Riya Mehta",
+      "stage": "Pre-seed",
+      "initials": "MT"
+    },
+    {
+      "name": "LoopHarvest",
+      "industry": "Climate tech",
+      "description": "Turning local agricultural by-products into useful, lower-waste materials for growing communities.",
+      "founder": "Kabir Verma",
+      "stage": "Validation",
+      "initials": "LH"
+    },
+    {
+      "name": "ForgeFlow",
+      "industry": "Manufacturing",
+      "description": "A young team investigating smarter quality workflows for small and mid-sized manufacturers.",
+      "founder": "Ishita Rao",
+      "stage": "MVP",
+      "initials": "FF"
+    },
+    {
+      "name": "LearnCircuit",
+      "industry": "Education",
+      "description": "Creating hands-on learning experiences that make foundational electronics more approachable.",
+      "founder": "Dev Malhotra",
+      "stage": "Prototype",
+      "initials": "LC"
+    },
+    {
+      "name": "NexaGrid",
+      "industry": "Clean energy",
+      "description": "Testing a data-led approach to help campuses understand and improve energy use.",
+      "founder": "Ananya Singh",
+      "stage": "Idea",
+      "initials": "NG"
+    }
+  ],
+  "programs": [
+    {
+      "title": "Pre-Incubation",
+      "description": "Find the problem worth solving, learn from potential users and turn an early concept into a focused opportunity.",
+      "eligibility": "Individuals or teams at the idea and discovery stage.",
+      "benefits": ["Problem discovery", "Founder guidance", "Idea validation"]
+    },
+    {
+      "title": "Idea to Prototype",
+      "description": "Move from a promising concept toward a testable prototype through structured milestones and practical feedback.",
+      "eligibility": "Teams with a defined problem and a proposed technology-led solution.",
+      "benefits": ["Prototype planning", "Technical guidance", "User testing"]
+    },
+    {
+      "title": "Startup Incubation",
+      "description": "Build stronger foundations for an early venture, from product direction to customer and business-model learning.",
+      "eligibility": "Early-stage startups ready to work toward clear development milestones.",
+      "benefits": ["Mentor access", "Business support", "Incubation community"]
+    },
+    {
+      "title": "Entrepreneurship Development",
+      "description": "Develop the practical skills, confidence and networks needed to explore an entrepreneurial journey.",
+      "eligibility": "Students, aspiring founders and early-career professionals.",
+      "benefits": ["Founder skills", "Peer learning", "Expert sessions"]
+    },
+    {
+      "title": "Startup Acceleration",
+      "description": "Focus an emerging venture on its next growth priorities with targeted expert and industry conversations.",
+      "eligibility": "Startups with a working offering and evidence of customer learning.",
+      "benefits": ["Growth planning", "Market readiness", "Investor preparation"]
+    },
+    {
+      "title": "Innovation Workshops",
+      "description": "Explore design thinking, emerging technology and venture-building through hands-on sessions and challenges.",
+      "eligibility": "Open to learners, innovators and startup teams; each session may vary.",
+      "benefits": ["Practical workshops", "New perspectives", "Collaborative challenges"]
+    }
+  ],
+  "funding": [
+    {
+      "title": "Government startup schemes",
+      "category": "Scheme discovery",
+      "range": "Varies by scheme",
+      "eligibility": "Depends on the relevant published scheme and applicant criteria.",
+      "benefit": "Guidance to identify relevant public startup resources and application information.",
+      "notice": "Illustrative category only. This is not an approved ASF-TBI scheme or funding commitment."
+    },
+    {
+      "title": "Seed funding pathways",
+      "category": "Early-stage capital",
+      "range": "Subject to external program",
+      "eligibility": "May depend on venture stage, registration and the independent funder's rules.",
+      "benefit": "Investment-readiness support and signposting to relevant opportunities.",
+      "notice": "No funding is guaranteed. Availability and terms are decided by the respective funder."
+    },
+    {
+      "title": "Prototype development grants",
+      "category": "Prototype support",
+      "range": "Defined by each call",
+      "eligibility": "A clear use case, prototype plan and eligibility under the published call.",
+      "benefit": "Help understanding application requirements for suitable prototype programs.",
+      "notice": "Example opportunity type only, not an official ASF-TBI grant."
+    },
+    {
+      "title": "Startup support programs",
+      "category": "Ecosystem programs",
+      "range": "Program-specific",
+      "eligibility": "Varies by program, sector and stage.",
+      "benefit": "Discover accelerators, challenges and ecosystem support relevant to your venture.",
+      "notice": "Programs are independently managed and subject to their own terms."
+    },
+    {
+      "title": "Investment readiness",
+      "category": "Founder preparation",
+      "range": "Guidance, not funding",
+      "eligibility": "Founders preparing to engage with potential investors.",
+      "benefit": "Support with pitch clarity, milestone planning and investor conversations.",
+      "notice": "This support does not guarantee investment or represent an investment offer."
+    }
+  ],
+  "mentors": [
+    {
+      "name": "Dr. Meera Kapoor",
+      "title": "Product & Innovation Mentor",
+      "experience": "18 years across product development and technology ventures",
+      "expertise": "Product strategy, design validation, early-stage teams",
+      "organization": "Illustrative mentor profile",
+      "initials": "MK"
+    },
+    {
+      "name": "Arjun Bhatia",
+      "title": "Founder & Startup Advisor",
+      "experience": "15 years building and advising emerging businesses",
+      "expertise": "Go-to-market, business models, founder coaching",
+      "organization": "Illustrative mentor profile",
+      "initials": "AB"
+    },
+    {
+      "name": "Nisha Reddy",
+      "title": "Technology & Manufacturing Advisor",
+      "experience": "20 years in applied engineering and manufacturing",
+      "expertise": "Prototyping, industrial design, technology commercialization",
+      "organization": "Illustrative mentor profile",
+      "initials": "NR"
+    },
+    {
+      "name": "Vikram Sood",
+      "title": "Finance & Investment Readiness Mentor",
+      "experience": "16 years in finance and venture development",
+      "expertise": "Financial planning, fundraising readiness, governance",
+      "organization": "Illustrative mentor profile",
+      "initials": "VS"
+    }
+  ],
+  "facilities": [
+    { "title": "Co-working spaces", "description": "Flexible shared spaces for founder collaboration, focused work and community.", "icon": "work", "image": "/images/hero/asf-fablab.jpg" },
+    { "title": "Office spaces", "description": "Workspace options for teams at different stages, subject to availability.", "icon": "office", "image": "/images/hero/asf-main.jpg" },
+    { "title": "Meeting rooms", "description": "Rooms for mentor conversations, planning sessions and team meetings.", "icon": "meeting", "image": "/images/hero/asf-fablab.jpg" },
+    { "title": "Innovation laboratories", "description": "Explore technical facilities and specialist laboratories through a suitable access request.", "icon": "lab", "image": "/images/hero/asf-robotics.JPG" },
+    { "title": "Prototyping facilities", "description": "Investigate practical prototyping resources for early product development.", "icon": "prototype", "image": "/images/hero/asf-main.jpg" },
+    { "title": "Research & development", "description": "Find opportunities to connect technical exploration with institutional expertise.", "icon": "research", "image": "/images/hero/asf-robotics.JPG" }
+  ],
+  "events": [
+    {
+      "title": "From Problem to First Prototype",
+      "kind": "Hands-on workshop",
+      "date": "2026-12-05",
+      "description": "An illustrative workshop outline on translating a user need into a testable prototype.",
+      "location": "AKGEC, Ghaziabad",
+      "status": "upcoming"
+    },
+    {
+      "title": "Founder Readiness: Your First Pitch",
+      "kind": "Founder session",
+      "date": "2026-12-18",
+      "description": "Practice a clear, evidence-led story for an early-stage venture.",
+      "location": "AKGEC, Ghaziabad",
+      "status": "upcoming"
+    },
+    {
+      "title": "Innovation & Entrepreneurship Forum",
+      "kind": "Entrepreneurship seminar",
+      "date": "2026-10-12",
+      "description": "An illustrative event recap bringing together ideas on entrepreneurship and applied innovation.",
+      "location": "AKGEC, Ghaziabad",
+      "status": "previous"
+    },
+    {
+      "title": "Campus Startup Challenge",
+      "kind": "Startup competition",
+      "date": "2026-09-04",
+      "description": "A sample recap of a founder challenge focused on practical solutions to everyday problems.",
+      "location": "AKGEC, Ghaziabad",
+      "status": "previous"
+    }
+  ],
+  "articles": [
+    {
+      "title": "A founder's first milestone is learning, not scaling",
+      "category": "Startup ecosystem",
+      "date": "2026-10-28",
+      "excerpt": "Why thoughtful customer discovery can help early founders build with more confidence.",
+      "slug": "a-founders-first-milestone",
+      "readTime": "5 min read",
+      "body": "The earliest stage of a venture is a chance to learn. Talk to the people experiencing the problem, test what you believe and keep a record of what changes your mind. Small experiments can help a team decide what to build next—and what not to build yet.\n\nA strong first milestone is not necessarily a polished product. It is a clearer understanding of the people you want to serve and the evidence that supports your next step."
+    },
+    {
+      "title": "From lab insight to a technology-led venture",
+      "category": "Innovation",
+      "date": "2026-10-06",
+      "excerpt": "A practical look at the questions that can connect technical research with real-world needs.",
+      "slug": "lab-insight-to-venture",
+      "readTime": "4 min read",
+      "body": "Promising research often begins with a technical insight. A venture takes shape when a team also understands who needs the solution, how it fits into their work and what evidence would make adoption worthwhile.\n\nEarly conversations with users, industry practitioners and potential collaborators can help teams connect technical possibility with practical value."
+    },
+    {
+      "title": "Getting investment-ready starts before the pitch",
+      "category": "Entrepreneurship",
+      "date": "2026-09-19",
+      "excerpt": "Milestones, market learning and a clear plan help founders prepare for funding conversations.",
+      "slug": "investment-readiness-begins-early",
+      "readTime": "6 min read",
+      "body": "A pitch is one part of an investment conversation. Founders can prepare by understanding their customers, explaining how the venture creates value and identifying the milestones that additional resources would support.\n\nFunding opportunities differ, and every funder sets its own criteria. Careful preparation helps founders explore those options without assuming that any particular outcome is guaranteed."
+    }
+  ],
+  "careers": [
+    {
+      "title": "Startup Program Coordinator",
+      "department": "Incubation",
+      "description": "Help coordinate founder programs, events and day-to-day engagement across the incubation community.",
+      "qualification": "Bachelor's degree; interest in startups, innovation or entrepreneurship.",
+      "experience": "0–2 years; strong organization and communication skills.",
+      "applicationEmail": "incubation.asf@akgec.ac.in"
+    },
+    {
+      "title": "Innovation & Outreach Associate",
+      "department": "Ecosystem Development",
+      "description": "Support outreach, workshop coordination and connections with the wider innovation ecosystem.",
+      "qualification": "Bachelor's degree in a relevant discipline or equivalent experience.",
+      "experience": "0–3 years; writing, event or community experience is helpful.",
+      "applicationEmail": "incubation.asf@akgec.ac.in"
+    }
+  ],
+  "application": {
+    "title": "Start your incubation journey",
+    "description": "Share what you are building, who it serves and the next step you want to take. The ASF-TBI team can help you understand the application process.",
+    "eligibility": [
+      "Individuals or teams with an innovative idea or early-stage venture.",
+      "A clear problem statement and a willingness to learn from potential users.",
+      "Technology-led, knowledge-led or innovation-focused concepts are welcome.",
+      "Applicants should be ready to participate in discussions and milestone reviews."
+    ],
+    "process": [
+      "Review the eligibility information and prepare a concise venture overview.",
+      "Email the application team with your concept note and contact details.",
+      "The team reviews submissions and may request a conversation or additional information.",
+      "Eligible applications are evaluated against the current selection criteria.",
+      "Selected founders are contacted to discuss possible next steps and support."
+    ],
+    "documents": [
+      "Founder and team profiles with contact details.",
+      "A short concept note describing the problem, proposed solution and intended users.",
+      "A prototype, demonstration or relevant supporting material, if available.",
+      "Business or validation plan and milestone outline, if available.",
+      "Organization or registration details, if already established."
+    ],
+    "evaluation": [
+      "Clarity and relevance of the problem being addressed.",
+      "Innovation and potential usefulness of the proposed solution.",
+      "Understanding of users, market context and validation needs.",
+      "Founding team's ability to learn, execute and collaborate.",
+      "Alignment with available incubation support and facilities."
+    ],
+    "criteria": [
+      "A meaningful problem and a credible approach to testing the solution.",
+      "Potential for a sustainable venture and a positive, responsible impact.",
+      "Founder commitment and readiness to work toward measurable milestones.",
+      "Fit with the expertise, facilities and programs available at the time."
+    ],
+    "faqs": [
+      { "question": "Can I apply at the idea stage?", "answer": "Yes. Early-stage applicants can share their idea, the problem they want to address and how they plan to learn from potential users." },
+      { "question": "Does applying guarantee funding or incubation?", "answer": "No. Applications are reviewed against the current selection process, available capacity and program fit. Funding is not guaranteed." },
+      { "question": "What should I include in my first email?", "answer": "Include a short concept note, founder details, contact information and any prototype or validation material you already have." },
+      { "question": "How do I ask about current facilities or programs?", "answer": "Contact the incubation team directly. Availability and access requirements can vary." }
+    ]
+  },
+  "applicationForm": {
+    "customFields": []
+  },
+  "contact": {
+    "organization": "AKGEC Skills Foundation – Technology Business Incubator",
+    "email": "incubation.asf@akgec.ac.in",
+    "phone": "+91 9910249199",
+    "address": "Ajay Kumar Garg Engineering College, Ghaziabad, Uttar Pradesh, India.",
+    "mapUrl": "https://maps.google.com/?q=Ajay+Kumar+Garg+Engineering+College+Ghaziabad"
+  },
+  "social": [
+    { "platform": "LinkedIn", "url": "https://in.linkedin.com/company/akgec-skills-foundation", "placeholder": false },
+    { "platform": "Instagram", "url": "https://www.instagram.com/akgecskillsfoundation/", "placeholder": false },
+    { "platform": "Facebook", "url": "https://www.facebook.com/search/pages/?q=AKGEC%20Skills%20Foundation", "placeholder": true },
+    { "platform": "YouTube", "url": "https://www.youtube.com/results?search_query=AKGEC+Skills+Foundation", "placeholder": true }
+  ],
+  "partners": [
+    { "name": "Government startup initiatives", "category": "Public ecosystem · illustrative", "monogram": "GOV" },
+    { "name": "Industry partners", "category": "Industry · illustrative", "monogram": "IND" },
+    { "name": "Academic institutions", "category": "Academia · illustrative", "monogram": "EDU" },
+    { "name": "Technology organizations", "category": "Technology · illustrative", "monogram": "TECH" },
+    { "name": "Entrepreneurship ecosystem", "category": "Founder network · illustrative", "monogram": "ECO" }
+  ],
+  "resources": [
+    {
+      "title": "ASF-TBI Annual Report",
+      "description": "Annual highlights, activities and updates will be shared here when published.",
+      "kind": "Annual report",
+      "href": "",
+      "availability": "Coming soon"
+    },
+    {
+      "title": "Startup Portfolio Brochure",
+      "description": "A directory of the ventures and founder stories supported by the incubator.",
+      "kind": "Portfolio brochure",
+      "href": "",
+      "availability": "Coming soon"
+    },
+    {
+      "title": "Incubation Application Guide",
+      "description": "A concise guide to eligibility, the application process and useful preparation.",
+      "kind": "Application guide",
+      "href": "",
+      "availability": "Available on request"
+    }
+  ],
+  "demoNotice": "Demonstration content: sample profiles, events, opportunities, partners and outcome figures are illustrative and are not official ASF-TBI claims."
+}

@@ -651,6 +651,9 @@ export default function Home() {
                 {label}
               </a>
             ))}
+            <a href="/asf-tbi" className="tbi-nav-entry" onClick={() => setMenuOpen(false)}>
+              ASF-TBI <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
           </nav>
 
           {/* HEADER ACTIONS */}
