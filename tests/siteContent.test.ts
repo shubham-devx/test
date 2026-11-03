@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidSiteImageUrl } from "../lib/siteImage";
+import { isValidSiteImageUrl, shouldBypassImageOptimization } from "../lib/siteImage";
 
 describe("homepage image URLs", () => {
   it("accepts local image paths", () => {
@@ -17,5 +17,15 @@ describe("homepage image URLs", () => {
     expect(isValidSiteImageUrl("https://example.com/image.webp")).toBe(false);
     expect(isValidSiteImageUrl("http://store.public.blob.vercel-storage.com/image.webp")).toBe(false);
     expect(isValidSiteImageUrl("//example.com/image.webp")).toBe(false);
+  });
+
+  it("loads private uploaded images directly instead of through the Next image optimizer", () => {
+    expect(shouldBypassImageOptimization(
+      "/api/site-content/images/uploads/site-content/industry-123e4567-e89b-42d3-a456-426614174000.webp"
+    )).toBe(true);
+    expect(shouldBypassImageOptimization(
+      "https://store.public.blob.vercel-storage.com/uploads/site-content/industry.webp"
+    )).toBe(true);
+    expect(shouldBypassImageOptimization("/images/industry/industrial-services.JPG")).toBe(false);
   });
 });

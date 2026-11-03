@@ -11,3 +11,7 @@ export function isValidSiteImageUrl(value: unknown): value is string {
     return false;
   }
 }
+
+export function shouldBypassImageOptimization(value: string): boolean {
+  return value.startsWith("https://") || value.startsWith("/api/site-content/images/");
+}

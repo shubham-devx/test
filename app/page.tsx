@@ -29,6 +29,7 @@ import {
 import { useEffect, useState } from "react";
 import defaultSiteContent from "@/data/site-content.json";
 import type { SiteContent, SiteSection } from "@/lib/siteContent";
+import { shouldBypassImageOptimization } from "@/lib/siteImage";
 import { SITE_THEMES } from "@/lib/siteThemes";
 import RegistrationModal from "../components/RegistrationModal";
 import AnnouncementBanner from "../components/AnnouncementBanner";
@@ -489,7 +490,7 @@ function HeroSlider({ heroImage }: { heroImage: string }) {
           fill
           priority={index === 0}
           sizes="100vw"
-          unoptimized={image.src.startsWith("https://")}
+          unoptimized={shouldBypassImageOptimization(image.src)}
           className={`hero-slide ${
             index === current ? "active" : ""
           }`}
@@ -855,7 +856,7 @@ export default function Home() {
                 fill
                 sizes="33vw"
                 className="cover-image"
-                unoptimized={siteContent.images.about.startsWith("https://")}
+                unoptimized={shouldBypassImageOptimization(siteContent.images.about)}
               />
               <span className="about-image-caption">Hands-on learning, built for industry</span>
             </div>
@@ -1075,7 +1076,7 @@ export default function Home() {
               fill
               sizes="50vw"
               className="cover-image"
-              unoptimized={siteContent.images.industry.startsWith("https://")}
+              unoptimized={shouldBypassImageOptimization(siteContent.images.industry)}
             />
 
           </div>
