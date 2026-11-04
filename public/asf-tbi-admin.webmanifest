@@ -1,0 +1,42 @@
+{
+  "id": "/admin",
+  "name": "ASF-TBI Admin",
+  "short_name": "ASF-TBI",
+  "description": "Secure administration for ASF-TBI website content and applications.",
+  "start_url": "/admin",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0b3d91",
+  "icons": [
+    {
+      "src": "/asf-tbi-admin-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/asf-tbi-admin-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Startup applications",
+      "short_name": "Applications",
+      "description": "Review ASF-TBI startup applications.",
+      "url": "/admin/asf-tbi/applications",
+      "icons": [{ "src": "/asf-tbi-admin-icon-512.png", "sizes": "512x512", "type": "image/png" }]
+    },
+    {
+      "name": "Website content",
+      "short_name": "Content",
+      "description": "Edit and publish ASF-TBI website content.",
+      "url": "/admin/asf-tbi",
+      "icons": [{ "src": "/asf-tbi-admin-icon-512.png", "sizes": "512x512", "type": "image/png" }]
+    }
+  ],
+  "categories": ["business", "productivity"]
+}

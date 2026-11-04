@@ -45,6 +45,12 @@ ASF-TBI content is stored separately from the Foundation homepage content in `da
 
 Startup applications from the ASF-TBI form are stored separately from course registrations in `data/asf-tbi-applications.json`. The list and status updates are available only after admin sign-in at `/admin/asf-tbi/applications`. The submission endpoint validates form fields and HTTPS links, limits request size, uses a honeypot and per-client rate limit, and asks applicants to consent before their information is stored.
 
+### Install the admin dashboard on iPhone
+
+The admin dashboard is installable as a home-screen web app. Deploy the site to a public HTTPS URL first; `localhost` only works on the development computer. For production live changes and registrations, configure `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, and `BLOB_READ_WRITE_TOKEN` in the hosting provider. Without persistent Blob storage, file-based JSON changes on serverless hosts may not persist reliably. Keep these values private and never add them to frontend code.
+
+On iPhone, open the deployed site in **Safari**, visit `/admin`, sign in, tap **Share**, choose **Add to Home Screen**, then tap **Add**. Launch the ASF-TBI icon and sign in with the existing admin password. The installed app requires an internet connection for live edits and registrations; private admin content is intentionally not cached for offline use. Public application submissions will appear under **Startup applications**.
+
 Administrators can add, edit or remove application questions in **ASF-TBI Website → Application Form**. Custom questions support short answers, long answers, HTTPS links and dropdown options, with required/optional and enabled settings. Responses are included in the separate startup-application review page. Existing saved website content and application records remain readable after this form configuration is added.
 
 ## Foundation homepage
