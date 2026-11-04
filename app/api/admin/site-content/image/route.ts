@@ -4,6 +4,8 @@ import path from "path";
 import { put } from "@vercel/blob";
 import sharp from "sharp";
 import { NextRequest, NextResponse } from "next/server";
+import { allowRequest, getClientIdentifier } from "@/lib/rateLimit";
+import { recordAdminActivity } from "@/lib/adminActivity";
 
 export const runtime = "nodejs";
 
@@ -13,6 +15,13 @@ const imageSlots = ["hero", "about", "industry"] as const;
 type ImageSlot = (typeof imageSlots)[number];
 
 export async function POST(request: NextRequest) {
+  if (!allowRequest(`admin-image-upload:${getClientIdentifier(request)}`, 20, 10 * 60_000)) {
+    return NextResponse.json(
+      { error: "Too many image uploads. Please wait a few minutes and try again." },
+      { status: 429, headers: { "Retry-After": "600", "Cache-Control": "no-store" } }
+    );
+  }
+
   const contentLength = Number(request.headers.get("content-length"));
   if (Number.isFinite(contentLength) && contentLength > maximumRequestBytes) {
     return NextResponse.json({ error: "The image is too large to upload." }, { status: 413 });
@@ -63,6 +72,11 @@ export async function POST(request: NextRequest) {
         contentType: "image/webp",
         cacheControlMaxAge: 31_536_000,
       });
+      await recordAdminActivity({
+        action: "Website image uploaded",
+        entity: "Image",
+        entityId: slot,
+      });
       return NextResponse.json(
         { url: `/api/site-content/images/${blob.pathname}` },
         { headers: { "Cache-Control": "no-store" } }
@@ -79,6 +93,11 @@ export async function POST(request: NextRequest) {
     const filePath = path.join(process.cwd(), "public", imagePath);
     await mkdir(path.dirname(filePath), { recursive: true });
     await writeFile(filePath, optimizedImage);
+    await recordAdminActivity({
+      action: "Website image uploaded",
+      entity: "Image",
+      entityId: slot,
+    });
 
     return NextResponse.json(
       { url: `/${imagePath}` },

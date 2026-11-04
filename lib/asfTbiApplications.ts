@@ -1,7 +1,21 @@
 import path from "path";
 import { readJsonFile, writeJsonFile } from "@/lib/persistentData";
+import {
+  isAsfTbiApplicationStatus,
+  normalizeAsfTbiApplicationStatus,
+} from "@/lib/asfTbiApplicationStatus";
+import type { AsfTbiApplicationStatus } from "@/lib/asfTbiApplicationStatus";
+export { isAsfTbiApplicationStatus, normalizeAsfTbiApplicationStatus } from "@/lib/asfTbiApplicationStatus";
 
-export type AsfTbiApplicationStatus = "new" | "reviewing" | "shortlisted" | "accepted" | "declined";
+type LegacyAsfTbiApplicationStatus = "new" | "reviewing" | "accepted" | "declined";
+
+export type AsfTbiApplicationHistoryEntry = {
+  action: "status_changed" | "remarks_updated";
+  changedAt: string;
+  previousStatus?: AsfTbiApplicationStatus;
+  status?: AsfTbiApplicationStatus;
+  remark?: string;
+};
 
 export type AsfTbiApplication = {
   id: string;
@@ -23,19 +37,47 @@ export type AsfTbiApplication = {
   supportNeeds: string;
   pitchDeckUrl: string;
   customFields: Record<string, { label: string; value: string }>;
+  adminRemarks?: string;
+  history?: AsfTbiApplicationHistoryEntry[];
+};
+
+type PersistedAsfTbiApplication = Omit<AsfTbiApplication, "status"> & {
+  status: AsfTbiApplicationStatus | LegacyAsfTbiApplicationStatus;
 };
 
 const DATA_FILE = path.join(process.cwd(), "data", "asf-tbi-applications.json");
-const statuses: AsfTbiApplicationStatus[] = ["new", "reviewing", "shortlisted", "accepted", "declined"];
+const statuses: Array<AsfTbiApplicationStatus | LegacyAsfTbiApplicationStatus> = [
+  "submitted",
+  "under-review",
+  "shortlisted",
+  "interview-scheduled",
+  "approved",
+  "rejected",
+  "new",
+  "reviewing",
+  "accepted",
+  "declined",
+];
+function isHistoryEntry(value: unknown): value is AsfTbiApplicationHistoryEntry {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const record = value as Record<string, unknown>;
+  return (
+    (record.action === "status_changed" || record.action === "remarks_updated") &&
+    typeof record.changedAt === "string" &&
+    (record.previousStatus === undefined || isAsfTbiApplicationStatus(record.previousStatus)) &&
+    (record.status === undefined || isAsfTbiApplicationStatus(record.status)) &&
+    (record.remark === undefined || (typeof record.remark === "string" && record.remark.length <= 5_000))
+  );
+}
 
-function isApplication(value: unknown): value is AsfTbiApplication {
+function isApplication(value: unknown): value is PersistedAsfTbiApplication {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
   const record = value as Record<string, unknown>;
   return (
     typeof record.id === "string" &&
     typeof record.submittedAt === "string" &&
     typeof record.status === "string" &&
-    statuses.includes(record.status as AsfTbiApplicationStatus) &&
+    statuses.includes(record.status as AsfTbiApplicationStatus | LegacyAsfTbiApplicationStatus) &&
     typeof record.founderName === "string" &&
     typeof record.email === "string" &&
     typeof record.phone === "string" &&
@@ -61,12 +103,14 @@ function isApplication(value: unknown): value is AsfTbiApplication {
         typeof answer.label === "string" &&
         typeof answer.value === "string"
       )
+    )) &&
+    (record.adminRemarks === undefined || (typeof record.adminRemarks === "string" && record.adminRemarks.length <= 5_000)) &&
+    (record.history === undefined || (
+      Array.isArray(record.history) &&
+      record.history.length <= 200 &&
+      record.history.every(isHistoryEntry)
     ))
   );
-}
-
-export function isAsfTbiApplicationStatus(value: unknown): value is AsfTbiApplicationStatus {
-  return typeof value === "string" && statuses.includes(value as AsfTbiApplicationStatus);
 }
 
 export async function getAsfTbiApplications(): Promise<AsfTbiApplication[]> {
@@ -74,7 +118,13 @@ export async function getAsfTbiApplications(): Promise<AsfTbiApplication[]> {
   if (!Array.isArray(records) || !records.every(isApplication)) {
     throw new Error("ASF-TBI application data is invalid.");
   }
-  return records.map((record) => ({ ...record, customFields: record.customFields ?? {} }));
+  return records.map((record) => ({
+    ...record,
+    status: normalizeAsfTbiApplicationStatus(record.status),
+    customFields: record.customFields ?? {},
+    adminRemarks: record.adminRemarks ?? "",
+    history: record.history ?? [],
+  }));
 }
 
 export async function saveAsfTbiApplications(records: AsfTbiApplication[]): Promise<void> {

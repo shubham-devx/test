@@ -134,6 +134,41 @@
 .tbi-article-header{min-height:68px;padding:8px 18px}.tbi-article-brand img{width:40px;height:40px}.tbi-article-brand strong{font-size:15px}.tbi-article-back{font-size:10px}.tbi-article{padding:55px 20px 70px}.tbi-article>h1{font-size:39px}.tbi-article-excerpt{font-size:15px}.tbi-article-body p{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.tbi-site *,.tbi-article-page *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+.tbi-site{
+  --ti:#0f172a;
+  --tf:#0b3d91;
+  --tg:#00b4d8;
+  --tc:#ff6b00;
+  --ta:#8fe8f4;
+  --tp:#f8fafc;
+  --tl:#f1f5f9;
+  --tn:#64748b;
+  --td:#e2e8f0;
+  background:var(--tp);
+}
+.tbi-site .tbi-topline{background:#0f172a}
+.tbi-site .tbi-header{background:rgba(248,250,252,.96)}
+.tbi-site .tbi-header-cta:hover,.tbi-site .tbi-button-primary:hover{background:#082f70}
+.tbi-site .tbi-hero-shade{
+  background:linear-gradient(90deg,rgba(8,24,52,.94),rgba(8,35,78,.84) 43%,rgba(8,42,88,.43) 75%,rgba(8,42,88,.16)),linear-gradient(0deg,rgba(8,24,52,.36),transparent 45%)
+}
+.tbi-site .tbi-startups-section,.tbi-site .tbi-facilities-section,.tbi-site .tbi-news-section,.tbi-site .tbi-resources-section,.tbi-site .tbi-application-section{background:#f1f5f9}
+.tbi-site .tbi-contact-section{background:#0b3d91}
+.tbi-site .tbi-contact-visual-caption{background:#124a9c}
+.tbi-site .tbi-footer{background:#0f172a}
+.tbi-site .tbi-filter-list button.active,.tbi-site .tbi-event-toggle button.active{border-color:var(--tf);background:var(--tf);color:#fff}
+.tbi-site .tbi-facility-content>span{background:#e2f8fc;color:#087e9c}
+.tbi-site :focus-visible{outline:3px solid #00b4d8;outline-offset:3px}
+.tbi-site :target{scroll-margin-top:110px}
+@media(prefers-reduced-motion:no-preference){.tbi-site{scroll-behavior:smooth}}
+@media(max-width:1050px){
+  .tbi-site .tbi-menu-button{display:inline-flex;order:3}
+  .tbi-site .tbi-header-cta{margin-left:auto}
+  .tbi-site .tbi-nav{display:none;position:absolute;top:100%;right:0;left:0;padding:12px 22px 19px;align-items:stretch;flex-direction:column;gap:0;border-bottom:1px solid var(--td);background:var(--tp);box-shadow:0 12px 20px rgba(15,23,42,.1)}
+  .tbi-site .tbi-nav.tbi-nav-open{display:flex}
+  .tbi-site .tbi-nav a{padding:10px 4px;border-bottom:1px solid var(--td)}
+}
+
 /* Readable type, compact sections, and reliable anchor destinations. */
 .tbi-site{font-size:16px}
 .tbi-site .tbi-section{padding:68px 0}

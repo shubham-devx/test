@@ -142,10 +142,12 @@ export default function AsfTbiWebsite({ content }: Props) {
           </Link>
           <nav className={`tbi-nav${menuOpen ? " tbi-nav-open" : ""}`} aria-label="Main navigation">
             <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-            <a href="#programs" onClick={() => setMenuOpen(false)}>Programs</a>
+            <a href="#programs" onClick={() => setMenuOpen(false)}>Incubation</a>
             <a href="#startups" onClick={() => setMenuOpen(false)}>Startups</a>
+            <a href="#facilities" onClick={() => setMenuOpen(false)}>Centres of Excellence</a>
+            <a href="#funding" onClick={() => setMenuOpen(false)}>Funding</a>
             <a href="#events" onClick={() => setMenuOpen(false)}>Events</a>
-            <a href="#resources" onClick={() => setMenuOpen(false)}>Resources</a>
+            <a href="#news" onClick={() => setMenuOpen(false)}>News</a>
             <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
           </nav>
           <button className="tbi-header-cta" type="button" onClick={() => setApplicationOpen(true)}>Apply for incubation <ArrowUpRight size={16} /></button>
@@ -264,7 +266,7 @@ export default function AsfTbiWebsite({ content }: Props) {
 
       <section className="tbi-section tbi-facilities-section" id="facilities">
         <div className="tbi-container">
-          <SectionIntro eyebrow="Space to experiment" title="A home for hands-on progress." description="Explore the types of spaces and technical resources that may support a founder’s next step." />
+          <SectionIntro eyebrow="Centres of excellence & laboratories" title="A home for hands-on progress." description="Explore the types of spaces and technical resources that may support a founder’s next step." />
           <AsfTbiCarousel label="Facilities" className="tbi-facility-carousel">
             {content.facilities.map((facility, index) => {
               const FacilityIcon = facilityIcons[index % facilityIcons.length];

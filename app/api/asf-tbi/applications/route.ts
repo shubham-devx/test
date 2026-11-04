@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     const record: AsfTbiApplication = {
       id: `TBI-${crypto.randomUUID()}`,
       submittedAt: new Date().toISOString(),
-      status: "new",
+      status: "submitted",
       ...fields,
       ...optionalFields,
       phone,

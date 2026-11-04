@@ -34,3 +34,5 @@
   .asftbi-admin-toolbar>div:last-child>*{flex:1}
   .asftbi-admin-section>summary{font-size:15px}
 }
+
+.asftbi-admin-page{min-height:0;padding:0;background:transparent;color:#0f172a}

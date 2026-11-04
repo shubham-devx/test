@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, RotateCcw, Save, Trash2 } from "lucide-react";
+import AdminShell from "@/components/AdminShell";
 import defaultContent from "@/data/asf-tbi-content.json";
 import type { AsfTbiContent } from "@/lib/asfTbiContent";
 
@@ -293,9 +294,16 @@ export default function AdminAsfTbiPage() {
     setSuccess("Sample content restored in the editor. Save to publish the reset.");
   }
 
-  if (loading) return <main className="asftbi-admin-page"><p>Loading ASF-TBI website content...</p></main>;
+  if (loading) {
+    return (
+      <AdminShell active="content" title="Website content" subtitle="CONTENT MANAGEMENT">
+        <main className="asftbi-admin-page"><p>Loading ASF-TBI website content...</p></main>
+      </AdminShell>
+    );
+  }
 
   return (
+    <AdminShell active="content" title="Website content" subtitle="CONTENT MANAGEMENT">
     <main className="asftbi-admin-page">
       <header className="asftbi-admin-header">
         <div><p>AKGEC SKILLS FOUNDATION · ADMIN</p><h1>ASF-TBI Website</h1><span>Update the words, profiles, events, programs and resources shown on the public incubator website.</span></div>
@@ -320,7 +328,7 @@ export default function AdminAsfTbiPage() {
 
       {content && <div className="asftbi-admin-sections">
         {Object.entries(content).map(([section, value], index) => (
-          <details className="asftbi-admin-section" key={section} open={index === 0}>
+          <details className="asftbi-admin-section" key={section} id={`content-section-${section}`} open={index === 0}>
             <summary><span><small>{String(index + 1).padStart(2, "0")}</small>{fieldLabel(section)}</span><span className="asftbi-section-chevron">⌄</span></summary>
             <div className="asftbi-section-content">
               <ContentField label={section} value={value} path={[section]} onChange={updateContent} />
@@ -329,6 +337,7 @@ export default function AdminAsfTbiPage() {
         ))}
       </div>}
     </main>
+    </AdminShell>
   );
 }
 
