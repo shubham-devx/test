@@ -98,6 +98,15 @@ const trainingIcons = {
   drone: Plane,
 };
 
+const trainingCategoryIcons: Record<Exclude<TrainingCategory, "All Programmes">, typeof Bot> = {
+  Robotics: Bot,
+  "Industrial Automation": Cog,
+  Manufacturing: Factory,
+  Welding: Flame,
+  "Drone Technology": Plane,
+  "Software & Technology": ScanLine,
+};
+
 const trainingCategories = [
   "All Programmes",
   "Robotics",
@@ -110,23 +119,10 @@ const trainingCategories = [
 
 type TrainingCategory = (typeof trainingCategories)[number];
 
-type PublicCourse = {
-  name: string;
-  durations?: { label: string }[];
-};
-
-const trainingImages: Partial<Record<Exclude<TrainingCategory, "All Programmes">, string>> = {
-  Robotics: "/images/hero/asf-robotics.JPG",
-  "Industrial Automation": "/images/industry/industrial-services.jpg",
-  Manufacturing: "/images/hero/asf-fablab.jpg",
-  Welding: "/images/hero/asf-training.jpg",
-  "Software & Technology": "/images/hero/asf-fablab.jpg",
-};
-
 function getTrainingCategory(icon: string, title: string): Exclude<TrainingCategory, "All Programmes"> {
   const searchText = `${icon} ${title}`.toLowerCase();
   if (searchText.includes("drone")) return "Drone Technology";
-  if (icon === "robotics") return "Robotics";
+  if (icon === "robotics" || /kuka|robotic/.test(searchText)) return "Robotics";
   if (icon === "welding" || searchText.includes("fronius")) return "Welding";
   if (icon === "manufacturing" || icon === "cfc") return "Manufacturing";
   if (searchText.includes("plm") || icon === "labview" || icon === "fablab") return "Software & Technology";
@@ -628,8 +624,6 @@ export default function Home() {
 	const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [trainingCategory, setTrainingCategory] = useState<TrainingCategory>("All Programmes");
   const [expandedCentreName, setExpandedCentreName] = useState<string | null>(null);
-  const [courseDurations, setCourseDurations] = useState<Record<string, string[]>>({});
-  const [courseDurationError, setCourseDurationError] = useState(false);
 
   useEffect(() => {
     const palette = SITE_THEMES[siteContent.theme];
@@ -646,30 +640,6 @@ export default function Home() {
       .then((response) => response.ok ? response.json() as Promise<SiteContent> : null)
       .then((content) => { if (content) setSiteContent(content); })
       .catch(() => undefined);
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    fetch("/api/courses", { cache: "no-store" })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Could not load course durations.");
-        const data = await response.json() as { courses?: PublicCourse[] };
-        if (active) {
-          setCourseDurations(Object.fromEntries(
-            (data.courses ?? []).map((course) => [
-              course.name,
-              (course.durations ?? []).map((duration) => duration.label),
-            ])
-          ));
-        }
-      })
-      .catch(() => {
-        if (active) setCourseDurationError(true);
-      });
-
-    return () => {
-      active = false;
-    };
   }, []);
 
   function openRegistration(courseName?: string) {
@@ -694,7 +664,7 @@ export default function Home() {
   const programmeCards = [
     ...siteContent.trainingPrograms.map((item) => {
       const category = getTrainingCategory(item.icon, item.title);
-      return { ...item, category, image: trainingImages[category] };
+      return { ...item, category };
     }),
     ...(droneAcademy && !hasDroneProgramme ? [{
       icon: "drone",
@@ -707,6 +677,9 @@ export default function Home() {
   const filteredPrograms = trainingCategory === "All Programmes"
     ? programmeCards
     : programmeCards.filter((program) => program.category === trainingCategory);
+  const visiblePrograms = trainingCategory === "All Programmes" && !expandedSections.training
+    ? filteredPrograms.slice(0, 4)
+    : filteredPrograms;
 
   return (
     <div className="foundation-home">
@@ -1073,7 +1046,10 @@ export default function Home() {
                   key={category}
                   className={trainingCategory === category ? "active" : ""}
                   aria-pressed={trainingCategory === category}
-                  onClick={() => setTrainingCategory(category)}
+                  onClick={() => {
+                    setTrainingCategory(category);
+                    setExpandedSections((previous) => ({ ...previous, training: false }));
+                  }}
                 >
                   {category}
                 </button>
@@ -1081,41 +1057,25 @@ export default function Home() {
             </div>
 
             <p className="training-result-count" aria-live="polite">
-              Showing {filteredPrograms.length} {filteredPrograms.length === 1 ? "programme" : "programmes"}
+              Showing {visiblePrograms.length}{visiblePrograms.length !== filteredPrograms.length ? ` of ${filteredPrograms.length}` : ""} {filteredPrograms.length === 1 ? "programme" : "programmes"}
             </p>
 
             <div className="training-grid">
-              {filteredPrograms.map((item, index) => {
-                const Icon = trainingIcons[item.icon as keyof typeof trainingIcons] ?? Cog;
+              {visiblePrograms.map((item) => {
+                const Icon = trainingIcons[item.icon as keyof typeof trainingIcons] ?? trainingCategoryIcons[item.category];
 
                 return (
                   <article className="training-card" key={item.title}>
                     <div className="training-card-media">
-                      {item.image ? (
-                        <Image
-                          src={item.image}
-                          alt=""
-                          fill
-                          sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                          className="cover-image"
-                        />
-                      ) : (
-                        <span className="training-card-illustration" aria-hidden="true">
-                          <Icon size={44} strokeWidth={1.6} />
-                        </span>
-                      )}
+                      <span className="training-card-mark" aria-hidden="true">
+                        <Icon size={24} strokeWidth={1.8} />
+                      </span>
                       <span className="training-category-label">{item.category}</span>
                     </div>
 
                     <div className="training-card-body">
-                      <span className="training-number">{String(index + 1).padStart(2, "0")}</span>
                       <h3>{item.title}</h3>
                       <p>{item.text}</p>
-                      {courseDurations[item.title]?.length ? (
-                        <span className="training-card-duration">
-                          Duration: {courseDurations[item.title].join(" · ")}
-                        </span>
-                      ) : null}
                       <button
                         type="button"
                         className="training-enquire"
@@ -1132,12 +1092,17 @@ export default function Home() {
             {filteredPrograms.length === 0 && (
               <p className="training-empty">No programmes are listed in this category yet.</p>
             )}
-            {courseDurationError && (
-              <p className="training-duration-note" role="status">
-                Course durations are temporarily unavailable. Please open Courses &amp; Fees for the latest catalogue.
-              </p>
+            {trainingCategory === "All Programmes" && filteredPrograms.length > 4 && (
+              <button
+                type="button"
+                className="view-more-button"
+                onClick={() => toggleSection("training")}
+                aria-expanded={Boolean(expandedSections.training)}
+              >
+                {expandedSections.training ? "View fewer programmes" : "View more programmes"}
+                {expandedSections.training ? <ChevronDown size={17} /> : <ArrowUpRight size={17} />}
+              </button>
             )}
-
           </div>
 
         </section>
