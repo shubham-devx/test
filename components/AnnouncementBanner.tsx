@@ -37,6 +37,10 @@ export default function AnnouncementBanner() {
     return null;
   }
 
+  if (process.env.NODE_ENV === "production" && /\bunder\s+maintenance\b/i.test(announcement.text)) {
+    return null;
+  }
+
   const isUrgent = announcement.style === "urgent";
   const linkUrl = safeAnnouncementUrl(announcement.linkUrl);
   const linkText = announcement.linkText?.trim();

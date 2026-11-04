@@ -8,6 +8,7 @@ import {
   Bot,
   Cog,
   BadgeCheck,
+  CalendarDays,
   ChevronRight,
   ChevronDown,
   Cpu,
@@ -48,8 +49,6 @@ const ADMIN_WHATSAPP = "917518681245";
 const SOCIAL = {
   instagram:
     "https://www.instagram.com/akgecskillsfoundation/",
-  facebook:
-    "https://www.facebook.com/search/pages/?q=AKGEC%20Skills%20Foundation",
   linkedin:
     "https://in.linkedin.com/company/akgec-skills-foundation",
 };
@@ -96,7 +95,92 @@ const trainingIcons = {
   siemens: Boxes,
   fablab: ScanLine,
   cfc: DraftingCompass,
+  drone: Plane,
 };
+
+const trainingCategories = [
+  "All Programmes",
+  "Robotics",
+  "Industrial Automation",
+  "Manufacturing",
+  "Welding",
+  "Drone Technology",
+  "Software & Technology",
+] as const;
+
+type TrainingCategory = (typeof trainingCategories)[number];
+
+type PublicCourse = {
+  name: string;
+  durations?: { label: string }[];
+};
+
+const trainingImages: Partial<Record<Exclude<TrainingCategory, "All Programmes">, string>> = {
+  Robotics: "/images/hero/asf-robotics.JPG",
+  "Industrial Automation": "/images/industry/industrial-services.jpg",
+  Manufacturing: "/images/hero/asf-fablab.jpg",
+  Welding: "/images/hero/asf-training.jpg",
+  "Software & Technology": "/images/hero/asf-fablab.jpg",
+};
+
+function getTrainingCategory(icon: string, title: string): Exclude<TrainingCategory, "All Programmes"> {
+  const searchText = `${icon} ${title}`.toLowerCase();
+  if (searchText.includes("drone")) return "Drone Technology";
+  if (icon === "robotics") return "Robotics";
+  if (icon === "welding" || searchText.includes("fronius")) return "Welding";
+  if (icon === "manufacturing" || icon === "cfc") return "Manufacturing";
+  if (searchText.includes("plm") || icon === "labview" || icon === "fablab") return "Software & Technology";
+  if (icon === "automation" || icon === "bosch" || icon === "bosch-jcc" || icon === "siemens") {
+    return "Industrial Automation";
+  }
+  return "Software & Technology";
+}
+
+function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const element = document.querySelector(".glance-grid");
+    if (!element) return;
+
+    let frame = 0;
+    let visibilityFrame = 0;
+    let started = false;
+    const checkVisibility = () => {
+      if (started) return;
+      const bounds = element.getBoundingClientRect();
+      if (bounds.top > window.innerHeight * 0.85 || bounds.bottom < 0) return;
+      started = true;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        setValue(target);
+        return;
+      }
+      const start = performance.now();
+      const animate = (now: number) => {
+        const progress = Math.min((now - start) / 900, 1);
+        setValue(Math.round(target * (1 - (1 - progress) ** 3)));
+        if (progress < 1) frame = window.requestAnimationFrame(animate);
+      };
+      frame = window.requestAnimationFrame(animate);
+    };
+    const scheduleVisibilityCheck = () => {
+      window.cancelAnimationFrame(visibilityFrame);
+      visibilityFrame = window.requestAnimationFrame(checkVisibility);
+    };
+
+    window.addEventListener("scroll", scheduleVisibilityCheck, { passive: true });
+    window.addEventListener("resize", scheduleVisibilityCheck);
+    scheduleVisibilityCheck();
+    return () => {
+      window.removeEventListener("scroll", scheduleVisibilityCheck);
+      window.removeEventListener("resize", scheduleVisibilityCheck);
+      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(visibilityFrame);
+    };
+  }, [target]);
+
+  return <span aria-label={`${target}${suffix}`}>{value.toLocaleString("en-IN")}{suffix}</span>;
+}
 
 function createFallbackSiteContent(): SiteContent {
   return {
@@ -466,9 +550,11 @@ const heroImages = [
 
 function HeroSlider({ heroImage }: { heroImage: string }) {
   const [current, setCurrent] = useState(0);
-  const slides = [{ ...heroImages[0], src: heroImage }, ...heroImages.slice(1)];
+  const [paused, setPaused] = useState(false);
+  const slides = [heroImages[1], { ...heroImages[0], src: heroImage }, ...heroImages.slice(2)];
 
   useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const interval = setInterval(() => {
       setCurrent((previous) => {
         return (previous + 1) % heroImages.length;
@@ -478,10 +564,18 @@ function HeroSlider({ heroImage }: { heroImage: string }) {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [paused]);
 
   return (
-    <div className="hero-slider">
+    <div
+      className="hero-slider"
+      role="group"
+      aria-label="AKGEC Skills Foundation highlights"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
       {slides.map((image, index) => (
         <Image
           key={image.src}
@@ -503,7 +597,7 @@ function HeroSlider({ heroImage }: { heroImage: string }) {
           <button
             key={image.src}
             type="button"
-            aria-label={`Show hero image ${index + 1}`}
+            aria-label={`Show Foundation highlight ${index + 1}: ${image.alt}`}
             aria-current={
               index === current ? "true" : undefined
             }
@@ -532,6 +626,10 @@ export default function Home() {
   const [registrationCourse, setRegistrationCourse] = useState<string | undefined>(undefined);
 	const [courseFeesOpen, setCourseFeesOpen] = useState(false);
 	const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [trainingCategory, setTrainingCategory] = useState<TrainingCategory>("All Programmes");
+  const [expandedCentreName, setExpandedCentreName] = useState<string | null>(null);
+  const [courseDurations, setCourseDurations] = useState<Record<string, string[]>>({});
+  const [courseDurationError, setCourseDurationError] = useState(false);
 
   useEffect(() => {
     const palette = SITE_THEMES[siteContent.theme];
@@ -548,6 +646,30 @@ export default function Home() {
       .then((response) => response.ok ? response.json() as Promise<SiteContent> : null)
       .then((content) => { if (content) setSiteContent(content); })
       .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/courses", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Could not load course durations.");
+        const data = await response.json() as { courses?: PublicCourse[] };
+        if (active) {
+          setCourseDurations(Object.fromEntries(
+            (data.courses ?? []).map((course) => [
+              course.name,
+              (course.durations ?? []).map((duration) => duration.label),
+            ])
+          ));
+        }
+      })
+      .catch(() => {
+        if (active) setCourseDurationError(true);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   function openRegistration(courseName?: string) {
@@ -567,9 +689,27 @@ export default function Home() {
     ADMIN_WHATSAPP,
     "Hello AKGEC Skills Foundation, I would like to contact the admin."
   );
+  const droneAcademy = siteContent.centresList.find((centre) => /drone/i.test(`${centre.name} ${centre.focus}`));
+  const hasDroneProgramme = siteContent.trainingPrograms.some((program) => /drone/i.test(`${program.icon} ${program.title} ${program.text}`));
+  const programmeCards = [
+    ...siteContent.trainingPrograms.map((item) => {
+      const category = getTrainingCategory(item.icon, item.title);
+      return { ...item, category, image: trainingImages[category] };
+    }),
+    ...(droneAcademy && !hasDroneProgramme ? [{
+      icon: "drone",
+      title: droneAcademy.name,
+      text: droneAcademy.description,
+      category: "Drone Technology" as const,
+      image: undefined,
+    }] : []),
+  ];
+  const filteredPrograms = trainingCategory === "All Programmes"
+    ? programmeCards
+    : programmeCards.filter((program) => program.category === trainingCategory);
 
   return (
-    <>
+    <div className="foundation-home">
       {/* =================================================
           SKIP LINK
       ================================================= */}
@@ -584,10 +724,6 @@ export default function Home() {
 
       <div className="top-strip">
         <div className="container top-strip-inner">
-          <span>
-            
-          </span>
-
           <div>
             <span>
               Supported by NSDC • Ministry of Skill Development and Entrepreneurship
@@ -637,6 +773,7 @@ export default function Home() {
           {/* NAVIGATION */}
 
           <nav
+            id="foundation-navigation"
             className={
               menuOpen
                 ? "main-nav mobile-open"
@@ -676,6 +813,7 @@ export default function Home() {
           {/* MOBILE MENU */}
 
           <button
+            type="button"
             className="mobile-menu"
             onClick={() =>
               setMenuOpen(!menuOpen)
@@ -686,6 +824,7 @@ export default function Home() {
                 : "Open navigation"
             }
             aria-expanded={menuOpen}
+            aria-controls="foundation-navigation"
           >
             {menuOpen ? (
               <X size={25} />
@@ -812,25 +951,29 @@ export default function Home() {
 
             <div className="glance-grid">
 
-              <div>
-                <strong>2015</strong>
+              <article className="glance-card">
+                <CalendarDays size={20} aria-hidden="true" />
+                <strong><CountUp target={2015} /></strong>
                 <span>Foundation incorporated</span>
-              </div>
+              </article>
 
-              <div>
+              <article className="glance-card">
+                <BadgeCheck size={20} aria-hidden="true" />
                 <strong>ISO</strong>
                 <span>ISO 9001 certified organization</span>
-              </div>
+              </article>
 
-              <div>
-                <strong>15</strong>
-                <span>Centres / initiatives listed under the ASF umbrella</span>
-              </div>
+              <article className="glance-card">
+                <Boxes size={20} aria-hidden="true" />
+                <strong><CountUp target={15} /></strong>
+                <span>Centres and initiatives listed under ASF</span>
+              </article>
 
-              <div>
-                <strong>70%</strong>
-                <span>Learning through practicals, as highlighted in the brochure</span>
-              </div>
+              <article className="glance-card">
+                <Gauge size={20} aria-hidden="true" />
+                <strong><CountUp target={70} suffix="%" /></strong>
+                <span>Practical learning, as highlighted in the brochure</span>
+              </article>
 
             </div>
 
@@ -854,7 +997,7 @@ export default function Home() {
                 src={siteContent.images.about}
                 alt="Learners gaining hands-on technical experience at AKGEC Skills Foundation"
                 fill
-                sizes="33vw"
+                sizes="(max-width: 700px) 100vw, (max-width: 1024px) 80vw, 45vw"
                 className="cover-image"
                 unoptimized={shouldBypassImageOptimization(siteContent.images.about)}
               />
@@ -889,6 +1032,9 @@ export default function Home() {
                   </div>
 
                 </div>
+                <a className="about-learn-more" href="#industry">
+                  Learn more about ASF <ArrowRight size={17} aria-hidden="true" />
+                </a>
               </div>
             </div>
 
@@ -920,59 +1066,76 @@ export default function Home() {
 
             </div>
 
-            <div className="training-grid">
+            <div className="training-filters" role="group" aria-label="Filter training programmes by category">
+              {trainingCategories.map((category) => (
+                <button
+                  type="button"
+                  key={category}
+                  className={trainingCategory === category ? "active" : ""}
+                  aria-pressed={trainingCategory === category}
+                  onClick={() => setTrainingCategory(category)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
 
-              {siteContent.trainingPrograms.slice(0, expandedSections.training ? undefined : 4).map((item, index) => {
+            <p className="training-result-count" aria-live="polite">
+              Showing {filteredPrograms.length} {filteredPrograms.length === 1 ? "programme" : "programmes"}
+            </p>
+
+            <div className="training-grid">
+              {filteredPrograms.map((item, index) => {
                 const Icon = trainingIcons[item.icon as keyof typeof trainingIcons] ?? Cog;
 
                 return (
-                  <article
-                    className="training-card"
-                    key={item.title}
-                  >
-
-                    <div className="training-top">
-                      <span className={`training-icon-badge ${item.icon}`} aria-hidden="true">
-                        <Icon size={26} strokeWidth={2.4} />
-                      </span>
-                      <span className="training-number">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
+                  <article className="training-card" key={item.title}>
+                    <div className="training-card-media">
+                      {item.image ? (
+                        <Image
+                          src={item.image}
+                          alt=""
+                          fill
+                          sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                          className="cover-image"
+                        />
+                      ) : (
+                        <span className="training-card-illustration" aria-hidden="true">
+                          <Icon size={44} strokeWidth={1.6} />
+                        </span>
+                      )}
+                      <span className="training-category-label">{item.category}</span>
                     </div>
 
-                    <h3>
-                      {item.title}
-                    </h3>
-
-                    <p>
-                      {item.text}
-                    </p>
-
-                    <button
-  type="button"
-  className="training-enquire"
-  onClick={() => openRegistration(item.title)}
->
-  Register
-  <ArrowUpRight size={17} />
-</button>
-
+                    <div className="training-card-body">
+                      <span className="training-number">{String(index + 1).padStart(2, "0")}</span>
+                      <h3>{item.title}</h3>
+                      <p>{item.text}</p>
+                      {courseDurations[item.title]?.length ? (
+                        <span className="training-card-duration">
+                          Duration: {courseDurations[item.title].join(" · ")}
+                        </span>
+                      ) : null}
+                      <button
+                        type="button"
+                        className="training-enquire"
+                        onClick={() => openRegistration(item.title)}
+                      >
+                        Register <ArrowUpRight size={17} />
+                      </button>
+                    </div>
                   </article>
                 );
               })}
-
             </div>
 
-            {siteContent.trainingPrograms.length > 4 && (
-              <button
-                type="button"
-                className="view-more-button"
-                onClick={() => toggleSection("training")}
-                aria-expanded={Boolean(expandedSections.training)}
-              >
-                {expandedSections.training ? "Show fewer courses" : `View all ${siteContent.trainingPrograms.length} courses`}
-                {expandedSections.training ? <ChevronDown size={17} /> : <ArrowUpRight size={17} />}
-              </button>
+            {filteredPrograms.length === 0 && (
+              <p className="training-empty">No programmes are listed in this category yet.</p>
+            )}
+            {courseDurationError && (
+              <p className="training-duration-note" role="status">
+                Course durations are temporarily unavailable. Please open Courses &amp; Fees for the latest catalogue.
+              </p>
             )}
 
           </div>
@@ -1024,20 +1187,31 @@ export default function Home() {
 
               <div className="centres-list">
 
-                {siteContent.centresList.slice(0, expandedSections.centres ? undefined : 5).map((centre, index) => (
-                  <button
-                    type="button"
-                    className="centre-select"
-                    key={centre.name}
-                    onClick={() => setSelectedCentre(centre)}
-                  >
-                    <span>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <strong>{centre.name}</strong>
-                    <ChevronRight size={21} />
-                  </button>
-                ))}
+                {siteContent.centresList.slice(0, expandedSections.centres ? undefined : 5).map((centre, index) => {
+                  const isExpanded = expandedCentreName === centre.name;
+                  return (
+                    <div className="centre-list-item" key={centre.name}>
+                      <button
+                        type="button"
+                        className="centre-select"
+                        aria-expanded={isExpanded}
+                        onClick={() => setExpandedCentreName(isExpanded ? null : centre.name)}
+                      >
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <strong>{centre.name}</strong>
+                        <ChevronRight size={21} aria-hidden="true" />
+                      </button>
+                      {isExpanded && (
+                        <div className="centre-summary">
+                          <p>{centre.description}</p>
+                          <button type="button" onClick={() => setSelectedCentre(centre)}>
+                            View centre details <ArrowUpRight size={15} aria-hidden="true" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
                 {siteContent.centresList.length > 5 && (
                   <button
@@ -1671,11 +1845,8 @@ export default function Home() {
               <a href="#industry">
                 Industry Engagement
               </a>
-              <a href="#mous">
-                MoUs & Partnerships
-              </a>
-              <a href="#proud-moments">
-                Proud Moments
+              <a href="#contact">
+                Industry enquiries
               </a>
 
             </div>
@@ -1688,17 +1859,15 @@ export default function Home() {
                 INFORMATION
               </h4>
 
-              <a href="#placements">
-                Career & Employability
-              </a>
-
-              <a href="#facilities">
-                Facilities
+              <a href="#industry">
+                Industry engagement
               </a>
 
               <a href="#contact">
                 Contact Information
               </a>
+              <a href="tel:+919910249199">+91 9910249199</a>
+              <a href="mailto:support@skills.akgec.ac.in">Email ASF</a>
 
               <button
   type="button"
@@ -1720,7 +1889,7 @@ export default function Home() {
                 LinkedIn
               </a>
 
-              <a href="mailto:subhamv2003@gmail.com">
+              <a href="mailto:support@skills.akgec.ac.in">
                 Need help?
                 <Mail size={15} />
               </a>
@@ -1742,10 +1911,13 @@ export default function Home() {
             </p>
 
             <div className="footer-social">
-              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
-              <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
-              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
-              <a href="mailto:subhamv2003@gmail.com" aria-label="Email AKGEC Skills Foundation"><Mail size={20} /></a>
+              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="17.5" cy="6.8" r="1" fill="currentColor" /></svg>
+              </a>
+              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8.7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM3.5 10.2h3.4V21H3.5zM9 10.2h3.3v1.5h.1a3.7 3.7 0 0 1 3.3-1.8c3.5 0 4.2 2.3 4.2 5.2V21h-3.5v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21H9z" fill="currentColor" /></svg>
+              </a>
+              <a href="mailto:support@skills.akgec.ac.in" aria-label="Email AKGEC Skills Foundation"><Mail size={19} /></a>
             </div>
 
           </div>
@@ -1769,6 +1941,6 @@ export default function Home() {
         </span>
       </a>
 
-    </>
+    </div>
   );
 }
