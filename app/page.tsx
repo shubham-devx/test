@@ -1832,7 +1832,7 @@ export default function Home() {
                 Contact Information
               </a>
               <a href="tel:+919910249199">+91 9910249199</a>
-              <a href="mailto:support@skills.akgec.ac.in">Email ASF</a>
+              <a href="mailto:skills@akgec.ac.in">Email ASF</a>
 
               <button
   type="button"
@@ -1854,14 +1854,12 @@ export default function Home() {
                 LinkedIn
               </a>
 
-              <a href="mailto:support@skills.akgec.ac.in">
+              <a href="mailto:skills@akgec.ac.in">
                 Need help?
                 <Mail size={15} />
               </a>
 
-              <a href="https://www.akgecskills.in/" target="_blank" rel="noopener noreferrer">
-                Official Website
-              </a>
+          
 
             </div>
 
@@ -1882,7 +1880,7 @@ export default function Home() {
               <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8.7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM3.5 10.2h3.4V21H3.5zM9 10.2h3.3v1.5h.1a3.7 3.7 0 0 1 3.3-1.8c3.5 0 4.2 2.3 4.2 5.2V21h-3.5v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21H9z" fill="currentColor" /></svg>
               </a>
-              <a href="mailto:support@skills.akgec.ac.in" aria-label="Email AKGEC Skills Foundation"><Mail size={19} /></a>
+              <a href="mailto:skills@akgec.ac.in" aria-label="Email AKGEC Skills Foundation"><Mail size={19} /></a>
             </div>
 
           </div>
