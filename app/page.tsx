@@ -919,7 +919,7 @@ export default function Home() {
                 ))}
 
                 <div className="about-points">
-                  {siteContent.about.keyFocusAreas.map((area) => (
+                  {siteContent.about.keyFocusAreas?.map((area) => (
                     <div key={area.title}>
                       <ShieldCheck size={21} aria-hidden="true" />
                       <span>
