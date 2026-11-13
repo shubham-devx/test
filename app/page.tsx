@@ -1536,9 +1536,9 @@ export default function Home() {
                 <p>
                   AKGEC Skills Foundation
                   <br />
-                  27th Km Stone, Delhi-Hapur Bypass Road
+                  27th Km Milestone, Delhi-Meerut Expressway ,
                   <br />
-                  P.O. Adhyatmik Nagar, Ghaziabad – 201009
+                  P.O. Adhyatmik Nagar, Ghaziabad – 201015
                   <br />
                   Uttar Pradesh, India
                 </p>
@@ -1563,8 +1563,8 @@ export default function Home() {
 
                 <Mail size={25} />
 
-                <a href="mailto:support@skills.akgec.ac.in">
-                  support@skills.akgec.ac.in
+                <a href="mailto:skills@akgec.ac.in">
+                  skills@akgec.ac.in
                 </a>
 
               </div>

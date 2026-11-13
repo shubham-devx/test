@@ -9,7 +9,7 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    const { enabled, text, linkText, linkUrl, style } = body ?? {};
+    const { enabled, text, linkText, linkUrl, reviewDate, style } = body ?? {};
 
     if (typeof enabled !== "boolean" || typeof text !== "string") {
       return NextResponse.json(
@@ -25,11 +25,54 @@ export async function PUT(req: NextRequest) {
       );
     }
 
+    const trimmedText = text.trim();
+    const trimmedLinkText = typeof linkText === "string" ? linkText.trim() : "";
+    const trimmedLinkUrl = typeof linkUrl === "string" ? linkUrl.trim() : "";
+    const trimmedReviewDate = typeof reviewDate === "string" ? reviewDate.trim() : "";
+
+    if (trimmedText.length > 100) {
+      return NextResponse.json(
+        { error: "Announcement text must be 100 characters or fewer." },
+        { status: 400 }
+      );
+    }
+
+    if (trimmedLinkUrl) {
+      const isInternalLink = trimmedLinkUrl.startsWith("#")
+        || (trimmedLinkUrl.startsWith("/") && !trimmedLinkUrl.startsWith("//"));
+      let isHttpLink = false;
+      try {
+        const url = new URL(trimmedLinkUrl);
+        isHttpLink = url.protocol === "https:" || url.protocol === "http:";
+      } catch {
+        isHttpLink = false;
+      }
+      if (!isInternalLink && !isHttpLink) {
+        return NextResponse.json(
+          { error: "Use a site path or a valid HTTP(S) URL for the announcement link." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (trimmedReviewDate) {
+      const validReviewDate = /^\d{4}-\d{2}-\d{2}$/.test(trimmedReviewDate)
+        && !Number.isNaN(Date.parse(`${trimmedReviewDate}T00:00:00.000Z`))
+        && new Date(`${trimmedReviewDate}T00:00:00.000Z`).toISOString().slice(0, 10) === trimmedReviewDate;
+      if (!validReviewDate) {
+        return NextResponse.json(
+          { error: "Choose a valid review date while the announcement is on." },
+          { status: 400 }
+        );
+      }
+    }
+
     const announcement: Announcement = {
       enabled,
-      text: text.trim(),
-      linkText: typeof linkText === "string" ? linkText.trim() : "",
-      linkUrl: typeof linkUrl === "string" ? linkUrl.trim() : "",
+      text: trimmedText,
+      linkText: trimmedLinkText,
+      linkUrl: trimmedLinkUrl,
+      reviewDate: trimmedReviewDate,
       style: style === "urgent" ? "urgent" : "info",
     };
 
@@ -49,6 +92,7 @@ export async function DELETE() {
       text: "",
       linkText: "",
       linkUrl: "",
+      reviewDate: "",
       style: "info",
     };
     await saveAnnouncement(cleared);

@@ -9,6 +9,7 @@ type Announcement = {
   text: string;
   linkText?: string;
   linkUrl?: string;
+  reviewDate?: string;
   style: "info" | "urgent";
 };
 
@@ -19,6 +20,7 @@ export default function AdminAnnouncementPage() {
     text: "",
     linkText: "",
     linkUrl: "",
+    reviewDate: "",
     style: "info",
   });
   const [loading, setLoading] = useState(true);
@@ -115,7 +117,7 @@ export default function AdminAnnouncementPage() {
         <div>
           <h1 style={styles.h1}>Announcement Banner</h1>
           <p style={styles.sub}>
-            Shows a highlight bar just below the site header. Turn it off any time.
+            Shows a static notice below the site header. Active announcements need a short message, action link, and review date.
           </p>
         </div>
         <Link href="/admin" style={styles.backLink}>
@@ -143,10 +145,12 @@ export default function AdminAnnouncementPage() {
             <textarea
               value={announcement.text}
               onChange={(e) => setAnnouncement({ ...announcement, text: e.target.value })}
-              placeholder="e.g. Admissions open for the January batch — limited seats!"
+              placeholder="e.g. Applications are open for the next training batch."
               rows={2}
+              maxLength={100}
               style={styles.textarea}
             />
+            <span style={styles.helpText}>{announcement.text.length}/100 characters. Keep it to one short sentence.</span>
 
             <div style={styles.row2}>
               <div style={{ flex: 1 }}>
@@ -168,6 +172,16 @@ export default function AdminAnnouncementPage() {
                 />
               </div>
             </div>
+
+            <label style={styles.fieldLabel} htmlFor="announcement-review-date">Review date (optional)</label>
+            <input
+              id="announcement-review-date"
+              type="date"
+              value={announcement.reviewDate ?? ""}
+              onChange={(e) => setAnnouncement({ ...announcement, reviewDate: e.target.value })}
+              style={styles.input}
+            />
+            <span style={styles.helpText}>If provided, the review date appears beside the announcement.</span>
 
             <label style={styles.fieldLabel}>Style</label>
             <div style={styles.styleRow}>
@@ -206,9 +220,8 @@ export default function AdminAnnouncementPage() {
                 }}
               >
                 {announcement.text}
-                {announcement.linkUrl && announcement.linkText && (
-                  <span style={styles.previewLink}>{announcement.linkText}</span>
-                )}
+                {announcement.linkUrl && announcement.linkText && <span style={styles.previewLink}>{announcement.linkText}</span>}
+                {announcement.reviewDate && <span style={styles.previewDate}>Review by {announcement.reviewDate}</span>}
               </div>
             </div>
           )}
@@ -253,6 +266,7 @@ const styles: Record<string, CSSProperties> = {
   },
   toggleRow: { display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 700, color: "#252525", marginBottom: 14, cursor: "pointer" },
   fieldLabel: { fontSize: 12, fontWeight: 700, color: "#4b4b4b", marginTop: 12, marginBottom: 6 },
+  helpText: { marginTop: -4, color: "#777", fontSize: 12 },
   textarea: {
     width: "100%", boxSizing: "border-box", padding: "10px 14px", border: "1px solid #ded9d2",
     borderRadius: 10, fontSize: 14, fontFamily: "inherit", resize: "vertical",
@@ -267,6 +281,7 @@ const styles: Record<string, CSSProperties> = {
     padding: "12px 20px", borderRadius: 10, color: "#fff", fontSize: 14, fontWeight: 600, maxWidth: 620,
   },
   previewLink: { marginLeft: 8, fontWeight: 800, textDecoration: "underline" },
+  previewDate: { display: "block", marginTop: 6, fontSize: 12, opacity: 0.9 },
   actions: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" },
   deleteBtn: {
     padding: "12px 22px", border: "1px solid #f0d4d4", borderRadius: 10, background: "#fdecec",

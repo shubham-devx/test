@@ -8,6 +8,7 @@ export type Announcement = {
   text: string;
   linkText?: string;
   linkUrl?: string;
+  reviewDate?: string;
   style: "info" | "urgent";
 };
 
@@ -16,6 +17,7 @@ const DEFAULT_ANNOUNCEMENT: Announcement = {
   text: "",
   linkText: "",
   linkUrl: "",
+  reviewDate: "",
   style: "info",
 };
 
