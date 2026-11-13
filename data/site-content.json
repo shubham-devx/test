@@ -7,25 +7,30 @@
   },
   "navigation": [
     { "label": "About Foundation", "section": "about" },
-    { "label": "Training", "section": "training" },
-    { "label": "Centres of Excellence", "section": "centres" },
+    { "label": "COE / Training", "section": "centres" },
     { "label": "Industry", "section": "industry" }
   ],
   "about": {
     "label": "About the Foundation",
-    "heading": "Skills that move careers forward",
-    "lead": "AKGEC Skills Foundation (ASF) is an initiative of AKGEC supported by the National Skill Development Corporation (NSDC), Ministry of Skill Development and Entrepreneurship, Government of India, to promote industry-oriented skills among young students and professionals and make them employable.",
-    "description": "ASF offers skill-development training through industry-institution collaboration, aligned with National Occupational Standards (NOS) and Qualification Packs (QP). Its facilities support training, prototyping, testing and measurement in automation, robotics and manufacturing."
+    "heading": "Industry Skills Built Through Hands-On Learning",
+    "lead": "AKGEC Skills Foundation (ASF) is an ISO 9001:2017-certified initiative promoted by Ajay Kumar Garg Engineering College, Ghaziabad, in collaboration with the National Skill Development Corporation (NSDC), under the Ministry of Skill Development and Entrepreneurship, Government of India. Established to bridge the gap between academic learning and industrial requirements, ASF works to enhance youth employability, develop industry-ready professionals and improve the productivity of the existing workforce.",
+    "description": "With 12 operational Centres of Excellence (CoEs) developed in collaboration with leading global technology companies such as Siemens, KUKA Robotics, Bosch Rexroth, Mitsubishi Electric, Fronius and ZEISS, ASF delivers specialised training, technical education and applied research in Industrial Automation, Robotics, Advanced Manufacturing, Automotive Technologies, Digital Manufacturing, Welding, Fabrication and emerging technologies.\n\nASF combines practical, industry-oriented learning with access to advanced manufacturing infrastructure. Its programmes serve undergraduate and postgraduate students, diploma and ITI learners, school graduates and working professionals, with training aligned to National Occupational Standards (NOS) and Qualification Packs (QP). Having trained over 2,000 candidates, including professionals from leading organisations, ASF continues to strengthen industry–academia collaboration.\n\nBeyond skill development, ASF supports industries, MSMEs and research organisations through specialised technical consultancy and manufacturing services, helping transform concepts into practical solutions through product development, prototyping, production trials, 3D printing and scanning, dimensional metrology, calibration, reverse engineering, CAD/CAM and advanced manufacturing processes.",
+    "keyFocusAreas": [
+      { "title": "Industry-Aligned Skill Development", "description": "Practical training, professional upskilling and industry-recognised certification." },
+      { "title": "Advanced Technology Infrastructure", "description": "12 Centres of Excellence supported by leading global technology partners." },
+      { "title": "Industrial Consultancy & Services", "description": "Product development, prototyping, testing, measurement and advanced manufacturing." },
+      { "title": "Innovation & Applied Research", "description": "Technology-driven solutions, digital fabrication and industry–academia collaboration." }
+    ]
   },
   "training": {
-    "label": "Training & Programmes",
-    "heading": "Build capability and make technology work",
-    "description": "Learn by working with the tools, systems and standards used across modern industry, guided by experienced trainers and industry partners."
+    "label": "Industry-Aligned Training",
+    "heading": "Learn by doing, build skills for industry",
+    "description": "Choose hands-on courses in robotics, welding, automation, advanced manufacturing, digital fabrication, metrology and drone technology. Programmes serve engineering and polytechnic students, ITI learners and working professionals, with course details, duration and current fees shown on each centre's page."
   },
   "centres": {
-    "label": "Centres of Excellence",
-    "heading": "Where industry becomes hands-on",
-    "description": "Explore specialist labs and academies for robotics, welding, automation, manufacturing, metrology, pneumatics, digital fabrication and drone technology."
+    "label": "COE / Training",
+    "heading": "Explore specialist centres and training",
+    "description": "Select a centre to explore its programmes, laboratories, equipment, industry partnerships, certifications and registration details."
   },
   "industry": {
     "label": "Industry Engagement",
@@ -119,7 +124,12 @@
       "description": "A robotics training centre established with KUKA Robotics for industrial robotics training, research, manufacturing and prototype services.",
       "itemsTitle": "Training programmes",
       "items": ["Robot Programming - Basic / Advance / Expert", "Robotic Arc Welding (MIG / CMT / Time Twin)", "Robotic Spot Welding and Ultrasonic Welding", "Robotic Milling and Robotic LASER Welding & Cutting"],
-      "recognition": "The brochure describes it as the first and largest robotics centre in the country and states that successful participants receive joint certification of AKGEC & KUKA."
+      "recognition":       "Established at AKGEC as India's first Industrial Robotics Training Centre for educational institutions. Successful participants receive joint certification from KUKA Roboter, Germany and AKGEC.",
+      "details": [
+        "Established at AKGEC, Ghaziabad, on 5 May 2011 to prepare engineering graduates and diploma students for industry and support applied robotics research.",
+        "Hands-on applications include material handling, welding, and robot-assisted manufacturing such as CNC turning, milling, 3D printing and deburring, supported by AI-enabled systems.",
+        "Offers Basic, Advanced and Expert industrial robotics training. More than 100 programmes have trained over 1,100 students; 50+ corporate programmes have upskilled nearly 300 engineers."
+      ]
     },
     {
       "name": "FRONIUS Advance Welding Technology & Research Centre",
@@ -128,7 +138,12 @@
       "description": "A state-of-the-art centre jointly established by AKGEC and Fronius International for training, research and development in welding science, engineering and technology.",
       "itemsTitle": "Training programmes",
       "items": ["Certificate Course for Welding Technician", "Short Term Training Program on Welding Technology", "Competency Development Program for Arc Welders", "ASNT Level-1 & 2 Certification Program (VT, PT, MT & UT)"],
-      "recognition": "The brochure describes it as the first state-of-the-art centre of its kind in Uttar Pradesh."
+      "recognition": "The first state-of-the-art welding centre of its kind in Uttar Pradesh, jointly established by AKGEC and Fronius International.",
+      "details": [
+        "Jointly established by AKGEC and Fronius International in November 2014 for welding science, engineering, research and development.",
+        "Facilities include Fronius inverter-based SMAW, GMAW and GTAW welding sources, advanced arc-welding setups, a Messer CNC plasma-cutting machine, and destructive and non-destructive weld testing.",
+        "The centre has delivered 70+ training programmes for 1,000+ students and 30+ one-day workshops attended by 1,200+ students."
+      ]
     },
     {
       "name": "SIEMENS Advance Manufacturing Centre",
@@ -137,16 +152,26 @@
       "description": "A centre jointly established by AKGEC and Siemens at Ghaziabad to develop highly skilled technical manpower in advanced manufacturing.",
       "itemsTitle": "Training programmes",
       "items": ["Computer Integrated Manufacturing (CIM)", "CNC Operation & Programming - Turning / Milling / Grinding", "Finishing School Program in Production Engineering"],
-      "recognition": "Hands-on learning uses NC production machines for turning, milling and grinding with Siemens CNC controllers and simulators."
+      "recognition": "Hands-on learning uses ACE Micromatic NC production machines for turning, milling and grinding, equipped with Siemens CNC controllers and simulators.",
+      "details": [
+        "AKGEC and Siemens established the Advance Manufacturing Centre in Ghaziabad on 14 December 2016 to develop advanced-manufacturing skills.",
+        "B.Tech, Diploma and ITI learners get hands-on experience with turning, milling and grinding machines and Siemens CNC programming simulators.",
+        "The centre has delivered 25 training programmes and trained 349 students."
+      ]
     },
     {
       "name": "NI LabVIEW Academy",
       "partner": "National Instruments",
       "focus": "Test, Measurement, Control & IIoT",
-      "description": "An initiative of National Instruments under the Planet NI framework, focused on employability and innovative solutions in test, measurement and control. The brochure also designates it as a Centre of Excellence in Industrial Internet of Things (IIoT).",
+      "description": "An initiative of National Instruments under the Planet NI framework, focused on employability and innovative solutions in test, measurement and control. The academy is also a Centre of Excellence in Industrial Internet of Things (IIoT).",
       "itemsTitle": "Training programmes",
       "items": ["LabVIEW CORE - I & II", "LabVIEW CORE III & Connectivity", "IIoT & Machine Vision"],
-      "recognition": "The academy is described as a Centre of Excellence in Industrial Internet of Things (IIoT)."
+      "recognition": "Established in April 2012, the academy is designated a Centre of Excellence in Industrial Internet of Things (IIoT).",
+      "details": [
+        "National Instruments established the academy under its Planet NI initiative to develop employability and support industry in test, measurement and control.",
+        "The centre combines software with PXI, CompactRIO and CompactDAQ systems and NI hardware including myDAQ, myRIO, sbRIO, USB DAQ and Analog Discovery.",
+        "The academy has delivered 50+ training programmes for 800+ students and 400+ one-day workshops."
+      ]
     },
     {
       "name": "BOSCH Rexroth Centre of Competence in Automation Technologies",
@@ -155,7 +180,12 @@
       "description": "A centre established with Bosch Rexroth AG, Germany, to bridge the technological gap and provide training and research for engineering and manufacturing industries.",
       "itemsTitle": "Training programmes",
       "items": ["Automation Technologies - Basic / Intermediate", "Industrial Hydraulics - Basic / Advance", "Industrial Pneumatics - Basic / Advance", "Mechatronics", "Industrial Networking", "Sensorics", "Motion Control"],
-      "recognition": "The centre has six laboratories covering Hydraulics, Pneumatics, Sensorics, PLCs, Drives & Control and Mechatronics. Successful participants are awarded a joint certificate of AKGEC & BOSCH Rexroth."
+      "recognition": "The centre has six laboratories covering Hydraulics, Pneumatics, Sensorics, PLCs, Drives & Control, and Mechatronics. Successful participants receive joint certification from AKGEC and Bosch Rexroth.",
+      "details": [
+        "Established with Bosch Rexroth AG, Germany. The partnership MOU was signed on 7 May 2012 and the centre was inaugurated on 9 March 2013.",
+        "Six specialist laboratories provide practical training in Hydraulics, Pneumatics, Sensorics, PLCs, Drives & Control, and Mechatronics.",
+        "The centre has delivered 60+ training programmes for 900+ students and 40+ one-day workshops attended by 1,000+ students."
+      ]
     },
     {
       "name": "AIA Centre for Integrated Automation",
@@ -164,7 +194,12 @@
       "description": "A centre jointly established by AKGEC and AIA to advance knowledge of automation applications through theoretical and practical exposure.",
       "itemsTitle": "Training programmes",
       "items": ["Integrated Automation : Basic", "Integrated Automation : Advance", "Integrated Automation : Expert", "Mechatronics", "Hydraulics", "Pneumatics"],
-      "recognition": "The brochure describes world-class training infrastructure and working models based on innovative industrial applications."
+      "recognition": "The centre combines theory and practice through industrial automation trainers, simulation software and working models.",
+      "details": [
+        "Established with the Automation Industry Association on 27 June 2014 to advance industrial automation applications.",
+        "Training infrastructure includes B&R, Siemens and Festo trainers and simulation software, low-cost automation concepts, Pepperl+Fuchs sensorics and SMC industrial grippers.",
+        "The centre includes Siemens S7-1200/1500 PLCs, B&R controllers and Festo electro-pneumatic systems."
+      ]
     },
     {
       "name": "SIEMENS PLM Centre of Excellence",
@@ -173,7 +208,12 @@
       "description": "A Siemens PLM centre using software for product lifecycle management and manufacturing operations management, including product design, analysis, manufacturing and simulation.",
       "itemsTitle": "Training programmes",
       "items": ["CAD Tool: Solid Edge / NX", "CAM Programming using NX", "Computer Aided Analysis: FEMAP", "Design for Additive Manufacturing"],
-      "recognition": "The brochure lists Siemens software including FEMAP, JACK, NX, ROBCAD, SOLIDEDGE, PLANT SIMULATION and PROCESS SIMULATE."
+      "recognition": "The centre uses Siemens software to support product lifecycle and manufacturing operations from product design through simulation.",
+      "details": [
+        "The AKGEC-Siemens PLM partnership was formalized through an MOU on 12 December 2012.",
+        "The centre supports training for industry professionals and engineering students in CAD tools, CAM programming, computer-aided analysis and design for additive manufacturing.",
+        "Available Siemens software includes FEMAP, JACK, NX, ROBCAD, Solid Edge, Plant Simulation and Process Simulate."
+      ]
     },
     {
       "name": "MITSUBISHI Authorised Training Centre",
@@ -182,7 +222,12 @@
       "description": "An authorised factory-automation training centre at AKGEC, established by Mitsubishi Electric India Pvt. Ltd. to bridge the technological gap and support applied research.",
       "itemsTitle": "Training programmes",
       "items": ["PLC and HMI Programming", "SCADA: Monitoring & Control Systems", "Basic Course on Drive & Control", "Inverters & Servos"],
-      "recognition": "The centre provides access to modular and micro controllers, inverters, servos and HMIs for high-end factory automation applications."
+      "recognition": "The authorised training centre focuses on factory automation, Drives, Servo Control, LVS and Robotics.",
+      "details": [
+        "Mitsubishi Electric India established the centre at AKGEC Ghaziabad; it was inaugurated on 8 June 2014.",
+        "Training and applied research cover modular and micro controllers, inverters, servos and HMIs.",
+        "Listed courses include PLC and HMI programming, SCADA monitoring and control, basic drive and control, and inverters and servos."
+      ]
     },
     {
       "name": "FAB LAB Centre of Digital Manufacturing",
@@ -191,7 +236,12 @@
       "description": "A technical prototyping platform for innovation and invention, providing a small-scale digital fabrication workshop for learning, experimentation and creation of smart devices.",
       "itemsTitle": "Programmes and facilities",
       "items": ["Embedded Systems", "PCB Design and Manufacturing", "Additive Manufacturing", "Digital Manufacturing", "Innovation Boot Camp", "Fab Academy Diploma Program"],
-      "recognition": "The brochure describes the Fab Lab as a platform connecting learners, educators, technologists, researchers and innovators with a global knowledge-sharing network."
+      "recognition": "Established with the Grassroots Invention Group and MIT's Center for Bits and Atoms, the Fab Lab supports hands-on learning, experimentation and digital fabrication.",
+      "details": [
+        "Established in December 2016 to give students and the local maker community a dedicated space and equipment for projects and innovation.",
+        "The lab provides training for undergraduate and postgraduate students, young learners and local makers.",
+        "Training areas include embedded systems, PCB design and manufacturing, additive and digital manufacturing, Innovation Boot Camp and the Fab Academy Diploma Program."
+      ]
     },
     {
       "name": "BOSCH Joint Certification Centre",
@@ -200,7 +250,12 @@
       "description": "A joint certification centre established by AKGEC and Bosch Ltd. for automotive training with a balance of theory and practical learning.",
       "itemsTitle": "Training programmes",
       "items": ["Automotive Technology - Essential / Intermediate / Advance", "Car Maintenance & Systems", "Automotive Service", "Vehicle Diagnostics", "Automotive Electrical & Electronics"],
-      "recognition": "The centre offers essential, intermediate and advanced levels and hands-on training for engineers, technicians and mechanics."
+      "recognition": "The centre balances theory and practical automotive learning for aspiring engineers, technicians and mechanics.",
+      "details": [
+        "AKGEC and Bosch Ltd. established the Joint Certification Centre at the AKGEC campus in March 2023.",
+        "Facilities include a technical library, high-end trainer kits, working models, petrol and diesel engines, gearboxes, vehicle diagnostic hardware and software, and vehicle cut sections.",
+        "Training covers automotive technology at Essential, Intermediate and Advanced levels, vehicle maintenance, service, diagnostics, and automotive electrical and electronics."
+      ]
     },
     {
       "name": "ZEISS Calibration & Testing Centre",
@@ -209,7 +264,12 @@
       "description": "An NABL-accredited facility established with ZEISS to meet dimensional metrology requirements of industry.",
       "itemsTitle": "Training programmes",
       "items": ["CMM - Operator Training", "CMM - Manager Training", "GD&T Training"],
-      "recognition": "The brochure states that the facility provides NABL-accredited calibration services, reverse engineering services and dimensional testing services and complies with IS/ISO/IEC 17025:2017."
+      "recognition": "The calibration and testing facility is NABL-accredited and compliant with IS/ISO/IEC 17025:2017.",
+      "details": [
+        "Established with ZEISS on 9 February 2016 to address industry dimensional-metrology needs.",
+        "Equipment includes a CONTURA G2 coordinate measuring machine, SURFCOM NX 030 contour measuring machine, and ARTEC EVA and ZEISS COMET L3D 5M scanners.",
+        "Services include calibration, reverse engineering and dimensional testing. Listed training includes CMM Operator, CMM Manager and GD&T."
+      ]
     },
     {
       "name": "JANATICS Industrial Pneumatic Knowledge Centre",
@@ -218,7 +278,11 @@
       "description": "An Industrial Pneumatic Knowledge Centre jointly established by AKGEC and Janatics India Pvt. Ltd. to develop skilled manpower in industrial pneumatics and support low-cost automation solutions for SMEs.",
       "itemsTitle": "Training programmes",
       "items": ["Basic Pneumatics & Automation", "Certificate Program in Flexible Manufacturing System", "Electro Pneumatics & Advance Automation", "Plant & Machine Maintenance", "Pneumatics FMS Maintenance"],
-      "recognition": "The brochure describes it as India's first Industrial Pneumatic Knowledge Centre and states that it also functions as an NSIC Training-cum-Incubation Centre."
+      "recognition": "The current ASF centre information describes it as India's first Industrial Pneumatic Knowledge Centre and an NSIC Training-cum-Incubation Centre.",
+      "details": [
+        "The centre focuses on industrial pneumatics, automation and low-cost automation solutions for SMEs.",
+        "Programmes listed in the ASF centre information include Basic Pneumatics & Automation, Flexible Manufacturing System, Electro-Pneumatics & Advanced Automation, Plant & Machine Maintenance, and Pneumatics FMS Maintenance."
+      ]
     },
     {
       "name": "SIEMENS Centre of Excellence in Automation",
@@ -227,7 +291,12 @@
       "description": "Established in 2016 at AKGEC, Ghaziabad, this centre was developed with Siemens to bridge the gap between academia and industry through hands-on training and applied research.",
       "itemsTitle": "Training programmes",
       "items": ["Industrial Automation - Basic / Advance", "Industrial AC & DC Drives - Basic / Advance", "SIMOCODE - Foundational Level", "Process Instrumentation & Control - Intermediate / Advance", "Switchgear - Basic Level"],
-      "recognition": "The brochure describes four specialized laboratories equipped with PLCs, DCS, SCADA, HMI, drives and instrumentation systems."
+      "recognition": "The centre offers joint certification by AKGEC Skills Foundation and Siemens.",
+      "details": [
+        "Established with Siemens on 14 December 2016 to provide industrial-automation training, research and consultancy for students, professionals and industry.",
+        "Facilities include Siemens S7-1500, S7-1200 and S7-400 PLCs, WinCC SCADA, HMI, SIMATIC PCS 7 process control, SINAMICS AC/DC drives, process instrumentation and switchgear training setups.",
+        "Software includes TIA Portal, WinCC Advanced and Runtime Professional, TIA SIMOCODE and SINAMICS Starter."
+      ]
     },
     {
       "name": "DGCA Certified Remote Pilot Training Drone Academy",
@@ -236,16 +305,26 @@
       "description": "AKGEC Drone Academy is an initiative of ASF and a DGCA-Certified Remote Pilot Training Organization focused on drone technology education and training.",
       "itemsTitle": "Training programmes",
       "items": ["Remote Pilot Training", "Agriculture Spray", "Agriculture Drone Spray", "Drone Service Technician"],
-      "recognition": "DGCA-Certified Remote Pilot Training Organization (RPTO), Authorization No. 35/2024. The brochure lists a smartboard classroom, drone simulation lab, drone flying station and four DGCA type-certified drones."
+      "recognition": "The current ASF centre information identifies the academy as a DGCA-certified Remote Pilot Training Organization (RPTO), Authorization No. 35/2024, with a simulation lab and flying station.",
+      "details": [
+        "AKGEC Drone Academy is an ASF initiative for drone technology education and remote-pilot training.",
+        "The listed programmes include Remote Pilot Training, Agriculture Spray, Agriculture Drone Spray, and Drone Service Technician.",
+        "ASF centre information lists a smartboard classroom, drone simulation lab, drone flying station, and four DGCA type-certified drones."
+      ]
     },
     {
       "name": "Common Facility Center (CFC)",
       "partner": "AKG Foundation for Innovation and Product Development",
       "focus": "General Engineering, Product Development & Industry 4.0",
-      "description": "A Common Facility Center proposed at AKGEC, Ghaziabad, under Uttar Pradesh's One District, One Product (ODOP) scheme. It aims to support local general engineering industries through advanced manufacturing, material testing, research and product development.",
+      "description": "A Common Facility Center initiated at AKGEC, Ghaziabad, under Uttar Pradesh's One District, One Product (ODOP) scheme. It supports local general engineering industries through advanced manufacturing, material testing, research and product development.",
       "itemsTitle": "Facilities",
       "items": ["Modern Tool Room", "Material Testing Laboratory", "Research and Development Laboratory", "Industry 4.0 Laboratory", "High-End Engineering Product Development"],
-      "recognition": "An initiative to support Ghaziabad's general engineering industry and promote industry-academia collaboration."
+      "recognition": "The supplied CoE document describes the CFC as an ODOP initiative for Ghaziabad's general engineering industry, implemented through a consortium of 22 industries and academia.",
+      "details": [
+        "The Common Facility Centre was initiated at AKGEC, Ghaziabad, under the Government of Uttar Pradesh One District, One Product scheme.",
+        "The facility is intended to help local small and medium manufacturers modernize machinery and improve productivity.",
+        "Facilities include a high-end engineering product-development facility with a modern tool room, material-testing laboratory, R&D laboratory and Industry 4.0 laboratory."
+      ]
     }
   ]
 }

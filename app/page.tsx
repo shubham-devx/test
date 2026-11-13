@@ -1,21 +1,16 @@
 ﻿"use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  Boxes,
   Bot,
-  Cog,
-  BadgeCheck,
-  CalendarDays,
+  Building2,
   ChevronRight,
   ChevronDown,
-  Cpu,
-  DraftingCompass,
   Flame,
   Factory,
-  Gauge,
   HeartPulse,
   Mail,
   MapPin,
@@ -24,7 +19,7 @@ import {
   Menu,
   MessageCircle,
   ShieldCheck,
-  ScanLine,
+  UsersRound,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -32,9 +27,9 @@ import defaultSiteContent from "@/data/site-content.json";
 import type { SiteContent, SiteSection } from "@/lib/siteContent";
 import { shouldBypassImageOptimization } from "@/lib/siteImage";
 import { SITE_THEMES } from "@/lib/siteThemes";
+import { getCentreSlug } from "@/lib/centres";
 import RegistrationModal from "../components/RegistrationModal";
 import AnnouncementBanner from "../components/AnnouncementBanner";
-import CourseFeesModal from "../components/CourseFeesModal";
 
 /* =====================================================
    WHATSAPP
@@ -71,8 +66,7 @@ function whatsapp(phone: string, message: string): string {
 
 const navItems = [
   ["About Foundation", "#about"],
-  ["Training", "#training"],
-  ["Centres of Excellence", "#centres"],
+  ["COE / Training", "#centres"],
   ["Industry", "#industry"],
   // ["MoUs", "#mous"],
   // ["Proud Moments", "#proud-moments"],
@@ -83,54 +77,6 @@ const navItems = [
 /* =====================================================
    TRAINING PROGRAMMES
    ===================================================== */
-
-const trainingIcons = {
-  robotics: Bot,
-  labview: Gauge,
-  bosch: Cog,
-  automation: Cpu,
-  welding: Flame,
-  manufacturing: Factory,
-  "bosch-jcc": BadgeCheck,
-  siemens: Boxes,
-  fablab: ScanLine,
-  cfc: DraftingCompass,
-  drone: Plane,
-};
-
-const trainingCategoryIcons: Record<Exclude<TrainingCategory, "All Programmes">, typeof Bot> = {
-  Robotics: Bot,
-  "Industrial Automation": Cog,
-  Manufacturing: Factory,
-  Welding: Flame,
-  "Drone Technology": Plane,
-  "Software & Technology": ScanLine,
-};
-
-const trainingCategories = [
-  "All Programmes",
-  "Robotics",
-  "Industrial Automation",
-  "Manufacturing",
-  "Welding",
-  "Drone Technology",
-  "Software & Technology",
-] as const;
-
-type TrainingCategory = (typeof trainingCategories)[number];
-
-function getTrainingCategory(icon: string, title: string): Exclude<TrainingCategory, "All Programmes"> {
-  const searchText = `${icon} ${title}`.toLowerCase();
-  if (searchText.includes("drone")) return "Drone Technology";
-  if (icon === "robotics" || /kuka|robotic/.test(searchText)) return "Robotics";
-  if (icon === "welding" || searchText.includes("fronius")) return "Welding";
-  if (icon === "manufacturing" || icon === "cfc") return "Manufacturing";
-  if (searchText.includes("plm") || icon === "labview" || icon === "fablab") return "Software & Technology";
-  if (icon === "automation" || icon === "bosch" || icon === "bosch-jcc" || icon === "siemens") {
-    return "Industrial Automation";
-  }
-  return "Software & Technology";
-}
 
 function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
   const [value, setValue] = useState(0);
@@ -213,7 +159,7 @@ const centres = [
       "Robotic Spot Welding and Ultrasonic Welding",
       "Robotic Milling and Robotic LASER Welding & Cutting",
     ],
-    recognition: "The brochure describes it as the first and largest robotics centre in the country and states that successful participants receive joint certification of AKGEC & KUKA.",
+    recognition: "Recognised as India's first Industrial Robotics Training Centre for educational institutions. Successful participants receive joint certification from AKGEC and KUKA.",
   },
   {
     name: "FRONIUS Advance Welding Technology & Research Centre",
@@ -227,7 +173,7 @@ const centres = [
       "Competency Development Program for Arc Welders",
       "ASNT Level-1 & 2 Certification Program (VT, PT, MT & UT)",
     ],
-    recognition: "The brochure describes it as the first state-of-the-art centre of its kind in Uttar Pradesh.",
+    recognition: "The first state-of-the-art welding centre of its kind in Uttar Pradesh.",
   },
   {
     name: "SIEMENS Advance Manufacturing Centre",
@@ -247,7 +193,7 @@ const centres = [
     partner: "National Instruments",
     focus: "Test, Measurement, Control & IIoT",
     description:
-      "An initiative of National Instruments under the Planet NI framework, focused on employability and innovative solutions in test, measurement and control. The brochure also designates it as a Centre of Excellence in Industrial Internet of Things (IIoT).",
+      "An initiative of National Instruments under the Planet NI framework, focused on employability and innovative solutions in test, measurement and control. The academy is also a Centre of Excellence in Industrial Internet of Things (IIoT).",
     programs: [
       "LabVIEW CORE - I & II",
       "LabVIEW CORE III & Connectivity",
@@ -286,7 +232,7 @@ const centres = [
       "Hydraulics",
       "Pneumatics",
     ],
-    recognition: "The brochure describes world-class training infrastructure and working models based on innovative industrial applications.",
+    recognition: "The centre combines theory and practice through industrial automation trainers, simulation software and working models.",
   },
   {
     name: "SIEMENS PLM Centre of Excellence",
@@ -300,7 +246,7 @@ const centres = [
       "Computer Aided Analysis: FEMAP",
       "Design for Additive Manufacturing",
     ],
-    recognition: "The brochure lists Siemens software including FEMAP, JACK, NX, ROBCAD, SOLIDEDGE, PLANT SIMULATION and PROCESS SIMULATE.",
+    recognition: "Available Siemens software includes FEMAP, JACK, NX, ROBCAD, Solid Edge, Plant Simulation and Process Simulate.",
   },
   {
     name: "MITSUBISHI Authorised Training Centre",
@@ -330,7 +276,7 @@ const centres = [
       "Innovation Boot Camp",
       "Fab Academy Diploma Program",
     ],
-    recognition: "The brochure describes the Fab Lab as a platform connecting learners, educators, technologists, researchers and innovators with a global knowledge-sharing network.",
+    recognition: "The Fab Lab connects learners, educators, technologists, researchers and innovators through a global knowledge-sharing network.",
   },
   {
     name: "BOSCH Joint Certification Centre",
@@ -358,7 +304,7 @@ const centres = [
       "CMM - Manager Training",
       "GD&T Training",
     ],
-    recognition: "The brochure states that the facility provides NABL-accredited calibration services, reverse engineering services and dimensional testing services and complies with IS/ISO/IEC 17025:2017.",
+    recognition: "The facility provides NABL-accredited calibration, reverse engineering and dimensional testing services and complies with IS/ISO/IEC 17025:2017.",
   },
   {
     name: "JANATICS Industrial Pneumatic Knowledge Centre",
@@ -373,7 +319,7 @@ const centres = [
       "Plant & Machine Maintenance",
       "Pneumatics FMS Maintenance",
     ],
-    recognition: "The brochure describes it as India's first Industrial Pneumatic Knowledge Centre and states that it also functions as an NSIC Training-cum-Incubation Centre.",
+    recognition: "India's first Industrial Pneumatic Knowledge Centre, also functioning as an NSIC Training-cum-Incubation Centre.",
   },
   {
     name: "SIEMENS Centre of Excellence in Automation",
@@ -388,7 +334,7 @@ const centres = [
       "Process Instrumentation & Control - Intermediate / Advance",
       "Switchgear - Basic Level",
     ],
-    recognition: "The brochure describes four specialized laboratories equipped with PLCs, DCS, SCADA, HMI, drives and instrumentation systems.",
+    recognition: "Four specialised laboratories are equipped with PLCs, DCS, SCADA, HMI, drives and instrumentation systems.",
   },
   {
     name: "DGCA Certified Remote Pilot Training Drone Academy",
@@ -402,7 +348,7 @@ const centres = [
       "Agriculture Drone Spray",
       "Drone Service Technician",
     ],
-    recognition: "DGCA-Certified Remote Pilot Training Organization (RPTO), Authorization No. 35/2024. The brochure lists a smartboard classroom, drone simulation lab, drone flying station and four DGCA type-certified drones.",
+    recognition: "DGCA-Certified Remote Pilot Training Organization (RPTO), Authorization No. 35/2024, with a smartboard classroom, drone simulation lab, drone flying station and four DGCA type-certified drones.",
   },
   {
   name: "CFC",
@@ -410,7 +356,7 @@ const centres = [
   partner: "AKG Foundation for Innovation and Product Development",
   focus: "General Engineering, Product Development, and Industry 4.0",
   description:
-    "A Common Facility Center proposed at AKGEC, Ghaziabad, under the Uttar Pradesh government's One District, One Product (ODOP) scheme. The center aims to support local general engineering industries through advanced manufacturing facilities, material testing, research, and product development.",
+    "A Common Facility Center initiated at AKGEC, Ghaziabad, under the Uttar Pradesh government's One District, One Product (ODOP) scheme. The centre supports local general engineering industries through advanced manufacturing facilities, material testing, research, and product development.",
   facilities: [
     "Modern Tool Room",
     "Material Testing Laboratory",
@@ -615,15 +561,10 @@ function HeroSlider({ heroImage }: { heroImage: string }) {
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [siteContent, setSiteContent] = useState<SiteContent>(() => createFallbackSiteContent());
-  const [selectedCentre, setSelectedCentre] = useState<SiteContent["centresList"][number] | null>(null);
   const [selectedMou, setSelectedMou] = useState<(typeof mouGroups)[number]["items"][number] | null>(null);
   const [selectedProudMoment, setSelectedProudMoment] = useState<(typeof proudMoments)[number] | null>(null);
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [registrationCourse, setRegistrationCourse] = useState<string | undefined>(undefined);
-	const [courseFeesOpen, setCourseFeesOpen] = useState(false);
-	const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
-  const [trainingCategory, setTrainingCategory] = useState<TrainingCategory>("All Programmes");
-  const [expandedCentreName, setExpandedCentreName] = useState<string | null>(null);
 
   useEffect(() => {
     const palette = SITE_THEMES[siteContent.theme];
@@ -647,10 +588,6 @@ export default function Home() {
     setRegistrationOpen(true);
   }
 
-  function toggleSection(section: string) {
-    setExpandedSections((previous) => ({ ...previous, [section]: !previous[section] }));
-  }
-
   /* ===================================================
      WHATSAPP URLS
      =================================================== */
@@ -659,28 +596,6 @@ export default function Home() {
     ADMIN_WHATSAPP,
     "Hello AKGEC Skills Foundation, I would like to contact the admin."
   );
-  const droneAcademy = siteContent.centresList.find((centre) => /drone/i.test(`${centre.name} ${centre.focus}`));
-  const hasDroneProgramme = siteContent.trainingPrograms.some((program) => /drone/i.test(`${program.icon} ${program.title} ${program.text}`));
-  const programmeCards = [
-    ...siteContent.trainingPrograms.map((item) => {
-      const category = getTrainingCategory(item.icon, item.title);
-      return { ...item, category };
-    }),
-    ...(droneAcademy && !hasDroneProgramme ? [{
-      icon: "drone",
-      title: droneAcademy.name,
-      text: droneAcademy.description,
-      category: "Drone Technology" as const,
-      image: undefined,
-    }] : []),
-  ];
-  const filteredPrograms = trainingCategory === "All Programmes"
-    ? programmeCards
-    : programmeCards.filter((program) => program.category === trainingCategory);
-  const visiblePrograms = trainingCategory === "All Programmes" && !expandedSections.training
-    ? filteredPrograms.slice(0, 4)
-    : filteredPrograms;
-
   return (
     <div className="foundation-home">
       {/* =================================================
@@ -754,15 +669,36 @@ export default function Home() {
             }
           >
             {siteContent.navigation.map(({ label, section }) => (
-              <a
-                href={`#${section}`}
-                key={label}
-                onClick={() =>
-                  setMenuOpen(false)
-                }
-              >
-                {label}
-              </a>
+              section === "centres" ? (
+                <details className="main-nav-coe-dropdown" key={label}>
+                  <summary>
+                    {label}
+                    <ChevronDown size={15} aria-hidden="true" />
+                  </summary>
+                  <div className="main-nav-coe-menu">
+                    <span>Choose a centre</span>
+                    {siteContent.centresList.map((centre, index) => (
+                      <Link
+                        href={`/coe-training/${getCentreSlug(centre.name)}`}
+                        key={centre.name}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        {centre.name}
+                        <ChevronRight size={16} aria-hidden="true" />
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              ) : (
+                <a
+                  href={`#${section}`}
+                  key={label}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              )
             ))}
             <a href="/asf-tbi" className="tbi-nav-entry" onClick={() => setMenuOpen(false)}>
               ASF-TBI <ArrowUpRight size={13} aria-hidden="true" />
@@ -848,19 +784,10 @@ export default function Home() {
             </h1>
 
             <p>
-              AKGEC Skills Foundation promotes industry-oriented skills through practical training, advanced technology and industry–institution collaboration.
+              Backed by AKGEC and NSDC, ASF develops industry-ready skills in robotics, automation, digital manufacturing and more.
             </p>
 
             <div className="hero-actions">
-
-              <a
-                href="#training"
-                className="primary-action"
-              >
-                Explore Training
-                <ArrowRight size={18} />
-              </a>
-
               <button
   type="button"
   className="secondary-action"
@@ -916,36 +843,38 @@ export default function Home() {
                 AT A GLANCE
               </span>
 
-              <h2>
-                Built around practical capability
-              </h2>
+              <h2>Training impact, proven in practice</h2>
 
             </div>
 
             <div className="glance-grid">
 
               <article className="glance-card">
-                <CalendarDays size={20} aria-hidden="true" />
-                <strong><CountUp target={2015} /></strong>
-                <span>Foundation incorporated</span>
+                <span className="glance-card-icon robotics" aria-hidden="true"><Bot size={48} strokeWidth={1.7} /></span>
+                <small className="glance-card-partner">KUKA ROBOTICS</small>
+                <strong><CountUp target={100} suffix="+" /></strong>
+                <p className="glance-card-description">Training programmes delivered to more than 1,100 students.</p>
               </article>
 
               <article className="glance-card">
-                <BadgeCheck size={20} aria-hidden="true" />
-                <strong>ISO</strong>
-                <span>ISO 9001 certified organization</span>
+                <span className="glance-card-icon industry" aria-hidden="true"><Building2 size={48} strokeWidth={1.7} /></span>
+                <small className="glance-card-partner">KUKA CORPORATE TRAINING</small>
+                <strong><CountUp target={50} suffix="+" /></strong>
+                <p className="glance-card-description">Corporate programmes have upskilled nearly 300 engineers.</p>
               </article>
 
               <article className="glance-card">
-                <Boxes size={20} aria-hidden="true" />
-                <strong><CountUp target={15} /></strong>
-                <span>Centres and initiatives listed under ASF</span>
+                <span className="glance-card-icon welding" aria-hidden="true"><Flame size={48} strokeWidth={1.7} /></span>
+                <small className="glance-card-partner">FRONIUS WELDING</small>
+                <strong><CountUp target={70} suffix="+" /></strong>
+                <p className="glance-card-description">Training programmes have reached more than 1,000 students.</p>
               </article>
 
               <article className="glance-card">
-                <Gauge size={20} aria-hidden="true" />
-                <strong><CountUp target={70} suffix="%" /></strong>
-                <span>Practical learning, as highlighted in the brochure</span>
+                <span className="glance-card-icon workshops" aria-hidden="true"><UsersRound size={48} strokeWidth={1.7} /></span>
+                <small className="glance-card-partner">FRONIUS WORKSHOPS</small>
+                <strong><CountUp target={1200} suffix="+" /></strong>
+                <p className="glance-card-description">Participants across 30+ one-day workshops.</p>
               </article>
 
             </div>
@@ -985,213 +914,24 @@ export default function Home() {
 
               <div className="about-copy">
                 <p className="lead">{siteContent.about.lead}</p>
-                <p>{siteContent.about.description}</p>
+                {siteContent.about.description.split(/\n\s*\n/).map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
 
                 <div className="about-points">
-
-                  <div>
-                    <ShieldCheck size={21} />
-                    Courses aligned with NOS and QP
-                  </div>
-
-                  <div>
-                    <ShieldCheck size={21} />
-                    Industry–institution collaboration
-                  </div>
-
-                  <div>
-                    <ShieldCheck size={21} />
-                    Training, prototyping, testing and measurement
-                  </div>
-
+                  {siteContent.about.keyFocusAreas.map((area) => (
+                    <div key={area.title}>
+                      <ShieldCheck size={21} aria-hidden="true" />
+                      <span>
+                        <strong>{area.title}:</strong> {area.description}
+                      </span>
+                    </div>
+                  ))}
                 </div>
                 <a className="about-learn-more" href="#industry">
                   Learn more about ASF <ArrowRight size={17} aria-hidden="true" />
                 </a>
               </div>
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* =================================================
-            TRAINING
-        ================================================= */}
-
-        <section
-          id="training"
-          className="training"
-        >
-
-          <div className="container">
-
-            <div className="section-heading">
-
-              <span>{siteContent.training.label}</span>
-              <h2>{siteContent.training.heading}</h2>
-              <p>{siteContent.training.description}</p>
-
-              <button type="button" className="course-fees-trigger" onClick={() => setCourseFeesOpen(true)}>
-                Courses & Fees
-                <ArrowUpRight size={17} />
-              </button>
-
-            </div>
-
-            <div className="training-filters" role="group" aria-label="Filter training programmes by category">
-              {trainingCategories.map((category) => (
-                <button
-                  type="button"
-                  key={category}
-                  className={trainingCategory === category ? "active" : ""}
-                  aria-pressed={trainingCategory === category}
-                  onClick={() => {
-                    setTrainingCategory(category);
-                    setExpandedSections((previous) => ({ ...previous, training: false }));
-                  }}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            <p className="training-result-count" aria-live="polite">
-              Showing {visiblePrograms.length}{visiblePrograms.length !== filteredPrograms.length ? ` of ${filteredPrograms.length}` : ""} {filteredPrograms.length === 1 ? "programme" : "programmes"}
-            </p>
-
-            <div className="training-grid">
-              {visiblePrograms.map((item) => {
-                const Icon = trainingIcons[item.icon as keyof typeof trainingIcons] ?? trainingCategoryIcons[item.category];
-
-                return (
-                  <article className="training-card" key={item.title}>
-                    <div className="training-card-media">
-                      <span className="training-card-mark" aria-hidden="true">
-                        <Icon size={24} strokeWidth={1.8} />
-                      </span>
-                      <span className="training-category-label">{item.category}</span>
-                    </div>
-
-                    <div className="training-card-body">
-                      <h3>{item.title}</h3>
-                      <p>{item.text}</p>
-                      <button
-                        type="button"
-                        className="training-enquire"
-                        onClick={() => openRegistration(item.title)}
-                      >
-                        Register <ArrowUpRight size={17} />
-                      </button>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-
-            {filteredPrograms.length === 0 && (
-              <p className="training-empty">No programmes are listed in this category yet.</p>
-            )}
-            {trainingCategory === "All Programmes" && filteredPrograms.length > 4 && (
-              <button
-                type="button"
-                className="view-more-button"
-                onClick={() => toggleSection("training")}
-                aria-expanded={Boolean(expandedSections.training)}
-              >
-                {expandedSections.training ? "View fewer programmes" : "View more programmes"}
-                {expandedSections.training ? <ChevronDown size={17} /> : <ArrowUpRight size={17} />}
-              </button>
-            )}
-          </div>
-
-        </section>
-
-        {/* =================================================
-            CENTRES OF EXCELLENCE
-        ================================================= */}
-
-        <section
-          id="centres"
-          className="centres"
-        >
-
-          <div className="container">
-
-            <div className="centres-header">
-
-              <div>
-
-                <span className="section-label">
-                  {siteContent.centres.label}
-                </span>
-
-                <h2>{siteContent.centres.heading}</h2>
-
-              </div>
-
-              <p>
-                {siteContent.centres.description}
-              </p>
-
-            </div>
-
-            <div className="centres-layout">
-
-              <div className="centres-image">
-
-                <Image
-                  src="/images/centres/kuka.jpg"
-                  alt="KUKA robotics training centre"
-                  fill
-                  sizes="50vw"
-                  className="cover-image"
-                />
-
-              </div>
-
-              <div className="centres-list">
-
-                {siteContent.centresList.slice(0, expandedSections.centres ? undefined : 5).map((centre, index) => {
-                  const isExpanded = expandedCentreName === centre.name;
-                  return (
-                    <div className="centre-list-item" key={centre.name}>
-                      <button
-                        type="button"
-                        className="centre-select"
-                        aria-expanded={isExpanded}
-                        onClick={() => setExpandedCentreName(isExpanded ? null : centre.name)}
-                      >
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <strong>{centre.name}</strong>
-                        <ChevronRight size={21} aria-hidden="true" />
-                      </button>
-                      {isExpanded && (
-                        <div className="centre-summary">
-                          <p>{centre.description}</p>
-                          <button type="button" onClick={() => setSelectedCentre(centre)}>
-                            View centre details <ArrowUpRight size={15} aria-hidden="true" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {siteContent.centresList.length > 5 && (
-                  <button
-                    type="button"
-                    className="view-more-button"
-                    onClick={() => toggleSection("centres")}
-                    aria-expanded={Boolean(expandedSections.centres)}
-                  >
-                    {expandedSections.centres ? "Show fewer centres" : `View all ${siteContent.centresList.length} centres`}
-                    {expandedSections.centres ? <ChevronDown size={17} /> : <ArrowUpRight size={17} />}
-                  </button>
-                )}
-
-              </div>
-
             </div>
 
           </div>
@@ -1235,7 +975,7 @@ export default function Home() {
                 return (
                   <details className="industry-area-card" key={area.name}>
                     <summary>
-                      <span className={`industry-area-icon ${area.icon}`} aria-hidden="true"><Icon size={21} strokeWidth={2} /></span>
+                      <span className={`industry-area-icon ${area.icon}`} aria-hidden="true"><Icon size={28} strokeWidth={1.8} /></span>
                       <strong>{area.name}</strong>
                       <ChevronDown className="industry-area-chevron" size={18} aria-hidden="true" />
                     </summary>
@@ -1473,7 +1213,7 @@ export default function Home() {
                   <span>RESIDENTIAL FACILITIES</span>
                   <h3>On-campus accommodation</h3>
                   <p>
-                    The brochure states that ASF provides residential accommodation, with separate hostels for girls and boys, Wi-Fi-enabled rooms, modern amenities, dining facilities and round-the-clock security.
+                    Residential accommodation includes separate hostels for girls and boys, Wi-Fi-enabled rooms, dining facilities and round-the-clock security.
                   </p>
                 </div>
               </article>
@@ -1493,7 +1233,7 @@ export default function Home() {
                   <span>SPORTS & WELLBEING</span>
                   <h3>Gymnasium and sports facilities</h3>
                   <p>
-                    The brochure lists gymnasium together with indoor and outdoor sports facilities for trainees and hostel inmates.
+                    Trainees and hostel residents can use the gymnasium and indoor and outdoor sports facilities.
                   </p>
                 </div>
               </article>
@@ -1673,72 +1413,6 @@ export default function Home() {
         </div>
       )}
 
-      {selectedCentre && (
-        <div
-          className="centre-modal-backdrop"
-          role="presentation"
-          onClick={() => setSelectedCentre(null)}
-        >
-          <div
-            className="centre-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="centre-modal-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="centre-modal-close"
-              onClick={() => setSelectedCentre(null)}
-              aria-label="Close centre details"
-            >
-              <X size={22} />
-            </button>
-
-            <span className="section-label">CENTRE OF EXCELLENCE(COE)</span>
-            <h2 id="centre-modal-title">{selectedCentre.name}</h2>
-
-            <div className="centre-modal-meta">
-              <span>{selectedCentre.focus}</span>
-              <span>{selectedCentre.partner}</span>
-            </div>
-
-            <p>{selectedCentre.description}</p>
-
-            <div className="centre-modal-section">
-              <h3>{selectedCentre.itemsTitle}</h3>
-              <ul>
-                {selectedCentre.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="centre-modal-section centre-modal-note">
-              <h3>Brochure information</h3>
-              <p>{selectedCentre.recognition}</p>
-            </div>
-
-            <div className="centre-modal-actions">
-              <a
-                href={adminUrl}
-                className="contact-secondary"
-              >
-                Ask Admin on WhatsApp
-                <MessageCircle size={19} />
-              </a>
-              <button
-                type="button"
-                className="modal-close-text"
-                onClick={() => setSelectedCentre(null)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {registrationOpen && (
         <RegistrationModal
           isOpen
@@ -1746,15 +1420,6 @@ export default function Home() {
           onClose={() => setRegistrationOpen(false)}
         />
       )}
-
-      <CourseFeesModal
-        isOpen={courseFeesOpen}
-        onClose={() => setCourseFeesOpen(false)}
-        onRegister={(courseName) => {
-          setCourseFeesOpen(false);
-          openRegistration(courseName);
-        }}
-      />
 
       {/* =================================================
           FOOTER
@@ -1797,14 +1462,6 @@ export default function Home() {
 
               <a href="#about">
                 About the Foundation
-              </a>
-
-              <a href="#training">
-                Training & Programmes
-              </a>
-
-              <a href="#centres">
-                Centres of Excellence(COE)
               </a>
 
               <a href="#industry">

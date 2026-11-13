@@ -6,7 +6,7 @@ declare module "react" {
       marquee: DetailedHTMLProps<HTMLAttributes<HTMLMarqueeElement>, HTMLMarqueeElement> & {
         behavior?: "scroll" | "slide" | "alternate";
         direction?: "left" | "right" | "up" | "down";
-        scrollAmount?: number;
+        scrollamount?: number;
       };
     }
   }

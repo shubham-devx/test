@@ -121,13 +121,6 @@ export default function AdminSiteContentPage() {
     } : previous);
   }
 
-  function updateTraining(index: number, patch: Partial<SiteContent["trainingPrograms"][number]>) {
-    setContent((previous) => previous ? {
-      ...previous,
-      trainingPrograms: previous.trainingPrograms.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item),
-    } : previous);
-  }
-
   function updateCentre(index: number, patch: Partial<SiteContent["centresList"][number]>) {
     setContent((previous) => previous ? {
       ...previous,
@@ -139,6 +132,16 @@ export default function AdminSiteContentPage() {
     setContent((previous) => previous ? {
       ...previous,
       industryFocusAreas: previous.industryFocusAreas.map((area, areaIndex) => areaIndex === index ? { ...area, ...patch } : area),
+    } : previous);
+  }
+
+  function updateAboutFocusArea(index: number, patch: Partial<SiteContent["about"]["keyFocusAreas"][number]>) {
+    setContent((previous) => previous ? {
+      ...previous,
+      about: {
+        ...previous.about,
+        keyFocusAreas: previous.about.keyFocusAreas.map((area, areaIndex) => areaIndex === index ? { ...area, ...patch } : area),
+      },
     } : previous);
   }
 
@@ -206,7 +209,7 @@ export default function AdminSiteContentPage() {
       <header style={styles.header}>
         <div>
           <h1 style={styles.title}>Website Content</h1>
-          <p style={styles.subtitle}>Edit the four homepage sections, training cards, centre details and industry areas.</p>
+          <p style={styles.subtitle}>Edit homepage copy, COE / Training directory content, centre profiles, programmes, registrations and industry areas.</p>
         </div>
         <Link href="/admin" style={styles.backLink}>Dashboard</Link>
       </header>
@@ -290,14 +293,59 @@ export default function AdminSiteContentPage() {
                 {section === "about" && <label style={labelStyle}>Introduction<textarea style={{ ...inputStyle, minHeight: 96 }} rows={4} value={content.about.lead} onChange={(event) => updateSection("about", "lead", event.target.value)} /></label>}
                 <label style={labelStyle}>Description<textarea style={{ ...inputStyle, minHeight: 96 }} rows={4} value={fields.description} onChange={(event) => updateSection(section, "description", event.target.value)} /></label>
                 {section === "about" && (
-                  <ImageUploadField
-                    slot="about"
-                    src={content.images.about}
-                    uploading={uploadingImage === "about"}
-                    disabled={uploadingImage !== null}
-                    pendingSave={pendingImageSlots.includes("about")}
-                    onSelect={(file) => { void uploadImage("about", file); }}
-                  />
+                  <>
+                    <div style={{ ...styles.grid, gridColumn: "1 / -1" }}>
+                      <div style={styles.sectionHead}>
+                        <h3 style={styles.sectionTitle}>About Key Focus Areas</h3>
+                        <button
+                          type="button"
+                          style={styles.secondaryButton}
+                          onClick={() => setContent((previous) => previous ? {
+                            ...previous,
+                            about: {
+                              ...previous.about,
+                              keyFocusAreas: [...previous.about.keyFocusAreas, { title: "New focus area", description: "" }],
+                            },
+                          } : previous)}
+                        >
+                          <Plus size={16} /> Add focus area
+                        </button>
+                      </div>
+                      {content.about.keyFocusAreas.map((area, index) => (
+                        <article key={index} style={styles.item}>
+                          <div style={styles.itemHead}>
+                            <strong>Focus area {String(index + 1).padStart(2, "0")}</strong>
+                            <button
+                              type="button"
+                              aria-label={`Remove ${area.title}`}
+                              style={styles.deleteButton}
+                              onClick={() => setContent((previous) => previous ? {
+                                ...previous,
+                                about: {
+                                  ...previous.about,
+                                  keyFocusAreas: previous.about.keyFocusAreas.filter((_, areaIndex) => areaIndex !== index),
+                                },
+                              } : previous)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          <div style={styles.grid}>
+                            <label style={labelStyle}>Title<input style={inputStyle} value={area.title} onChange={(event) => updateAboutFocusArea(index, { title: event.target.value })} /></label>
+                            <label style={labelStyle}>Description<textarea style={{ ...inputStyle, minHeight: 72 }} rows={2} value={area.description} onChange={(event) => updateAboutFocusArea(index, { description: event.target.value })} /></label>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                    <ImageUploadField
+                      slot="about"
+                      src={content.images.about}
+                      uploading={uploadingImage === "about"}
+                      disabled={uploadingImage !== null}
+                      pendingSave={pendingImageSlots.includes("about")}
+                      onSelect={(file) => { void uploadImage("about", file); }}
+                    />
+                  </>
                 )}
                 {section === "industry" && (
                   <ImageUploadField
@@ -313,25 +361,6 @@ export default function AdminSiteContentPage() {
             </section>
           );
         })}
-
-        <section style={panelStyle}>
-          <div style={styles.sectionHead}>
-            <h2 style={styles.sectionTitle}>Training Cards</h2>
-            <button type="button" style={styles.secondaryButton} onClick={() => setContent({ ...content, trainingPrograms: [...content.trainingPrograms, { icon: "automation", title: "New programme", text: "Add programme details." }] })}><Plus size={16} /> Add training</button>
-          </div>
-          <div style={styles.items}>
-            {content.trainingPrograms.map((item, index) => (
-              <article key={index} style={styles.item}>
-                <div style={styles.itemHead}><strong>Training {String(index + 1).padStart(2, "0")}</strong><button type="button" aria-label={`Remove ${item.title}`} style={styles.deleteButton} onClick={() => setContent({ ...content, trainingPrograms: content.trainingPrograms.filter((_, itemIndex) => itemIndex !== index) })}><Trash2 size={16} /></button></div>
-                <div style={styles.grid}>
-                  <label style={labelStyle}>Title<input style={inputStyle} value={item.title} onChange={(event) => updateTraining(index, { title: event.target.value })} /></label>
-                  <label style={labelStyle}>Icon<select style={inputStyle} value={item.icon} onChange={(event) => updateTraining(index, { icon: event.target.value })}><option value="robotics">Robotics</option><option value="automation">Automation</option><option value="manufacturing">Manufacturing</option><option value="certification">Certification</option></select></label>
-                  <label style={labelStyle}>Details<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={item.text} onChange={(event) => updateTraining(index, { text: event.target.value })} /></label>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
 
         <section style={panelStyle}>
           <div style={styles.sectionHead}>
@@ -357,8 +386,14 @@ export default function AdminSiteContentPage() {
 
         <section style={panelStyle}>
           <div style={styles.sectionHead}>
-            <h2 style={styles.sectionTitle}>Centres of Excellence ({content.centresList.length})</h2>
-            <button type="button" style={styles.secondaryButton} onClick={() => setContent({ ...content, centresList: [...content.centresList, { name: "New centre", partner: "", focus: "", description: "", itemsTitle: "Programmes and facilities", items: [], recognition: "" }] })}><Plus size={16} /> Add centre</button>
+            <div>
+              <h2 style={styles.sectionTitle}>COE / Training Centres ({content.centresList.length})</h2>
+              <p style={styles.themeIntro}>Edit centre descriptions, courses, fees-related information, facilities, certifications and recognition. Course prices and durations are managed in Course Catalog.</p>
+            </div>
+            <button type="button" style={styles.secondaryButton} onClick={() => setContent({ ...content, centresList: [...content.centresList, { name: "New centre", partner: "", focus: "", description: "", itemsTitle: "Programmes and facilities", items: [], recognition: "", details: [] }] })}><Plus size={16} /> Add centre</button>
+          </div>
+          <div style={{ marginBottom: 18 }}>
+            <Link href="/admin/courses" style={styles.backLink}>Manage course prices and durations</Link>
           </div>
           <div style={styles.items}>
             {content.centresList.map((centre, index) => (
@@ -371,7 +406,8 @@ export default function AdminSiteContentPage() {
                   <label style={labelStyle}>Description<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={centre.description} onChange={(event) => updateCentre(index, { description: event.target.value })} /></label>
                   <label style={labelStyle}>List heading<input style={inputStyle} value={centre.itemsTitle} onChange={(event) => updateCentre(index, { itemsTitle: event.target.value })} /></label>
                   <label style={labelStyle}>Programmes or facilities, one per line<textarea style={{ ...inputStyle, minHeight: 120 }} rows={5} value={centre.items.join("\n")} onChange={(event) => updateCentre(index, { items: event.target.value.split("\n") })} /></label>
-                  <label style={labelStyle}>Recognition and notes<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={centre.recognition} onChange={(event) => updateCentre(index, { recognition: event.target.value })} /></label>
+                  <label style={labelStyle}>Centre overview, one paragraph per line<textarea style={{ ...inputStyle, minHeight: 120 }} rows={5} value={(centre.details ?? []).join("\n")} onChange={(event) => updateCentre(index, { details: event.target.value.split("\n") })} /></label>
+                  <label style={labelStyle}>Certifications and recognition<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={centre.recognition} onChange={(event) => updateCentre(index, { recognition: event.target.value })} /></label>
                 </div>
               </details>
             ))}

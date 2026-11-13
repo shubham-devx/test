@@ -81,7 +81,7 @@ export default function AnnouncementBanner() {
           className="announcement-banner-message"
           behavior="scroll"
           direction="left"
-          scrollAmount={4}
+          scrollamount={4}
           aria-label="Announcement message"
           aria-live="off"
         >
