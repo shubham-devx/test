@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ImagePlus, Plus, Save, Trash2 } from "lucide-react";
-import type { SiteContent, SiteImageSlot, SiteSection } from "@/lib/siteContent";
+import type { GlanceMetric, HomepageContent, SiteContent, SiteImageSlot, SiteSection } from "@/lib/siteContent";
 import { SITE_THEMES, type SiteTheme } from "@/lib/siteThemes";
 
 const inputStyle = {
@@ -145,6 +145,51 @@ export default function AdminSiteContentPage() {
     } : previous);
   }
 
+  function updateHomepage<K extends keyof HomepageContent>(field: K, value: HomepageContent[K]) {
+    setContent((previous) => previous ? {
+      ...previous,
+      homepage: { ...previous.homepage, [field]: value },
+    } : previous);
+  }
+
+  function updateHomepageContact<K extends keyof HomepageContent["contact"]>(
+    field: K,
+    value: HomepageContent["contact"][K],
+  ) {
+    setContent((previous) => previous ? {
+      ...previous,
+      homepage: {
+        ...previous.homepage,
+        contact: { ...previous.homepage.contact, [field]: value },
+      },
+    } : previous);
+  }
+
+  function updateHomepageFooter<K extends keyof HomepageContent["footer"]>(
+    field: K,
+    value: HomepageContent["footer"][K],
+  ) {
+    setContent((previous) => previous ? {
+      ...previous,
+      homepage: {
+        ...previous.homepage,
+        footer: { ...previous.homepage.footer, [field]: value },
+      },
+    } : previous);
+  }
+
+  function updateGlanceMetric(index: number, patch: Partial<GlanceMetric>) {
+    setContent((previous) => previous ? {
+      ...previous,
+      homepage: {
+        ...previous.homepage,
+        glanceMetrics: previous.homepage.glanceMetrics.map((metric, metricIndex) =>
+          metricIndex === index ? { ...metric, ...patch } : metric
+        ),
+      },
+    } : previous);
+  }
+
   async function uploadImage(slot: SiteImageSlot, file: File) {
     setUploadingImage(slot);
     setError("");
@@ -279,6 +324,81 @@ export default function AdminSiteContentPage() {
                 />
               </label>
             ))}
+          </div>
+        </section>
+
+        <section style={panelStyle}>
+          <h2 style={styles.sectionTitle}>Homepage Hero &amp; At a Glance</h2>
+          <p style={styles.themeIntro}>Change the visible homepage wording, labels, highlight tags and animated metrics. Enter one highlight tag per line.</p>
+          <div style={styles.grid}>
+            <label style={labelStyle}>Top information strip<textarea style={inputStyle} rows={2} value={content.homepage.topStripMessage} onChange={(event) => updateHomepage("topStripMessage", event.target.value)} /></label>
+            <label style={labelStyle}>Top strip contact link label<input style={inputStyle} value={content.homepage.topStripContactLabel} onChange={(event) => updateHomepage("topStripContactLabel", event.target.value)} /></label>
+            <label style={labelStyle}>Hero heading<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={content.homepage.heroHeading} onChange={(event) => updateHomepage("heroHeading", event.target.value)} /></label>
+            <label style={labelStyle}>Hero description<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={content.homepage.heroDescription} onChange={(event) => updateHomepage("heroDescription", event.target.value)} /></label>
+            <label style={labelStyle}>Hero registration button<input style={inputStyle} value={content.homepage.heroRegisterLabel} onChange={(event) => updateHomepage("heroRegisterLabel", event.target.value)} /></label>
+            <label style={labelStyle}>Hero footer tags<textarea style={inputStyle} rows={4} value={content.homepage.heroFooterTags.join("\n")} onChange={(event) => updateHomepage("heroFooterTags", event.target.value.split(/\r?\n/).map((tag) => tag.trim()).filter(Boolean))} /></label>
+            <label style={labelStyle}>At a Glance eyebrow<input style={inputStyle} value={content.homepage.glanceLabel} onChange={(event) => updateHomepage("glanceLabel", event.target.value)} /></label>
+            <label style={labelStyle}>At a Glance heading<input style={inputStyle} value={content.homepage.glanceHeading} onChange={(event) => updateHomepage("glanceHeading", event.target.value)} /></label>
+          </div>
+          <div style={{ ...styles.sectionHead, marginTop: 22 }}>
+            <h3 style={styles.sectionTitle}>At a Glance Cards</h3>
+            <button type="button" style={styles.secondaryButton} onClick={() => updateHomepage("glanceMetrics", [...content.homepage.glanceMetrics, { icon: "robotics", eyebrow: "NEW HIGHLIGHT", target: 0, suffix: "", description: "" }])}>
+              <Plus size={16} /> Add highlight
+            </button>
+          </div>
+          <div style={styles.items}>
+            {content.homepage.glanceMetrics.map((metric, index) => (
+              <article key={index} style={styles.item}>
+                <div style={styles.itemHead}>
+                  <strong>Highlight {String(index + 1).padStart(2, "0")}</strong>
+                  <button
+                    type="button"
+                    aria-label={`Remove highlight ${index + 1}`}
+                    style={styles.deleteButton}
+                    onClick={() => updateHomepage("glanceMetrics", content.homepage.glanceMetrics.filter((_, metricIndex) => metricIndex !== index))}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <div style={styles.grid}>
+                  <label style={labelStyle}>Icon<select style={inputStyle} value={metric.icon} onChange={(event) => updateGlanceMetric(index, { icon: event.target.value as GlanceMetric["icon"] })}><option value="robotics">Robotics</option><option value="industry">Industry</option><option value="welding">Welding</option><option value="workshops">Workshops</option></select></label>
+                  <label style={labelStyle}>Card label<input style={inputStyle} value={metric.eyebrow} onChange={(event) => updateGlanceMetric(index, { eyebrow: event.target.value })} /></label>
+                  <label style={labelStyle}>Animated number<input style={inputStyle} type="number" min="0" value={metric.target} onChange={(event) => updateGlanceMetric(index, { target: Number(event.target.value) || 0 })} /></label>
+                  <label style={labelStyle}>Number suffix<input style={inputStyle} value={metric.suffix} onChange={(event) => updateGlanceMetric(index, { suffix: event.target.value })} /></label>
+                  <label style={labelStyle}>Card description<textarea style={inputStyle} rows={2} value={metric.description} onChange={(event) => updateGlanceMetric(index, { description: event.target.value })} /></label>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section style={panelStyle}>
+          <h2 style={styles.sectionTitle}>Homepage Details, Contact &amp; Footer</h2>
+          <p style={styles.themeIntro}>Edit contact information, button labels, footer wording and social links. Enter one address line or phone number per line.</p>
+          <div style={styles.grid}>
+            <label style={labelStyle}>About image caption<input style={inputStyle} value={content.homepage.aboutImageCaption} onChange={(event) => updateHomepage("aboutImageCaption", event.target.value)} /></label>
+            <label style={labelStyle}>About link label<input style={inputStyle} value={content.homepage.aboutLearnMoreLabel} onChange={(event) => updateHomepage("aboutLearnMoreLabel", event.target.value)} /></label>
+            <label style={labelStyle}>Industry enquiry button<input style={inputStyle} value={content.homepage.industryContactLabel} onChange={(event) => updateHomepage("industryContactLabel", event.target.value)} /></label>
+            <label style={labelStyle}>Contact section label<input style={inputStyle} value={content.homepage.contact.label} onChange={(event) => updateHomepageContact("label", event.target.value)} /></label>
+            <label style={labelStyle}>Contact heading<input style={inputStyle} value={content.homepage.contact.heading} onChange={(event) => updateHomepageContact("heading", event.target.value)} /></label>
+            <label style={labelStyle}>Contact heading accent<input style={inputStyle} value={content.homepage.contact.accent} onChange={(event) => updateHomepageContact("accent", event.target.value)} /></label>
+            <label style={labelStyle}>Address<textarea style={{ ...inputStyle, minHeight: 100 }} rows={4} value={content.homepage.contact.addressLines.join("\n")} onChange={(event) => updateHomepageContact("addressLines", event.target.value.split(/\r?\n/))} /></label>
+            <label style={labelStyle}>Phone numbers<textarea style={{ ...inputStyle, minHeight: 100 }} rows={4} value={content.homepage.contact.phoneNumbers.join("\n")} onChange={(event) => updateHomepageContact("phoneNumbers", event.target.value.split(/\r?\n/).map((phone) => phone.trim()).filter(Boolean))} /></label>
+            <label style={labelStyle}>Contact email<input style={inputStyle} type="email" value={content.homepage.contact.email} onChange={(event) => updateHomepageContact("email", event.target.value)} /></label>
+            <label style={labelStyle}>Admin WhatsApp number (country code, digits only)<input style={inputStyle} inputMode="numeric" value={content.homepage.contact.whatsAppNumber} onChange={(event) => updateHomepageContact("whatsAppNumber", event.target.value.replace(/\D/g, ""))} /></label>
+            <label style={labelStyle}>Registration button<input style={inputStyle} value={content.homepage.contact.registrationLabel} onChange={(event) => updateHomepageContact("registrationLabel", event.target.value)} /></label>
+            <label style={labelStyle}>Admin contact button<input style={inputStyle} value={content.homepage.contact.adminContactLabel} onChange={(event) => updateHomepageContact("adminContactLabel", event.target.value)} /></label>
+            <label style={labelStyle}>Instagram URL<input style={inputStyle} type="url" value={content.homepage.socialLinks.instagram} onChange={(event) => setContent((previous) => previous ? { ...previous, homepage: { ...previous.homepage, socialLinks: { ...previous.homepage.socialLinks, instagram: event.target.value } } } : previous)} /></label>
+            <label style={labelStyle}>LinkedIn URL<input style={inputStyle} type="url" value={content.homepage.socialLinks.linkedin} onChange={(event) => setContent((previous) => previous ? { ...previous, homepage: { ...previous.homepage, socialLinks: { ...previous.homepage.socialLinks, linkedin: event.target.value } } } : previous)} /></label>
+            <label style={labelStyle}>Footer brand description<textarea style={{ ...inputStyle, minHeight: 88 }} rows={3} value={content.homepage.footer.description} onChange={(event) => updateHomepageFooter("description", event.target.value)} /></label>
+            <label style={labelStyle}>Footer legal notice<textarea style={{ ...inputStyle, minHeight: 72 }} rows={2} value={content.homepage.footer.legalNotice} onChange={(event) => updateHomepageFooter("legalNotice", event.target.value)} /></label>
+            {Object.entries(content.homepage.footer)
+              .filter(([field]) => !["description", "legalNotice"].includes(field))
+              .map(([field, value]) => (
+                <label key={field} style={labelStyle}>{field.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase())}
+                  <input style={inputStyle} value={value} onChange={(event) => updateHomepageFooter(field as keyof HomepageContent["footer"], event.target.value)} />
+                </label>
+              ))}
           </div>
         </section>
 

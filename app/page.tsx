@@ -32,25 +32,6 @@ import RegistrationModal from "../components/RegistrationModal";
 import AnnouncementBanner from "../components/AnnouncementBanner";
 
 /* =====================================================
-   WHATSAPP
-   ===================================================== */
-const ADMIN_WHATSAPP = "917518681245";
-
-/* =====================================================
-   SOCIAL LINKS
-   Replace placeholder links later with official ASF URLs
-   ===================================================== */
-
-const SOCIAL = {
-  instagram:
-    "https://www.instagram.com/akgecskillsfoundation/",
-  linkedin:
-    "https://in.linkedin.com/company/akgec-skills-foundation",
-};
-
-
-
-/* =====================================================
    WHATSAPP HELPER
    Builds a wa.me click-to-chat link with a pre-filled message.
    ===================================================== */
@@ -588,14 +569,11 @@ export default function Home() {
     setRegistrationOpen(true);
   }
 
-  /* ===================================================
-     WHATSAPP URLS
-     =================================================== */
-
   const adminUrl = whatsapp(
-    ADMIN_WHATSAPP,
+    siteContent.homepage.contact.whatsAppNumber,
     "Hello AKGEC Skills Foundation, I would like to contact the admin."
   );
+  const heroHeadingLines = siteContent.homepage.heroHeading.split(/\r?\n/);
   return (
     <div className="foundation-home">
       {/* =================================================
@@ -613,12 +591,10 @@ export default function Home() {
       <div className="top-strip">
         <div className="container top-strip-inner">
           <div>
-            <span>
-              Supported by NSDC • Ministry of Skill Development and Entrepreneurship
-            </span>
+            <span>{siteContent.homepage.topStripMessage}</span>
 
             <a href="#contact">
-              Contact
+              {siteContent.homepage.topStripContactLabel}
             </a>
           </div>
         </div>
@@ -776,16 +752,13 @@ export default function Home() {
             </span>
 
             <h1>
-              Industry-oriented
-              <br />
-              skill development for
-              <br />
-              <em>future-ready careers</em>
+              {heroHeadingLines.slice(0, -1).map((line, index) => (
+                <span key={`${line}-${index}`}>{line}<br /></span>
+              ))}
+              <em>{heroHeadingLines.at(-1)}</em>
             </h1>
 
-            <p>
-              Backed by AKGEC and NSDC, ASF develops industry-ready skills in robotics, automation, digital manufacturing and more.
-            </p>
+            <p>{siteContent.homepage.heroDescription}</p>
 
             <div className="hero-actions">
               <button
@@ -793,7 +766,7 @@ export default function Home() {
   className="secondary-action"
   onClick={() => openRegistration()}
 >
-  Register
+  {siteContent.homepage.heroRegisterLabel}
   <ArrowUpRight size={18} />
 </button>
 
@@ -807,21 +780,7 @@ export default function Home() {
 
             <div className="container">
 
-              <span>
-                SKILLS
-              </span>
-
-              <span>
-                TECHNOLOGY
-              </span>
-
-              <span>
-                INDUSTRY
-              </span>
-
-              <span>
-                EMPLOYABILITY
-              </span>
+              {siteContent.homepage.heroFooterTags.map((tag, index) => <span key={`${tag}-${index}`}>{tag}</span>)}
 
             </div>
 
@@ -839,43 +798,28 @@ export default function Home() {
 
             <div className="section-heading compact">
 
-              <span>
-                AT A GLANCE
-              </span>
+              <span>{siteContent.homepage.glanceLabel}</span>
 
-              <h2>Training impact, proven in practice</h2>
+              <h2>{siteContent.homepage.glanceHeading}</h2>
 
             </div>
 
             <div className="glance-grid">
 
-              <article className="glance-card">
-                <span className="glance-card-icon robotics" aria-hidden="true"><Bot size={48} strokeWidth={1.7} /></span>
-                <small className="glance-card-partner">KUKA ROBOTICS</small>
-                <strong><CountUp target={100} suffix="+" /></strong>
-                <p className="glance-card-description">Training programmes delivered to more than 1,100 students.</p>
-              </article>
-
-              <article className="glance-card">
-                <span className="glance-card-icon industry" aria-hidden="true"><Building2 size={48} strokeWidth={1.7} /></span>
-                <small className="glance-card-partner">KUKA CORPORATE TRAINING</small>
-                <strong><CountUp target={50} suffix="+" /></strong>
-                <p className="glance-card-description">Corporate programmes have upskilled nearly 300 engineers.</p>
-              </article>
-
-              <article className="glance-card">
-                <span className="glance-card-icon welding" aria-hidden="true"><Flame size={48} strokeWidth={1.7} /></span>
-                <small className="glance-card-partner">FRONIUS WELDING</small>
-                <strong><CountUp target={70} suffix="+" /></strong>
-                <p className="glance-card-description">Training programmes have reached more than 1,000 students.</p>
-              </article>
-
-              <article className="glance-card">
-                <span className="glance-card-icon workshops" aria-hidden="true"><UsersRound size={48} strokeWidth={1.7} /></span>
-                <small className="glance-card-partner">FRONIUS WORKSHOPS</small>
-                <strong><CountUp target={1200} suffix="+" /></strong>
-                <p className="glance-card-description">Participants across 30+ one-day workshops.</p>
-              </article>
+              {siteContent.homepage.glanceMetrics.map((metric, index) => {
+                const Icon = metric.icon === "robotics" ? Bot
+                  : metric.icon === "industry" ? Building2
+                    : metric.icon === "welding" ? Flame
+                      : UsersRound;
+                return (
+                  <article className="glance-card" key={`${metric.eyebrow}-${index}`}>
+                    <span className={`glance-card-icon ${metric.icon}`} aria-hidden="true"><Icon size={48} strokeWidth={1.7} /></span>
+                    <small className="glance-card-partner">{metric.eyebrow}</small>
+                    <strong><CountUp target={metric.target} suffix={metric.suffix} /></strong>
+                    <p className="glance-card-description">{metric.description}</p>
+                  </article>
+                );
+              })}
 
             </div>
 
@@ -903,7 +847,7 @@ export default function Home() {
                 className="cover-image"
                 unoptimized={shouldBypassImageOptimization(siteContent.images.about)}
               />
-              <span className="about-image-caption">Hands-on learning, built for industry</span>
+              <span className="about-image-caption">{siteContent.homepage.aboutImageCaption}</span>
             </div>
 
             <div className="about-content">
@@ -929,7 +873,7 @@ export default function Home() {
                   ))}
                 </div>
                 <a className="about-learn-more" href="#industry">
-                  Learn more about ASF <ArrowRight size={17} aria-hidden="true" />
+                  {siteContent.homepage.aboutLearnMoreLabel} <ArrowRight size={17} aria-hidden="true" />
                 </a>
               </div>
             </div>
@@ -989,7 +933,7 @@ export default function Home() {
               href={adminUrl}
               className="dark-action"
             >
-              Contact Admin on WhatsApp
+              {siteContent.homepage.industryContactLabel}
               <MessageCircle size={18} />
             </a>
 
@@ -1254,15 +1198,13 @@ export default function Home() {
             <div>
 
               <span className="contact-label">
-                GET IN TOUCH
+                {siteContent.homepage.contact.label}
               </span>
 
               <h2>
-                Need information?
+                {siteContent.homepage.contact.heading}
                 <br />
-                <em>
-                  We are here to help
-                </em>
+                <em>{siteContent.homepage.contact.accent}</em>
               </h2>
 
             </div>
@@ -1273,15 +1215,9 @@ export default function Home() {
 
                 <MapPin size={25} />
 
-                <p>
-                  AKGEC Skills Foundation
-                  <br />
-                  27th Km Milestone, Delhi-Meerut Expressway ,
-                  <br />
-                  P.O. Adhyatmik Nagar, Ghaziabad – 201015
-                  <br />
-                  Uttar Pradesh, India
-                </p>
+                <p>{siteContent.homepage.contact.addressLines.map((line, index) => (
+                  <span key={`${line}-${index}`}>{line}<br /></span>
+                ))}</p>
 
               </div>
 
@@ -1289,13 +1225,9 @@ export default function Home() {
 
                 <Phone size={25} />
 
-                <div>
-                  <a href="tel:+919910249199">+91 9910249199</a>
-                  <br />
-                  <a href="tel:+918743879879">+91 8743879879</a>
-                  <br />
-                  <a href="tel:180030006484">1800-3000-6484 (Toll Free)</a>
-                </div>
+                <div>{siteContent.homepage.contact.phoneNumbers.map((phone) => (
+                  <span key={phone}><a href={`tel:${phone.replace(/[^\d+]/g, "")}`}>{phone}</a><br /></span>
+                ))}</div>
 
               </div>
 
@@ -1303,8 +1235,8 @@ export default function Home() {
 
                 <Mail size={25} />
 
-                <a href="mailto:skills@akgec.ac.in">
-                  skills@akgec.ac.in
+                <a href={`mailto:${siteContent.homepage.contact.email}`}>
+                  {siteContent.homepage.contact.email}
                 </a>
 
               </div>
@@ -1316,7 +1248,7 @@ export default function Home() {
   className="contact-primary"
   onClick={() => openRegistration()}
 >
-  Start Registration
+  {siteContent.homepage.contact.registrationLabel}
   <ArrowRight size={19} />
 </button>
 
@@ -1324,7 +1256,7 @@ export default function Home() {
                   href={adminUrl}
                   className="contact-secondary"
                 >
-                  Contact Admin
+                  {siteContent.homepage.contact.adminContactLabel}
                   <MessageCircle size={19} />
                 </a>
 
@@ -1446,9 +1378,7 @@ export default function Home() {
                 AKGEC Skills Foundation
               </h3>
 
-              <p>
-                An initiative of AKGEC supported by NSDC, Ministry of Skill Development and Entrepreneurship, Government of India, focused on industry-oriented skills and employability.
-              </p>
+              <p>{siteContent.homepage.footer.description}</p>
 
             </div>
 
@@ -1456,20 +1386,12 @@ export default function Home() {
 
             <div className="footer-column">
 
-              <h4>
-                FOUNDATION
-              </h4>
+              <h4>{siteContent.homepage.footer.foundationHeading}</h4>
 
-              <a href="#about">
-                About the Foundation
-              </a>
+              <a href="#about">{siteContent.homepage.footer.aboutLabel}</a>
 
-              <a href="#industry">
-                Industry Engagement
-              </a>
-              <a href="#contact">
-                Industry enquiries
-              </a>
+              <a href="#industry">{siteContent.homepage.footer.industryLabel}</a>
+              <a href="#contact">{siteContent.homepage.footer.enquiriesLabel}</a>
 
             </div>
 
@@ -1477,26 +1399,20 @@ export default function Home() {
 
             <div className="footer-column">
 
-              <h4>
-                INFORMATION
-              </h4>
+              <h4>{siteContent.homepage.footer.informationHeading}</h4>
 
-              <a href="#industry">
-                Industry engagement
-              </a>
+              <a href="#industry">{siteContent.homepage.footer.informationIndustryLabel}</a>
 
-              <a href="#contact">
-                Contact Information
-              </a>
-              <a href="tel:+919910249199">+91 9910249199</a>
-              <a href="mailto:skills@akgec.ac.in">Email ASF</a>
+              <a href="#contact">{siteContent.homepage.footer.contactLabel}</a>
+              <a href={`tel:${siteContent.homepage.footer.phoneLabel.replace(/[^\d+]/g, "")}`}>{siteContent.homepage.footer.phoneLabel}</a>
+              <a href={`mailto:${siteContent.homepage.contact.email}`}>{siteContent.homepage.footer.emailLabel}</a>
 
               <button
   type="button"
   className="footer-registration-button"
   onClick={() => openRegistration()}
 >
-  Registration
+  {siteContent.homepage.footer.registrationLabel}
 </button>
 
             </div>
@@ -1505,14 +1421,14 @@ export default function Home() {
 
             <div className="footer-column">
 
-              <h4>CONNECT WITH ASF</h4>
+              <h4>{siteContent.homepage.footer.connectHeading}</h4>
 
-              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer">
-                LinkedIn
+              <a href={siteContent.homepage.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+                {siteContent.homepage.footer.linkedInLabel}
               </a>
 
-              <a href="mailto:skills@akgec.ac.in">
-                Need help?
+              <a href={`mailto:${siteContent.homepage.contact.email}`}>
+                {siteContent.homepage.footer.helpLabel}
                 <Mail size={15} />
               </a>
 
@@ -1526,18 +1442,16 @@ export default function Home() {
 
           <div className="footer-bottom">
 
-            <p>
-              © 2026 AKGEC Skills Foundation. All Rights Reserved. | CIN U74120UP2015NPL069636
-            </p>
+            <p>{siteContent.homepage.footer.legalNotice}</p>
 
             <div className="footer-social">
-              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a href={siteContent.homepage.socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" /><circle cx="17.5" cy="6.8" r="1" fill="currentColor" /></svg>
               </a>
-              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <a href={siteContent.homepage.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 8.7a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM3.5 10.2h3.4V21H3.5zM9 10.2h3.3v1.5h.1a3.7 3.7 0 0 1 3.3-1.8c3.5 0 4.2 2.3 4.2 5.2V21h-3.5v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21H9z" fill="currentColor" /></svg>
               </a>
-              <a href="mailto:skills@akgec.ac.in" aria-label="Email AKGEC Skills Foundation"><Mail size={19} /></a>
+              <a href={`mailto:${siteContent.homepage.contact.email}`} aria-label="Email AKGEC Skills Foundation"><Mail size={19} /></a>
             </div>
 
           </div>

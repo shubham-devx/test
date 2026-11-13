@@ -10,6 +10,57 @@
     { "label": "COE / Training", "section": "centres" },
     { "label": "Industry", "section": "industry" }
   ],
+  "homepage": {
+    "topStripMessage": "Supported by NSDC • Ministry of Skill Development and Entrepreneurship",
+    "topStripContactLabel": "Contact",
+    "heroHeading": "Industry-oriented\nskill development for\nfuture-ready careers",
+    "heroDescription": "Backed by AKGEC and NSDC, ASF develops industry-ready skills in robotics, automation, digital manufacturing and more.",
+    "heroRegisterLabel": "Register",
+    "heroFooterTags": ["SKILLS", "TECHNOLOGY", "INDUSTRY", "EMPLOYABILITY"],
+    "glanceLabel": "AT A GLANCE",
+    "glanceHeading": "Training impact, proven in practice",
+    "glanceMetrics": [
+      { "icon": "robotics", "eyebrow": "KUKA ROBOTICS", "target": 100, "suffix": "+", "description": "Training programmes delivered to more than 1,100 students." },
+      { "icon": "industry", "eyebrow": "KUKA CORPORATE TRAINING", "target": 50, "suffix": "+", "description": "Corporate programmes have upskilled nearly 300 engineers." },
+      { "icon": "welding", "eyebrow": "FRONIUS WELDING", "target": 70, "suffix": "+", "description": "Training programmes have reached more than 1,000 students." },
+      { "icon": "workshops", "eyebrow": "FRONIUS WORKSHOPS", "target": 1200, "suffix": "+", "description": "Participants across 30+ one-day workshops." }
+    ],
+    "aboutImageCaption": "Hands-on learning, built for industry",
+    "aboutLearnMoreLabel": "Learn more about ASF",
+    "industryContactLabel": "Contact Admin on WhatsApp",
+    "contact": {
+      "label": "GET IN TOUCH",
+      "heading": "Need information?",
+      "accent": "We are here to help",
+      "addressLines": ["AKGEC Skills Foundation", "27th Km Milestone, Delhi-Meerut Expressway", "P.O. Adhyatmik Nagar, Ghaziabad – 201015", "Uttar Pradesh, India"],
+      "phoneNumbers": ["+91 9910249199", "+91 8743879879", "1800-3000-6484 (Toll Free)"],
+      "email": "skills@akgec.ac.in",
+      "whatsAppNumber": "919910249199",
+      "registrationLabel": "Start Registration",
+      "adminContactLabel": "Contact Admin"
+    },
+    "footer": {
+      "description": "An initiative of AKGEC supported by NSDC, Ministry of Skill Development and Entrepreneurship, Government of India, focused on industry-oriented skills and employability.",
+      "foundationHeading": "FOUNDATION",
+      "aboutLabel": "About the Foundation",
+      "industryLabel": "Industry Engagement",
+      "enquiriesLabel": "Industry enquiries",
+      "informationHeading": "INFORMATION",
+      "informationIndustryLabel": "Industry engagement",
+      "contactLabel": "Contact Information",
+      "phoneLabel": "+91 9910249199",
+      "emailLabel": "Email ASF",
+      "registrationLabel": "Registration",
+      "connectHeading": "CONNECT WITH ASF",
+      "linkedInLabel": "LinkedIn",
+      "helpLabel": "Need help?",
+      "legalNotice": "© 2026 AKGEC Skills Foundation. All Rights Reserved. | CIN U74120UP2015NPL069636"
+    },
+    "socialLinks": {
+      "instagram": "https://www.instagram.com/akgecskillsfoundation/",
+      "linkedin": "https://in.linkedin.com/company/akgec-skills-foundation"
+    }
+  },
   "about": {
     "label": "About the Foundation",
     "heading": "Industry Skills Built Through Hands-On Learning",
