@@ -1,7 +1,7 @@
 import { get } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
-const imagePathPattern = /^uploads\/site-content\/(?:hero|about|industry)-[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.webp$/i;
+const imagePathPattern = /^uploads\/site-content\/(?:hero|about|industry|news-event|homepage-photo|centre-photo)-[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.webp$/i;
 
 export async function GET(
   _request: Request,

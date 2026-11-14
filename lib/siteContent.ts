@@ -17,6 +17,14 @@ export type GlanceMetric = {
   target: number;
   suffix: string;
   description: string;
+  image: string;
+};
+export type HomepageNewsEvent = {
+  id: string;
+  title: string;
+  date: string;
+  description: string;
+  image: string;
 };
 export type HomepageContent = {
   topStripMessage: string;
@@ -28,6 +36,7 @@ export type HomepageContent = {
   glanceLabel: string;
   glanceHeading: string;
   glanceMetrics: GlanceMetric[];
+  recentNewsEvents: HomepageNewsEvent[];
   aboutImageCaption: string;
   aboutLearnMoreLabel: string;
   industryContactLabel: string;
@@ -66,6 +75,7 @@ export type SiteContent = {
   theme: SiteTheme;
   images: {
     hero: string;
+    heroSlides: string[];
     about: string;
     industry: string;
   };
@@ -76,7 +86,7 @@ export type SiteContent = {
     heading: string;
     lead: string;
     description: string;
-    keyFocusAreas: { title: string; description: string }[];
+    keyFocusAreas: { title: string; description: string; image: string }[];
   };
   training: { label: string; heading: string; description: string };
   centres: { label: string; heading: string; description: string };
@@ -85,6 +95,7 @@ export type SiteContent = {
   industryFocusAreas: IndustryFocusArea[];
   centresList: {
     name: string;
+    image: string;
     partner: string;
     focus: string;
     description: string;
@@ -98,7 +109,8 @@ export type SiteContent = {
 export const DEFAULT_SITE_CONTENT = defaultContent as SiteContent;
 const DATA_FILE = path.join(process.cwd(), "data", "site-content.json");
 const CONTENT_VERSION_FILE = path.join(process.cwd(), "data", "site-content-version.json");
-const CONTENT_VERSION = 9;
+const CONTENT_VERSION = 12;
+const LEGACY_WHATSAPP_NUMBER = "919910249199";
 const sections: SiteSection[] = ["about", "training", "centres", "industry"];
 const LEGACY_COPY = {
   about: {
@@ -136,10 +148,18 @@ function isIndustryFocusArea(value: unknown): value is IndustryFocusArea {
 }
 
 function isAboutFocusArea(value: unknown): value is SiteContent["about"]["keyFocusAreas"][number] {
-  return hasTextFields(value, ["title", "description"]);
+  return hasTextFields(value, ["title", "description"]) &&
+    isRecord(value) &&
+    isValidSiteImageUrl(value.image);
 }
 
 function isGlanceMetric(value: unknown): value is GlanceMetric {
+  return isBaseGlanceMetric(value) &&
+    isRecord(value) &&
+    isValidSiteImageUrl(value.image);
+}
+
+function isBaseGlanceMetric(value: unknown): value is Omit<GlanceMetric, "image"> & { image?: unknown } {
   return isRecord(value) &&
     ["robotics", "industry", "welding", "workshops"].includes(String(value.icon)) &&
     typeof value.eyebrow === "string" &&
@@ -147,6 +167,22 @@ function isGlanceMetric(value: unknown): value is GlanceMetric {
     Number.isFinite(value.target) &&
     typeof value.suffix === "string" &&
     typeof value.description === "string";
+}
+
+function isHomepageNewsEvent(value: unknown): value is HomepageNewsEvent {
+  return isRecord(value) &&
+    typeof value.id === "string" && value.id.length > 0 && value.id.length <= 100 &&
+    typeof value.title === "string" && value.title.length <= 180 &&
+    typeof value.date === "string" && value.date.length <= 80 &&
+    typeof value.description === "string" && value.description.length <= 1200 &&
+    typeof value.image === "string" &&
+    (value.image === "" || isValidSiteImageUrl(value.image));
+}
+
+function isHomepageNewsEventList(value: unknown): value is HomepageNewsEvent[] {
+  return Array.isArray(value) &&
+    value.every(isHomepageNewsEvent) &&
+    new Set(value.map((event) => event.id)).size === value.length;
 }
 
 function isTextArray(value: unknown): value is string[] {
@@ -162,6 +198,7 @@ function isHomepageContent(value: unknown): value is HomepageContent {
     isTextArray(value.heroFooterTags) &&
     Array.isArray(value.glanceMetrics) &&
     value.glanceMetrics.every(isGlanceMetric) &&
+    isHomepageNewsEventList(value.recentNewsEvents) &&
     isRecord(value.contact) &&
     hasTextFields(value.contact, [
       "label", "heading", "accent", "email", "whatsAppNumber", "registrationLabel", "adminContactLabel",
@@ -186,6 +223,9 @@ export function isSiteContent(value: unknown): value is SiteContent {
 
   if (!isRecord(value.images) ||
     !isValidSiteImageUrl(value.images.hero) ||
+    !Array.isArray(value.images.heroSlides) ||
+    value.images.heroSlides.length !== DEFAULT_SITE_CONTENT.images.heroSlides.length ||
+    !value.images.heroSlides.every(isValidSiteImageUrl) ||
     !isValidSiteImageUrl(value.images.about) ||
     !isValidSiteImageUrl(value.images.industry)) return false;
 
@@ -208,6 +248,7 @@ export function isSiteContent(value: unknown): value is SiteContent {
   if (!Array.isArray(value.industryFocusAreas) || value.industryFocusAreas.length === 0 || !value.industryFocusAreas.every(isIndustryFocusArea)) return false;
   if (!Array.isArray(value.centresList) || value.centresList.length === 0 || !value.centresList.every((item) =>
     hasTextFields(item, ["name", "partner", "focus", "description", "itemsTitle", "recognition"]) &&
+    isRecord(item) && isValidSiteImageUrl(item.image) &&
     Array.isArray(item.items) && item.items.every((entry: unknown) => typeof entry === "string") &&
     (item.details === undefined || (Array.isArray(item.details) && item.details.every((entry: unknown) => typeof entry === "string")))
   )) return false;
@@ -225,12 +266,18 @@ function mergeHomepage(value: unknown): HomepageContent {
     ...defaults,
     ...Object.fromEntries(Object.keys(defaults).filter((key) => typeof existing[key] === "string").map((key) => [key, existing[key]])),
     heroFooterTags: isTextArray(existing.heroFooterTags) ? existing.heroFooterTags : defaults.heroFooterTags,
-    glanceMetrics: Array.isArray(existing.glanceMetrics) && existing.glanceMetrics.every(isGlanceMetric)
-      ? existing.glanceMetrics
-      : defaults.glanceMetrics,
+    glanceMetrics: mergeGlanceMetrics(existing.glanceMetrics),
+    recentNewsEvents: isHomepageNewsEventList(existing.recentNewsEvents)
+      ? existing.recentNewsEvents
+      : defaults.recentNewsEvents,
     contact: {
       ...defaults.contact,
       ...Object.fromEntries(Object.keys(defaults.contact).filter((key) => typeof contact[key] === "string").map((key) => [key, contact[key]])),
+      whatsAppNumber: contact.whatsAppNumber === LEGACY_WHATSAPP_NUMBER
+        ? defaults.contact.whatsAppNumber
+        : typeof contact.whatsAppNumber === "string"
+          ? contact.whatsAppNumber
+          : defaults.contact.whatsAppNumber,
       addressLines: isTextArray(contact.addressLines) ? contact.addressLines : defaults.contact.addressLines,
       phoneNumbers: isTextArray(contact.phoneNumbers) ? contact.phoneNumbers : defaults.contact.phoneNumbers,
     },
@@ -245,6 +292,60 @@ function mergeHomepage(value: unknown): HomepageContent {
   };
 }
 
+function mergeGlanceMetrics(value: unknown): GlanceMetric[] {
+  const defaults = DEFAULT_SITE_CONTENT.homepage.glanceMetrics;
+  if (!Array.isArray(value)) return defaults;
+
+  return value.map((entry, index) => {
+    const fallback = defaults[index] ?? defaults[0];
+    if (!isBaseGlanceMetric(entry) || !isRecord(entry)) return fallback;
+    return {
+      ...fallback,
+      ...entry,
+      image: isValidSiteImageUrl(entry.image) ? entry.image : fallback.image,
+    };
+  });
+}
+
+function mergeImages(value: unknown): SiteContent["images"] {
+  const existing = isRecord(value) ? value : {};
+  const defaults = DEFAULT_SITE_CONTENT.images;
+  const legacyHero = isValidSiteImageUrl(existing.hero) ? existing.hero : defaults.hero;
+  const heroSlides = defaults.heroSlides.map((fallback, index) => {
+    const candidate = Array.isArray(existing.heroSlides) ? existing.heroSlides[index] : undefined;
+    if (isValidSiteImageUrl(candidate)) return candidate;
+    return index === 1 ? legacyHero : fallback;
+  });
+
+  return {
+    ...defaults,
+    ...existing,
+    hero: heroSlides[1],
+    heroSlides,
+    about: isValidSiteImageUrl(existing.about) ? existing.about : defaults.about,
+    industry: normalizeIndustryImageUrl(
+      isValidSiteImageUrl(existing.industry) ? existing.industry : defaults.industry
+    ),
+  };
+}
+
+function mergeAboutFocusAreas(value: unknown): SiteContent["about"]["keyFocusAreas"] {
+  const defaults = DEFAULT_SITE_CONTENT.about.keyFocusAreas;
+  if (!Array.isArray(value)) return defaults;
+
+  return value.map((entry, index) => {
+    const fallback = defaults[index] ?? defaults[0];
+    if (!isRecord(entry) || typeof entry.title !== "string" || typeof entry.description !== "string") {
+      return fallback;
+    }
+    return {
+      title: entry.title,
+      description: entry.description,
+      image: isValidSiteImageUrl(entry.image) ? entry.image : fallback.image,
+    };
+  });
+}
+
 export async function getSiteContent(): Promise<SiteContent> {
   const content = await readJsonFile<unknown>(DATA_FILE, null);
   if (isSiteContent(content)) {
@@ -257,15 +358,14 @@ export async function getSiteContent(): Promise<SiteContent> {
         homepage: mergeHomepage(content.homepage),
         centresList: mergeCentreDetails(content.centresList),
         ...(contentVersion < CONTENT_VERSION ? {
-          about: migrateSectionCopy<SiteContent["about"]>(content.about, LEGACY_COPY.about, DEFAULT_SITE_CONTENT.about),
+          about: {
+            ...migrateSectionCopy<SiteContent["about"]>(content.about, LEGACY_COPY.about, DEFAULT_SITE_CONTENT.about),
+            keyFocusAreas: mergeAboutFocusAreas(content.about.keyFocusAreas),
+          },
           training: migrateSectionCopy(content.training, LEGACY_COPY.training, DEFAULT_SITE_CONTENT.training),
           centres: migrateSectionCopy(content.centres, LEGACY_COPY.centres, DEFAULT_SITE_CONTENT.centres),
         } : {}),
-        images: {
-          ...DEFAULT_SITE_CONTENT.images,
-          ...content.images,
-          industry: normalizeIndustryImageUrl(content.images.industry),
-        },
+        images: mergeImages(content.images),
       };
       await writeJsonFile(DATA_FILE, migratedContent);
       await writeJsonFile(CONTENT_VERSION_FILE, CONTENT_VERSION);
@@ -292,22 +392,17 @@ export async function getSiteContent(): Promise<SiteContent> {
       centresList: Array.isArray(content.centresList)
         ? mergeCentreDetails(content.centresList)
         : DEFAULT_SITE_CONTENT.centresList,
-      about: migrateSectionCopy<SiteContent["about"]>(content.about, LEGACY_COPY.about, DEFAULT_SITE_CONTENT.about),
+      about: {
+        ...migrateSectionCopy<SiteContent["about"]>(content.about, LEGACY_COPY.about, DEFAULT_SITE_CONTENT.about),
+        keyFocusAreas: mergeAboutFocusAreas(isRecord(content.about) ? content.about.keyFocusAreas : undefined),
+      },
       training: migrateSectionCopy(content.training, LEGACY_COPY.training, DEFAULT_SITE_CONTENT.training),
       centres: migrateSectionCopy(content.centres, LEGACY_COPY.centres, DEFAULT_SITE_CONTENT.centres),
       theme: content.theme ?? DEFAULT_SITE_CONTENT.theme,
       trainingPrograms: contentVersion < 1
         ? DEFAULT_SITE_CONTENT.trainingPrograms
         : content.trainingPrograms ?? DEFAULT_SITE_CONTENT.trainingPrograms,
-      images: {
-        ...DEFAULT_SITE_CONTENT.images,
-        ...(isRecord(content.images) ? content.images : {}),
-        industry: normalizeIndustryImageUrl(
-          isRecord(content.images) && typeof content.images.industry === "string"
-            ? content.images.industry
-            : DEFAULT_SITE_CONTENT.images.industry
-        ),
-      },
+      images: mergeImages(content.images),
       industryFocusAreas,
     };
     if (isSiteContent(migratedContent)) {
@@ -360,9 +455,14 @@ function mergeCentreDetails(value: unknown): unknown {
   return value.map((entry) => {
     if (!isRecord(entry) || typeof entry.name !== "string") return entry;
     const defaults = DEFAULT_SITE_CONTENT.centresList.find((centre) => centre.name === entry.name);
-    return defaults?.details && (!Array.isArray(entry.details) || entry.details.length === 0)
-      ? { ...entry, details: defaults.details }
-      : entry;
+    return {
+      ...defaults,
+      ...entry,
+      image: isValidSiteImageUrl(entry.image) ? entry.image : defaults?.image ?? DEFAULT_SITE_CONTENT.centresList[0].image,
+      ...(defaults?.details && (!Array.isArray(entry.details) || entry.details.length === 0)
+        ? { details: defaults.details }
+        : {}),
+    };
   });
 }
 

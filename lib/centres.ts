@@ -27,6 +27,38 @@ export function getCentreSlug(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
+export function getCentreImage(name: string): string {
+  const centre = name.toLowerCase();
+  if (centre.includes("drone")) return "/images/hero/asf-robotics.jpg";
+  if (centre.includes("bosch") && centre.includes("rexroth")) return "/images/centres/bosch-rexroth-lab.jpg";
+  if (centre.includes("fronius") || centre.includes("welding")) return "/images/centres/fronius-training.jpg";
+  if (centre.includes("kuka")) return "/images/centres/kuka-training.jpg";
+  if (centre.includes("labview")) return "/images/centres/ni-labview-training.jpg";
+  if (centre.includes("siemens plm") || centre.includes("product lifecycle")) return "/images/centres/siemens-plm-training.png";
+  if (centre.includes("fab lab") || centre.includes("fablab")) return "/images/hero/asf-fablab.jpg";
+  if (
+    centre.includes("manufacturing") ||
+    centre.includes("plm") ||
+    centre.includes("automotive") ||
+    centre.includes("calibration") ||
+    centre.includes("testing") ||
+    centre.includes("joint certification") ||
+    centre.includes("common facility")
+  ) {
+    return "/images/industry/industrial-services.jpg";
+  }
+  if (
+    centre.includes("automation") ||
+    centre.includes("bosch") ||
+    centre.includes("siemens") ||
+    centre.includes("mitsubishi") ||
+    centre.includes("janatics")
+  ) {
+    return "/images/hero/asf-training.jpg";
+  }
+  return "/images/hero/asf-main.jpg";
+}
+
 export function getCourseForCentre(centre: Centre, courses: Course[]): Course | undefined {
   const courseName = COURSE_BY_CENTRE_SLUG[getCentreSlug(centre.name)];
   return courseName ? courses.find((course) => course.name === courseName) : undefined;

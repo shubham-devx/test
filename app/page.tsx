@@ -5,11 +5,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  Bot,
-  Building2,
-  ChevronRight,
   ChevronDown,
-  Flame,
   Factory,
   HeartPulse,
   Mail,
@@ -18,18 +14,17 @@ import {
   Plane,
   Menu,
   MessageCircle,
-  ShieldCheck,
-  UsersRound,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import defaultSiteContent from "@/data/site-content.json";
+import { getCentreImage } from "@/lib/centres";
 import type { SiteContent, SiteSection } from "@/lib/siteContent";
 import { shouldBypassImageOptimization } from "@/lib/siteImage";
 import { SITE_THEMES } from "@/lib/siteThemes";
-import { getCentreSlug } from "@/lib/centres";
 import RegistrationModal from "../components/RegistrationModal";
 import AnnouncementBanner from "../components/AnnouncementBanner";
+import RecentNewsCarousel from "../components/RecentNewsCarousel";
 
 /* =====================================================
    WHATSAPP HELPER
@@ -113,6 +108,7 @@ function createFallbackSiteContent(): SiteContent {
     industryFocusAreas: defaultSiteContent.industryFocusAreas as SiteContent["industryFocusAreas"],
     centresList: centres.map((centre) => ({
       name: centre.name,
+      image: getCentreImage(centre.name),
       partner: centre.partner,
       focus: centre.focus,
       description: centre.description,
@@ -440,6 +436,21 @@ const proudMoments = [
   { number: "16", title: "Naveen Jindal Industry Engagement", date: "2025", text: "An industry engagement involving Naveen Jindal was among the documented institutional proud moments." },
 ];
 
+const glanceCardPhotos: Record<string, { alt: string }> = {
+  robotics: {
+    alt: "Students learning industrial robotics at ASF",
+  },
+  industry: {
+    alt: "Industry visitors exploring robotics training at ASF",
+  },
+  welding: {
+    alt: "Hands-on welding technology training",
+  },
+  workshops: {
+    alt: "Students in a technology training workshop",
+  },
+};
+
 /* =====================================================
    HERO IMAGE SLIDER
    ===================================================== */
@@ -451,7 +462,7 @@ const heroImages = [
     position: "center 38%",
   },
   {
-    src: "/images/hero/asf-robotics.JPG",
+    src: "/images/hero/asf-robotics.jpg",
     alt: "Industrial robotics training at AKGEC Skills Foundation",
     position: "center 42%",
   },
@@ -471,10 +482,13 @@ const heroImages = [
    HERO SLIDER COMPONENT
    ===================================================== */
 
-function HeroSlider({ heroImage }: { heroImage: string }) {
+function HeroSlider({ slides: slideImages }: { slides: string[] }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
-  const slides = [heroImages[1], { ...heroImages[0], src: heroImage }, ...heroImages.slice(2)];
+  const slides = heroImages.map((image, index) => ({
+    ...image,
+    src: slideImages[index] ?? image.src,
+  }));
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -501,7 +515,7 @@ function HeroSlider({ heroImage }: { heroImage: string }) {
     >
       {slides.map((image, index) => (
         <Image
-          key={image.src}
+          key={index}
           src={image.src}
           alt={image.alt}
           fill
@@ -518,7 +532,7 @@ function HeroSlider({ heroImage }: { heroImage: string }) {
       <div className="hero-slider-dots">
         {slides.map((image, index) => (
           <button
-            key={image.src}
+            key={index}
             type="button"
             aria-label={`Show Foundation highlight ${index + 1}: ${image.alt}`}
             aria-current={
@@ -646,26 +660,9 @@ export default function Home() {
           >
             {siteContent.navigation.map(({ label, section }) => (
               section === "centres" ? (
-                <details className="main-nav-coe-dropdown" key={label}>
-                  <summary>
-                    {label}
-                    <ChevronDown size={15} aria-hidden="true" />
-                  </summary>
-                  <div className="main-nav-coe-menu">
-                    <span>Choose a centre</span>
-                    {siteContent.centresList.map((centre, index) => (
-                      <Link
-                        href={`/coe-training/${getCentreSlug(centre.name)}`}
-                        key={centre.name}
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        {centre.name}
-                        <ChevronRight size={16} aria-hidden="true" />
-                      </Link>
-                    ))}
-                  </div>
-                </details>
+                <Link href="/coe-training" key={label} onClick={() => setMenuOpen(false)}>
+                  {label}
+                </Link>
               ) : (
                 <a
                   href={`#${section}`}
@@ -737,7 +734,7 @@ export default function Home() {
 
           {/* AUTOMATIC IMAGE SLIDER */}
 
-          <HeroSlider heroImage={siteContent.images.hero} />
+          <HeroSlider slides={siteContent.images.heroSlides} />
 
           {/* HERO DARK OVERLAY */}
 
@@ -807,16 +804,27 @@ export default function Home() {
             <div className="glance-grid">
 
               {siteContent.homepage.glanceMetrics.map((metric, index) => {
-                const Icon = metric.icon === "robotics" ? Bot
-                  : metric.icon === "industry" ? Building2
-                    : metric.icon === "welding" ? Flame
-                      : UsersRound;
+                const photo = glanceCardPhotos[metric.icon] ?? glanceCardPhotos.robotics;
                 return (
                   <article className="glance-card" key={`${metric.eyebrow}-${index}`}>
-                    <span className={`glance-card-icon ${metric.icon}`} aria-hidden="true"><Icon size={48} strokeWidth={1.7} /></span>
-                    <small className="glance-card-partner">{metric.eyebrow}</small>
-                    <strong><CountUp target={metric.target} suffix={metric.suffix} /></strong>
-                    <p className="glance-card-description">{metric.description}</p>
+                    <div className="glance-card-media">
+                      <Image
+                        src={metric.image}
+                        alt={photo.alt}
+                        fill
+                        sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 25vw"
+                        className="cover-image"
+                        unoptimized={shouldBypassImageOptimization(metric.image)}
+                      />
+                      <span className="glance-card-partner">{metric.eyebrow}</span>
+                      <span className="glance-card-sequence" aria-hidden="true">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <div className="glance-card-copy">
+                      <strong><CountUp target={metric.target} suffix={metric.suffix} /></strong>
+                      <p className="glance-card-description">{metric.description}</p>
+                    </div>
                   </article>
                 );
               })}
@@ -865,7 +873,16 @@ export default function Home() {
                 <div className="about-points">
                   {siteContent.about.keyFocusAreas?.map((area) => (
                     <div key={area.title}>
-                      <ShieldCheck size={21} aria-hidden="true" />
+                      <span className="about-point-image" aria-hidden="true">
+                        <Image
+                          src={area.image}
+                          alt=""
+                          fill
+                          sizes="64px"
+                          className="cover-image"
+                          unoptimized={shouldBypassImageOptimization(area.image)}
+                        />
+                      </span>
                       <span>
                         <strong>{area.title}:</strong> {area.description}
                       </span>
@@ -1123,71 +1140,19 @@ export default function Home() {
         </section>
 */}
 
-        {/* =================================================
-            NEWS & EVENTS
-        ================================================= */}
-{/*
-        <section
-          id="facilities"
-          className="news"
-        >
-
+        <section id="news-events" className="recent-news" aria-labelledby="recent-news-heading">
           <div className="container">
-
-            <div className="section-heading">
-
-              <span>ASF CAMPUS & FACILITIES</span>
-
-              <h2>
-                Infrastructure for
-                <br />
-                <em>learning and collaboration</em>
-              </h2>
-
+            <div className="recent-news-heading section-heading">
+              <span>RECENT UPDATES</span>
+              <h2 id="recent-news-heading">Recent News &amp; Events</h2>
               <p>
-                ASF is conceived to support interaction between academia, industry and start-ups through training infrastructure and campus facilities.
+                Updates, achievements and events from ASF, its Centres of Excellence and industry
+                partners.
               </p>
-
             </div>
-
-            <div className="news-grid">
-
-              <article className="news-card news-text-card">
-                <div className="news-content">
-                  <span>RESIDENTIAL FACILITIES</span>
-                  <h3>On-campus accommodation</h3>
-                  <p>
-                    Residential accommodation includes separate hostels for girls and boys, Wi-Fi-enabled rooms, dining facilities and round-the-clock security.
-                  </p>
-                </div>
-              </article>
-
-              <article className="news-card news-text-card">
-                <div className="news-content">
-                  <span>SEMINAR HALL</span>
-                  <h3>250-seat learning & conference facility</h3>
-                  <p>
-                    The campus has an air-conditioned seminar hall with 250 seating capacity and audio-visual conferencing equipment for lectures, seminars and conferences.
-                  </p>
-                </div>
-              </article>
-
-              <article className="news-card news-text-card">
-                <div className="news-content">
-                  <span>SPORTS & WELLBEING</span>
-                  <h3>Gymnasium and sports facilities</h3>
-                  <p>
-                    Trainees and hostel residents can use the gymnasium and indoor and outdoor sports facilities.
-                  </p>
-                </div>
-              </article>
-
-            </div>
+            <RecentNewsCarousel events={siteContent.homepage.recentNewsEvents} />
           </div>
-
         </section>
-
-        */}
         <section
           id="contact"
           className="contact"

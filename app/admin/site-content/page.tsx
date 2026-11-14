@@ -8,6 +8,8 @@ import { ImagePlus, Plus, Save, Trash2 } from "lucide-react";
 import type { GlanceMetric, HomepageContent, SiteContent, SiteImageSlot, SiteSection } from "@/lib/siteContent";
 import { SITE_THEMES, type SiteTheme } from "@/lib/siteThemes";
 
+type UploadSlot = SiteImageSlot | "news-event" | "homepage-photo" | "centre-photo";
+
 const inputStyle = {
   width: "100%",
   minHeight: 42,
@@ -91,8 +93,8 @@ export default function AdminSiteContentPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [uploadingImage, setUploadingImage] = useState<SiteImageSlot | null>(null);
-  const [pendingImageSlots, setPendingImageSlots] = useState<SiteImageSlot[]>([]);
+  const [uploadingImage, setUploadingImage] = useState<string | null>(null);
+  const [pendingImageSlots, setPendingImageSlots] = useState<string[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -125,6 +127,18 @@ export default function AdminSiteContentPage() {
     setContent((previous) => previous ? {
       ...previous,
       centresList: previous.centresList.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item),
+    } : previous);
+  }
+
+  function updateNewsEvent(id: string, patch: Partial<HomepageContent["recentNewsEvents"][number]>) {
+    setContent((previous) => previous ? {
+      ...previous,
+      homepage: {
+        ...previous.homepage,
+        recentNewsEvents: previous.homepage.recentNewsEvents.map((event) =>
+          event.id === id ? { ...event, ...patch } : event
+        ),
+      },
     } : previous);
   }
 
@@ -190,8 +204,13 @@ export default function AdminSiteContentPage() {
     } : previous);
   }
 
-  async function uploadImage(slot: SiteImageSlot, file: File) {
-    setUploadingImage(slot);
+  async function uploadImage(
+    slot: UploadSlot,
+    file: File,
+    onUploaded?: (url: string) => void,
+    trackingKey: string = slot,
+  ) {
+    setUploadingImage(trackingKey);
     setError("");
     setSuccess("");
 
@@ -211,12 +230,21 @@ export default function AdminSiteContentPage() {
         throw new Error(data.error || "Could not upload the image.");
       }
 
-      setContent((previous) => previous ? {
-        ...previous,
-        images: { ...previous.images, [slot]: imageUrl },
-      } : previous);
-      setPendingImageSlots((previous) => previous.includes(slot) ? previous : [...previous, slot]);
-      setSuccess("Image uploaded. Select Save and publish to put it live.");
+      if (onUploaded) {
+        onUploaded(imageUrl);
+      } else if (slot === "hero" || slot === "about" || slot === "industry") {
+        setContent((previous) => previous ? {
+          ...previous,
+          images: { ...previous.images, [slot]: imageUrl },
+        } : previous);
+      } else {
+        throw new Error("The uploaded image has no destination.");
+      }
+      setPendingImageSlots((previous) => previous.includes(trackingKey) ? previous : [...previous, trackingKey]);
+      setSuccess(slot === "news-event"
+        ? "Event image uploaded. Select Save and publish to put it live."
+        : "Image uploaded. Select Save and publish to put it live."
+      );
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : "Could not upload the image.");
     } finally {
@@ -254,27 +282,214 @@ export default function AdminSiteContentPage() {
       <header style={styles.header}>
         <div>
           <h1 style={styles.title}>Website Content</h1>
-          <p style={styles.subtitle}>Edit homepage copy, COE / Training directory content, centre profiles, programmes, registrations and industry areas.</p>
+          <p style={styles.subtitle}>Manage homepage images, highlights, news and Centre of Excellence content. Save and publish to make your edits live.</p>
         </div>
         <Link href="/admin" style={styles.backLink}>Dashboard</Link>
       </header>
+
+      <nav aria-label="Website content sections" style={styles.quickLinks}>
+        <a href="#website-images" style={styles.quickLink}>Images &amp; highlights</a>
+        <a href="#homepage-content" style={styles.quickLink}>Homepage text</a>
+        <a href="#recent-news" style={styles.quickLink}>News &amp; events</a>
+        <a href="#about-content" style={styles.quickLink}>About &amp; training</a>
+        <a href="#centres-content" style={styles.quickLink}>COE / Training</a>
+      </nav>
 
       {error && <p role="alert" style={styles.error}>{error}</p>}
       {success && <p role="status" style={styles.success}>{success}</p>}
       {!content && !error && <p>Website content is unavailable.</p>}
 
       {content && <>
-        <section style={panelStyle}>
-          <h2 style={styles.sectionTitle}>Hero Image</h2>
-          <p style={styles.themeIntro}>Choose the first image visitors see in the homepage hero slider.</p>
-          <ImageUploadField
-            slot="hero"
-            src={content.images.hero}
-            uploading={uploadingImage === "hero"}
-            disabled={uploadingImage !== null}
-            pendingSave={pendingImageSlots.includes("hero")}
-            onSelect={(file) => { void uploadImage("hero", file); }}
-          />
+        <section id="website-images" style={styles.imageManager}>
+          <div style={styles.sectionHead}>
+            <div>
+              <h2 style={styles.sectionTitle}>Images &amp; Highlights</h2>
+              <p style={styles.themeIntro}>Each image has its own upload control. Images are grouped by where they appear so they are easy to find and update.</p>
+            </div>
+            <span style={styles.imageCount}>{content.images.heroSlides.length + content.homepage.glanceMetrics.length + content.about.keyFocusAreas.length + content.homepage.recentNewsEvents.length + content.centresList.length + 2} images</span>
+          </div>
+
+          <details style={styles.imageGroup} open>
+            <summary style={styles.imageGroupTitle}>
+              <span>Homepage hero slides</span>
+              <span style={styles.imageGroupCount}>{content.images.heroSlides.length}</span>
+            </summary>
+            <div style={styles.imageGrid}>
+              {content.images.heroSlides.map((image, index) => {
+                const trackingKey = `hero-slide-${index}`;
+                return (
+                  <ImageUploadField
+                    key={trackingKey}
+                    title={`Hero slide ${index + 1}`}
+                    trackingKey={trackingKey}
+                    src={image}
+                    uploading={uploadingImage === trackingKey}
+                    disabled={uploadingImage !== null}
+                    pendingSave={pendingImageSlots.includes(trackingKey)}
+                    onSelect={(file) => {
+                      void uploadImage("homepage-photo", file, (url) => {
+                        setContent((previous) => previous ? {
+                          ...previous,
+                          images: {
+                            ...previous.images,
+                            hero: index === 1 ? url : previous.images.hero,
+                            heroSlides: previous.images.heroSlides.map((slide, slideIndex) =>
+                              slideIndex === index ? url : slide
+                            ),
+                          },
+                        } : previous);
+                      }, trackingKey);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </details>
+
+          <details style={styles.imageGroup}>
+            <summary style={styles.imageGroupTitle}>
+              <span>At a Glance highlight cards</span>
+              <span style={styles.imageGroupCount}>{content.homepage.glanceMetrics.length}</span>
+            </summary>
+            <div style={styles.imageGrid}>
+              {content.homepage.glanceMetrics.map((metric, index) => {
+                const trackingKey = `glance-${index}`;
+                return (
+                  <ImageUploadField
+                    key={trackingKey}
+                    title={`Highlight ${String(index + 1).padStart(2, "0")} · ${metric.eyebrow}`}
+                    trackingKey={trackingKey}
+                    src={metric.image}
+                    uploading={uploadingImage === trackingKey}
+                    disabled={uploadingImage !== null}
+                    pendingSave={pendingImageSlots.includes(trackingKey)}
+                    onSelect={(file) => {
+                      void uploadImage("homepage-photo", file, (url) => updateGlanceMetric(index, { image: url }), trackingKey);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </details>
+
+          <details style={styles.imageGroup}>
+            <summary style={styles.imageGroupTitle}>
+              <span>About Foundation</span>
+              <span style={styles.imageGroupCount}>{content.about.keyFocusAreas.length + 1}</span>
+            </summary>
+            <div style={styles.imageGrid}>
+              <ImageUploadField
+                title="About Foundation main photo"
+                trackingKey="about-main"
+                src={content.images.about}
+                uploading={uploadingImage === "about-main"}
+                disabled={uploadingImage !== null}
+                pendingSave={pendingImageSlots.includes("about-main")}
+                onSelect={(file) => {
+                  void uploadImage("homepage-photo", file, (url) => setContent((previous) => previous ? {
+                    ...previous,
+                    images: { ...previous.images, about: url },
+                  } : previous), "about-main");
+                }}
+              />
+              {content.about.keyFocusAreas.map((area, index) => {
+                const trackingKey = `about-focus-${index}`;
+                return (
+                  <ImageUploadField
+                    key={trackingKey}
+                    title={`About focus ${String(index + 1).padStart(2, "0")} · ${area.title}`}
+                    trackingKey={trackingKey}
+                    src={area.image}
+                    uploading={uploadingImage === trackingKey}
+                    disabled={uploadingImage !== null}
+                    pendingSave={pendingImageSlots.includes(trackingKey)}
+                    onSelect={(file) => {
+                      void uploadImage("homepage-photo", file, (url) => updateAboutFocusArea(index, { image: url }), trackingKey);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </details>
+
+          <details style={styles.imageGroup}>
+            <summary style={styles.imageGroupTitle}>
+              <span>Industry engagement</span>
+              <span style={styles.imageGroupCount}>1</span>
+            </summary>
+            <div style={styles.imageGrid}>
+              <ImageUploadField
+                title="Industry engagement photo"
+                trackingKey="industry-main"
+                src={content.images.industry}
+                uploading={uploadingImage === "industry-main"}
+                disabled={uploadingImage !== null}
+                pendingSave={pendingImageSlots.includes("industry-main")}
+                onSelect={(file) => {
+                  void uploadImage("homepage-photo", file, (url) => setContent((previous) => previous ? {
+                    ...previous,
+                    images: { ...previous.images, industry: url },
+                  } : previous), "industry-main");
+                }}
+              />
+            </div>
+          </details>
+
+          <details style={styles.imageGroup}>
+            <summary style={styles.imageGroupTitle}>
+              <span>News &amp; event photos</span>
+              <span style={styles.imageGroupCount}>{content.homepage.recentNewsEvents.length}</span>
+            </summary>
+            {content.homepage.recentNewsEvents.length === 0 ? (
+              <p style={styles.imageUploadHint}>Add a story under <a href="#recent-news">News &amp; Events</a>, then choose its image here.</p>
+            ) : (
+              <div style={styles.imageGrid}>
+                {content.homepage.recentNewsEvents.map((event, index) => {
+                  const trackingKey = `news-event-${event.id}`;
+                  return (
+                    <ImageUploadField
+                      key={event.id}
+                      title={`News ${String(index + 1).padStart(2, "0")} · ${event.title || "Untitled story"}`}
+                      trackingKey={trackingKey}
+                      src={event.image}
+                      uploading={uploadingImage === trackingKey}
+                      disabled={uploadingImage !== null}
+                      pendingSave={pendingImageSlots.includes(trackingKey)}
+                      onSelect={(file) => {
+                        void uploadImage("news-event", file, (url) => updateNewsEvent(event.id, { image: url }), trackingKey);
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </details>
+
+          <details style={styles.imageGroup}>
+            <summary style={styles.imageGroupTitle}>
+              <span>COE / Training centre photos</span>
+              <span style={styles.imageGroupCount}>{content.centresList.length}</span>
+            </summary>
+            <div style={styles.imageGrid}>
+              {content.centresList.map((centre, index) => {
+                const trackingKey = `centre-${index}`;
+                return (
+                  <ImageUploadField
+                    key={centre.name}
+                    title={centre.name}
+                    trackingKey={trackingKey}
+                    src={centre.image}
+                    uploading={uploadingImage === trackingKey}
+                    disabled={uploadingImage !== null}
+                    pendingSave={pendingImageSlots.includes(trackingKey)}
+                    onSelect={(file) => {
+                      void uploadImage("centre-photo", file, (url) => updateCentre(index, { image: url }), trackingKey);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </details>
         </section>
 
         <section style={panelStyle}>
@@ -327,7 +542,7 @@ export default function AdminSiteContentPage() {
           </div>
         </section>
 
-        <section style={panelStyle}>
+        <section id="homepage-content" style={panelStyle}>
           <h2 style={styles.sectionTitle}>Homepage Hero &amp; At a Glance</h2>
           <p style={styles.themeIntro}>Change the visible homepage wording, labels, highlight tags and animated metrics. Enter one highlight tag per line.</p>
           <div style={styles.grid}>
@@ -342,7 +557,7 @@ export default function AdminSiteContentPage() {
           </div>
           <div style={{ ...styles.sectionHead, marginTop: 22 }}>
             <h3 style={styles.sectionTitle}>At a Glance Cards</h3>
-            <button type="button" style={styles.secondaryButton} onClick={() => updateHomepage("glanceMetrics", [...content.homepage.glanceMetrics, { icon: "robotics", eyebrow: "NEW HIGHLIGHT", target: 0, suffix: "", description: "" }])}>
+            <button type="button" style={styles.secondaryButton} onClick={() => updateHomepage("glanceMetrics", [...content.homepage.glanceMetrics, { icon: "robotics", eyebrow: "NEW HIGHLIGHT", target: 0, suffix: "", description: "", image: "/images/centres/kuka-training.jpg" }])}>
               <Plus size={16} /> Add highlight
             </button>
           </div>
@@ -355,6 +570,7 @@ export default function AdminSiteContentPage() {
                     type="button"
                     aria-label={`Remove highlight ${index + 1}`}
                     style={styles.deleteButton}
+                    disabled={uploadingImage !== null}
                     onClick={() => updateHomepage("glanceMetrics", content.homepage.glanceMetrics.filter((_, metricIndex) => metricIndex !== index))}
                   >
                     <Trash2 size={16} />
@@ -372,7 +588,85 @@ export default function AdminSiteContentPage() {
           </div>
         </section>
 
-        <section style={panelStyle}>
+        <section id="recent-news" style={panelStyle}>
+          <div style={styles.sectionHead}>
+            <div>
+              <h2 style={styles.sectionTitle}>Recent News &amp; Events</h2>
+              <p style={styles.themeIntro}>
+                Add each story&apos;s title and description here, then update its photo separately in
+                Images &amp; Highlights. Complete entries appear in the homepage carousel.
+              </p>
+            </div>
+            <button
+              type="button"
+              style={styles.secondaryButton}
+              disabled={uploadingImage !== null}
+              onClick={() => updateHomepage("recentNewsEvents", [
+                { id: crypto.randomUUID(), title: "", date: "", description: "", image: "" },
+                ...content.homepage.recentNewsEvents,
+              ])}
+            >
+              <Plus size={16} /> Add news or event
+            </button>
+          </div>
+          {content.homepage.recentNewsEvents.length === 0 && (
+            <p style={styles.imageUploadHint}>No news or events added yet.</p>
+          )}
+          <div style={styles.items}>
+            {content.homepage.recentNewsEvents.map((event, index) => (
+              <article key={event.id} style={styles.item}>
+                <div style={styles.itemHead}>
+                  <strong>News or event {String(index + 1).padStart(2, "0")}</strong>
+                  <button
+                    type="button"
+                    aria-label={`Remove news or event ${index + 1}`}
+                    style={styles.deleteButton}
+                    disabled={uploadingImage !== null}
+                    onClick={() => updateHomepage(
+                      "recentNewsEvents",
+                      content.homepage.recentNewsEvents.filter((item) => item.id !== event.id),
+                    )}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+                <div style={styles.grid}>
+                  <label style={labelStyle}>
+                    Title
+                    <input
+                      style={inputStyle}
+                      maxLength={180}
+                      value={event.title}
+                      onChange={(change) => updateNewsEvent(event.id, { title: change.target.value })}
+                    />
+                  </label>
+                  <label style={labelStyle}>
+                    Date or short label (optional)
+                    <input
+                      style={inputStyle}
+                      maxLength={80}
+                      placeholder="e.g. 14 November 2026"
+                      value={event.date}
+                      onChange={(change) => updateNewsEvent(event.id, { date: change.target.value })}
+                    />
+                  </label>
+                  <label style={labelStyle}>
+                    Description
+                    <textarea
+                      style={{ ...inputStyle, minHeight: 88 }}
+                      rows={3}
+                      maxLength={1200}
+                      value={event.description}
+                      onChange={(change) => updateNewsEvent(event.id, { description: change.target.value })}
+                    />
+                  </label>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="homepage-details" style={panelStyle}>
           <h2 style={styles.sectionTitle}>Homepage Details, Contact &amp; Footer</h2>
           <p style={styles.themeIntro}>Edit contact information, button labels, footer wording and social links. Enter one address line or phone number per line.</p>
           <div style={styles.grid}>
@@ -405,7 +699,7 @@ export default function AdminSiteContentPage() {
         {(["about", "training", "centres", "industry"] as SiteSection[]).map((section) => {
           const fields = content[section];
           return (
-            <section key={section} style={panelStyle}>
+            <section id={`${section}-content`} key={section} style={panelStyle}>
               <h2 style={styles.sectionTitle}>{section === "about" ? "About Foundation" : section === "centres" ? "Centres of Excellence" : section[0].toUpperCase() + section.slice(1)}</h2>
               <div style={styles.grid}>
                 <label style={labelStyle}>Eyebrow / label<input style={inputStyle} value={fields.label} onChange={(event) => updateSection(section, "label", event.target.value)} /></label>
@@ -424,7 +718,11 @@ export default function AdminSiteContentPage() {
                             ...previous,
                             about: {
                               ...previous.about,
-                              keyFocusAreas: [...previous.about.keyFocusAreas, { title: "New focus area", description: "" }],
+                              keyFocusAreas: [...previous.about.keyFocusAreas, {
+                                title: "New focus area",
+                                description: "",
+                                image: "/images/centres/kuka-training.jpg",
+                              }],
                             },
                           } : previous)}
                         >
@@ -439,6 +737,7 @@ export default function AdminSiteContentPage() {
                               type="button"
                               aria-label={`Remove ${area.title}`}
                               style={styles.deleteButton}
+                              disabled={uploadingImage !== null}
                               onClick={() => setContent((previous) => previous ? {
                                 ...previous,
                                 about: {
@@ -457,32 +756,14 @@ export default function AdminSiteContentPage() {
                         </article>
                       ))}
                     </div>
-                    <ImageUploadField
-                      slot="about"
-                      src={content.images.about}
-                      uploading={uploadingImage === "about"}
-                      disabled={uploadingImage !== null}
-                      pendingSave={pendingImageSlots.includes("about")}
-                      onSelect={(file) => { void uploadImage("about", file); }}
-                    />
                   </>
-                )}
-                {section === "industry" && (
-                  <ImageUploadField
-                    slot="industry"
-                    src={content.images.industry}
-                    uploading={uploadingImage === "industry"}
-                    disabled={uploadingImage !== null}
-                    pendingSave={pendingImageSlots.includes("industry")}
-                    onSelect={(file) => { void uploadImage("industry", file); }}
-                  />
                 )}
               </div>
             </section>
           );
         })}
 
-        <section style={panelStyle}>
+        <section id="centres-content" style={panelStyle}>
           <div style={styles.sectionHead}>
             <h2 style={styles.sectionTitle}>Industry Focus Cards</h2>
             <button type="button" style={styles.secondaryButton} onClick={() => setContent({ ...content, industryFocusAreas: [...content.industryFocusAreas, { icon: "automation", name: "New focus area", details: "Add the sector details shown when visitors open this card." }] })}><Plus size={16} /> Add focus area</button>
@@ -510,7 +791,7 @@ export default function AdminSiteContentPage() {
               <h2 style={styles.sectionTitle}>COE / Training Centres ({content.centresList.length})</h2>
               <p style={styles.themeIntro}>Edit centre descriptions, courses, fees-related information, facilities, certifications and recognition. Course prices and durations are managed in Course Catalog.</p>
             </div>
-            <button type="button" style={styles.secondaryButton} onClick={() => setContent({ ...content, centresList: [...content.centresList, { name: "New centre", partner: "", focus: "", description: "", itemsTitle: "Programmes and facilities", items: [], recognition: "", details: [] }] })}><Plus size={16} /> Add centre</button>
+            <button type="button" style={styles.secondaryButton} onClick={() => setContent({ ...content, centresList: [...content.centresList, { name: "New centre", image: "/images/hero/asf-main.jpg", partner: "", focus: "", description: "", itemsTitle: "Programmes and facilities", items: [], recognition: "", details: [] }] })}><Plus size={16} /> Add centre</button>
           </div>
           <div style={{ marginBottom: 18 }}>
             <Link href="/admin/courses" style={styles.backLink}>Manage course prices and durations</Link>
@@ -518,7 +799,7 @@ export default function AdminSiteContentPage() {
           <div style={styles.items}>
             {content.centresList.map((centre, index) => (
               <details key={index} style={styles.item}>
-                <summary style={styles.summary}><span>{String(index + 1).padStart(2, "0")} · {centre.name}</span><button type="button" aria-label={`Remove ${centre.name}`} style={styles.deleteButton} onClick={(event) => { event.preventDefault(); if (confirm(`Remove ${centre.name}?`)) setContent({ ...content, centresList: content.centresList.filter((_, itemIndex) => itemIndex !== index) }); }}><Trash2 size={16} /></button></summary>
+                <summary style={styles.summary}><span>{String(index + 1).padStart(2, "0")} · {centre.name}</span><button type="button" aria-label={`Remove ${centre.name}`} style={styles.deleteButton} disabled={uploadingImage !== null} onClick={(event) => { event.preventDefault(); if (confirm(`Remove ${centre.name}?`)) setContent({ ...content, centresList: content.centresList.filter((_, itemIndex) => itemIndex !== index) }); }}><Trash2 size={16} /></button></summary>
                 <div style={styles.grid}>
                   <label style={labelStyle}>Centre name<input style={inputStyle} value={centre.name} onChange={(event) => updateCentre(index, { name: event.target.value })} /></label>
                   <label style={labelStyle}>Industry partner<input style={inputStyle} value={centre.partner} onChange={(event) => updateCentre(index, { partner: event.target.value })} /></label>
@@ -535,7 +816,7 @@ export default function AdminSiteContentPage() {
         </section>
 
         <div style={styles.saveBar}>
-          <span>Changes go live on the public homepage after saving.</span>
+          <span>Changes go live on the website after saving.</span>
           <button type="button" style={buttonStyle} onClick={save} disabled={saving || uploadingImage !== null}><Save size={16} /> {saving ? "Saving..." : "Save and publish"}</button>
         </div>
       </>}
@@ -544,34 +825,38 @@ export default function AdminSiteContentPage() {
 }
 
 function ImageUploadField({
-  slot,
+  title,
+  trackingKey,
   src,
   uploading,
   disabled,
   pendingSave,
   onSelect,
 }: {
-  slot: SiteImageSlot;
+  title: string;
+  trackingKey: string;
   src: string;
   uploading: boolean;
   disabled: boolean;
   pendingSave: boolean;
   onSelect: (file: File) => void;
 }) {
-  const title = slot === "hero" ? "Homepage hero" : slot === "about" ? "About Foundation" : "Industry";
-
   return (
-    <div style={styles.imageUpload}>
-      <span style={styles.imageUploadLabel}>{title} image</span>
+    <div style={styles.imageUpload} data-image-key={trackingKey}>
+      <span style={styles.imageUploadLabel}>{title}</span>
       <div style={styles.imageUploadRow}>
-        <Image
-          src={src}
-          alt={`Current ${title.toLowerCase()} image`}
-          width={600}
-          height={280}
-          unoptimized
-          style={styles.imagePreview}
-        />
+        {src ? (
+          <Image
+            src={src}
+            alt={`Current image for ${title}`}
+            width={600}
+            height={280}
+            unoptimized
+            style={styles.imagePreview}
+          />
+        ) : (
+          <div style={styles.imagePlaceholder}>No image uploaded yet</div>
+        )}
         <label style={{ ...styles.secondaryButton, ...(disabled ? styles.disabledUpload : {}) }}>
           <ImagePlus size={16} />
           {uploading ? "Uploading..." : "Choose image"}
@@ -601,9 +886,17 @@ const styles: Record<string, CSSProperties> = {
   header: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, paddingBottom: 20, borderBottom: "1px solid #e6ddd5" },
   title: { margin: 0, fontSize: 30, lineHeight: 1.2 },
   subtitle: { margin: "8px 0 0", color: "#695c53", fontSize: 14 },
+  quickLinks: { display: "flex", flexWrap: "wrap", gap: 8, padding: "16px 0", borderBottom: "1px solid #e6ddd5" },
+  quickLink: { padding: "8px 11px", border: "1px solid #e1d8d0", borderRadius: 999, color: "#641c1c", background: "#fff", fontSize: 13, fontWeight: 700, textDecoration: "none" },
   backLink: { color: "#641c1c", fontSize: 14, fontWeight: 700, textDecoration: "underline", textUnderlineOffset: 3 },
   sectionTitle: { margin: 0, fontSize: 19, lineHeight: 1.3 },
   themeIntro: { margin: "7px 0 0", color: "#695c53", fontSize: 14 },
+  imageManager: { ...panelStyle, padding: "22px 0" },
+  imageCount: { flex: "0 0 auto", padding: "6px 10px", borderRadius: 999, background: "#f5f0ec", color: "#641c1c", fontSize: 12, fontWeight: 800 },
+  imageGroup: { marginTop: 14, border: "1px solid #e1d8d0", borderRadius: 8, background: "#fff" },
+  imageGroupTitle: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "13px 15px", color: "#35241d", cursor: "pointer", fontSize: 14, fontWeight: 750, listStylePosition: "inside" },
+  imageGroupCount: { minWidth: 26, padding: "3px 8px", borderRadius: 999, background: "#f5f0ec", color: "#641c1c", textAlign: "center", fontSize: 12, fontWeight: 800 },
+  imageGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 210px), 1fr))", gap: 12, padding: "0 12px 12px" },
   themeGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 210px), 1fr))", gap: 12, marginTop: 16 },
   themeOption: { minHeight: 132, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 6, padding: 14, border: "2px solid", borderRadius: 7, background: "#fff", color: "#281d19", font: "inherit", textAlign: "left", cursor: "pointer" },
   themeSwatches: { display: "flex", gap: 6, marginBottom: 4 },
@@ -611,10 +904,11 @@ const styles: Record<string, CSSProperties> = {
   themeDescription: { color: "#695c53", fontSize: 12 },
   themeStatus: { marginTop: "auto", fontSize: 12, fontWeight: 800 },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 14, marginTop: 16 },
-  imageUpload: { display: "grid", gap: 10, marginTop: 16 },
-  imageUploadLabel: { color: "#51443d", fontSize: 13, fontWeight: 700 },
-  imageUploadRow: { display: "flex", alignItems: "flex-start", gap: 14, flexWrap: "wrap" },
-  imagePreview: { width: "min(100%, 560px)", height: 220, objectFit: "cover", border: "1px solid #e1d8d0", borderRadius: 6, background: "#f5f0ec" },
+  imageUpload: { display: "grid", alignContent: "start", gap: 9, minWidth: 0, padding: 11, border: "1px solid #e6ddd5", borderRadius: 7, background: "#fffdfa" },
+  imageUploadLabel: { minHeight: 34, color: "#51443d", fontSize: 13, fontWeight: 700, lineHeight: 1.35 },
+  imageUploadRow: { display: "grid", alignContent: "start", gap: 9 },
+  imagePreview: { width: "100%", height: 128, objectFit: "cover", border: "1px solid #e1d8d0", borderRadius: 6, background: "#f5f0ec" },
+  imagePlaceholder: { width: "100%", height: 128, display: "grid", placeItems: "center", border: "1px dashed #bcae9f", borderRadius: 6, background: "#f5f0ec", color: "#695c53", fontSize: 13 },
   imageUploadHint: { color: "#695c53", fontSize: 12, fontWeight: 400 },
   hiddenFileInput: { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap" },
   disabledUpload: { opacity: 0.6, cursor: "wait" },

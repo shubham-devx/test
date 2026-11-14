@@ -11,7 +11,7 @@ export const runtime = "nodejs";
 
 const maximumImageBytes = 4 * 1024 * 1024;
 const maximumRequestBytes = maximumImageBytes + 64 * 1024;
-const imageSlots = ["hero", "about", "industry"] as const;
+const imageSlots = ["hero", "about", "industry", "news-event", "homepage-photo", "centre-photo"] as const;
 type ImageSlot = (typeof imageSlots)[number];
 
 export async function POST(request: NextRequest) {
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   const slot = formData.get("slot");
   if (typeof slot !== "string" || !imageSlots.includes(slot as ImageSlot) ||
     typeof File === "undefined" || !(image instanceof File)) {
-    return NextResponse.json({ error: "Choose a valid homepage image to upload." }, { status: 400 });
+    return NextResponse.json({ error: "Choose a valid website image to upload." }, { status: 400 });
   }
 
   if (image.type !== "image/webp" || image.size === 0 || image.size > maximumImageBytes) {
